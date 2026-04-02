@@ -1,0 +1,131 @@
+---
+title: '서버 컴포넌트를 클라이언트 컴포넌트안에서 사용하기'
+description: 'Next.js에서 모든 컴포넌트는 기본적으로 서버에서 동작한다. 이를 클라이언트 컴포넌트 안에서도 사용할 수 있는 방법을 알아보자.'
+published: '2024-07-16'
+tags: ['Next.js', 'React']
+---
+
+## 서버/클라이언트 컴포넌트 이해하기
+Next.js App Router에서는 모든 컴포넌트가 기본적으로 서버 컴포넌트다.
+그러나 때로는 클라이언트 측 기능(예: useState, onClick 등)이 필요할 때가 있다. 이럴 때는 어떻게 해야 할까?
+
+클라이언트 컴포넌트를 사용하려면 파일 최상단에 `'use client'` 지시어를 추가하면 된다.
+
+```jsx
+'use client'
+
+export const ClientComponent = () => {
+ return (
+   <div>
+     <h1>Client Component</h1>
+   </div>
+ );
+};
+```
+
+이렇게 하면 해당 컴포넌트부터 클라이언트 경계(Client Boundary)가 형성되어, 컴포넌트에서 import되는 모든 컴포넌트 및 모듈 파일들은 클라이언트 사이드에서 동작한다.
+*(이때 중요한 것은 컴포넌트의 렌더링 계층 구조가 아니라 import 관계이다.)*
+
+그렇기 때문에, `'use client'`를 붙이지 않은 컴포넌트도 자동으로 클라이언트 컴포넌트로 전환된다.
+
+이런 경우는 어떨까? 서버 컴포넌트를 클라이언트 컴포넌트 안에 선언해보자.
+
+```jsx
+import React from 'react';
+
+export const ServerComponent = async () => {
+  const data = await getData();
+  return <div>{JSON.stringify(data)}</div>;
+};
+
+async function getData() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/todos/1');
+  const json = await res.json();
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch data');
+  }
+
+  return json;
+}
+
+export default ServerComponent;
+```
+
+```jsx
+'use client'
+
+import ServerComponent from './ServerComponent'
+
+export const ClientComponent = () => {
+  return (
+    <div>
+      <h1>Client Component</h1>
+      <ServerComponent />
+    </div>
+  )
+}
+```
+
+그럼 다음과 같은 경고문과 함께 에러 로그가 나타날 것이다.
+![img01.png](server-component-in-client-component/img01.png)
+
+이처럼 클라이언트 컴포넌트와 서버 컴포넌트를 함께 사용할 때는 아래와 같은 중요한 규칙이 있다.
+
+- ✅ 서버 컴포넌트 하위로 클라이언트 컴포넌트 (가능)
+- ✅ 클라이언트 컴포넌트 하위로 클라이언트 컴포넌트 (가능)
+- ❌ 클라이언트 컴포넌트 하위로 서버 컴포넌트 (불가능)
+
+## 🔧 해결방법: Props 패턴 활용하기
+그렇다면 클라이언트 컴포넌트 내부에서 서버 컴포넌트를 사용하려면 어떻게 해야 할까? 답은 간단하다. props로 전달하면 된다.
+
+```jsx
+// 동작하는 패턴
+'use client'
+export const ClientComponent = ({ children }) => {
+  return (
+    <div>
+      <h1>Client Component</h1>
+      {children}
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <ClientComponent>
+      <ServerComponent />
+    </ClientComponent>
+  )
+}
+```
+
+## 왜 이렇게 동작할까?
+핵심은 Client Boundary가 컴포넌트의 부모-자식 관계가 아닌, import 위치를 기준으로 결정된다는 점이다.
+위 예제에서 `ServerComponent`는 서버 컴포넌트인 App에서 import되었기 때문에 서버 컴포넌트로 유지된다.
+
+`ClientComponent`는 단순히 props로 받은 children이 어디서 렌더링될지 알 뿐, 어떤 컴포넌트가 올지는 모른다.
+이러한 패턴을 통해 Layout에 use client로 선언된 Provider 등으로 감싸져 있어도 서버 컴포넌트를 사용할 수 있다.
+
+### Deep Dive
+서버 컴포넌트는 기존의 서버 사이드 렌더링(SSR)과는 완전히 다른 방식으로 동작한다.
+SSR이 서버에서 완성된 HTML을 생성하는 것과 달리, 서버 컴포넌트는 React Server Components(RSC) Payload라고 하는 특별한 형태의 JSON-like 스트림을 생성한다.
+![img02.png](server-component-in-client-component/img02.png)
+
+이 RSC Payload에는 컴포넌트 트리 구조, 데이터, HTML 콘텐츠 등이 포함되어 있으며, 서버에서는 문자열, 숫자, 배열과 같은 기본적인 데이터 타입과 React 엘리먼트, Date 객체나 Map, Set 등과 같은 내장 객체들을 직렬화하여 이 페이로드에 포함시킨다.
+반면 함수, 클래스 인스턴스, 클로저, 이벤트 리스너와 같은 것들은 직렬화할 수 없다.
+
+**따라서, 서버 컴포넌트에서 클라이언트 컴포넌트로 직렬화될 수 없는 값을 `props`로 내려줄 수 없다!**
+
+서버 컴포넌트를 렌더링하는 과정에서 클라이언트 컴포넌트를 만나면, 해당 부분은 특별한 플레이스홀더로 표시된다.
+이 플레이스홀더에는 클라이언트 컴포넌트의 참조와 props 정보가 포함되어 있어, 클라이언트에서 해당 컴포넌트를 정확히 렌더링할 수 있게 된다.
+
+클라이언트는 서버로부터 받은 RSC 페이로드를 React가 이해할 수 있는 형태로 변환하고, 서버에서 받은 콘텐츠를 hydration한다.
+이때 플레이스홀더로 표시된 부분에는 해당하는 클라이언트 컴포넌트가 렌더링된다.
+
+
+---
+**참조**
+- [https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns](https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns)
+- [https://www.youtube.com/watch?si=6SwhGCoYwEgKkuwS&v=vjBQks_tjOA&feature=youtu.be](https://www.youtube.com/watch?si=6SwhGCoYwEgKkuwS&v=vjBQks_tjOA&feature=youtu.be)
+
