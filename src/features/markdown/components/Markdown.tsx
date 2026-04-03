@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import parse, {
   type DOMNode,
   domToReact,
@@ -11,6 +11,7 @@ import {
   type MarkdownResult,
   renderMarkdown,
 } from "#/features/markdown/utils/render-markdown.ts";
+import { localeHelper } from "#/shared/helper/locale.ts";
 
 type MarkdownProps = {
   content: string;
@@ -19,6 +20,17 @@ type MarkdownProps = {
 
 export function Markdown({ content, className }: MarkdownProps) {
   const [result, setResult] = useState<MarkdownResult | null>(null);
+  const { pathname } = useLocation();
+
+  const resolveImageSrc = (src: string) => {
+    if (src.startsWith("/") || src.startsWith("http")) return src;
+
+    const withoutLocale = localeHelper.removeLocaleFromPath(pathname);
+    const slug = withoutLocale.replace(/^\//, "").split("/").pop();
+    const filename = src.split("/").pop() ?? src;
+
+    return `/images/posts/${slug}/${filename}`;
+  };
 
   useEffect(() => {
     renderMarkdown(content).then(setResult);
@@ -47,12 +59,18 @@ export function Markdown({ content, className }: MarkdownProps) {
 
         if (domNode.name === "img") {
           // Add lazy loading to images
+          const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
+
+          console.log(domNode.attribs);
+          // const imageSrc = `../posts/${domNode.attribs.src}`;
           return (
             <img
               {...domNode.attribs}
               loading="lazy"
               className="rounded-lg shadow-md"
               alt={domNode.attribs.alt}
+              // src={imageSrc}
+              src={resolvedSrc}
             />
           );
         }

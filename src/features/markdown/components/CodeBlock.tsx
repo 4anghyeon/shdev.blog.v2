@@ -29,8 +29,8 @@ export function CodeBlock({
         {language}
       </span>
       {filename && (
-        <div className="flex cursor-default items-center justify-between border-gray-200 border-b px-3 py-2">
-          <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-1 font-mono text-[10px] text-gray-700">{`${filename}.${language}`}</span>
+        <div className="flex cursor-default items-center justify-between border-gray-200 border-b px-2 py-1">
+          <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700">{`${filename}.${language}`}</span>
         </div>
       )}
       <CodeCopyButton code={code} />

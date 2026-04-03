@@ -1,6 +1,7 @@
 import { defineCollection, defineConfig } from "@content-collections/core";
 import matter from "gray-matter";
 import { z } from "zod";
+import { localeHelper } from "#/shared/helper/locale.ts";
 
 function extractFrontMatter(content: string) {
   const { data, content: body, excerpt } = matter(content, { excerpt: true });
@@ -10,7 +11,7 @@ function extractFrontMatter(content: string) {
 const posts = defineCollection({
   name: "posts",
   directory: "./posts", // Directory containing your .md files
-  include: "*.mdx",
+  include: "**/*.mdx",
   schema: z.object({
     title: z.string(),
     published: z.string().date(),
@@ -25,7 +26,7 @@ const posts = defineCollection({
 
     return {
       ...post,
-      slug: post._meta.path,
+      slug: localeHelper.removeLocaleFromPath(post._meta.path),
       excerpt: frontMatter.excerpt,
       description: frontMatter.data.description,
       headerImage,
