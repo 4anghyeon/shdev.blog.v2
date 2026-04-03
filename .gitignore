@@ -13,3 +13,5 @@ __unconfig*
 todos.json
 .idea
 .content-collections
+# Local Netlify folder
+.netlify
