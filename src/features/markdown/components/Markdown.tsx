@@ -1,5 +1,3 @@
-// src/components/Markdown.tsx
-
 import { Link } from "@tanstack/react-router";
 import parse, {
   type DOMNode,
@@ -8,6 +6,7 @@ import parse, {
   type HTMLReactParserOptions,
 } from "html-react-parser";
 import { useEffect, useState } from "react";
+import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
 import {
   type MarkdownResult,
   renderMarkdown,
@@ -56,6 +55,29 @@ export function Markdown({ content, className }: MarkdownProps) {
               alt={domNode.attribs.alt}
             />
           );
+        }
+
+        if (domNode.name === "pre") {
+          const codeElement = domNode.children.find(
+            (child): child is Element =>
+              child instanceof Element && child.name === "code",
+          );
+
+          if (codeElement) {
+            const className = codeElement.attribs?.class ?? "";
+            const language = className.replace("language-", "") || "text";
+            const meta = codeElement.attribs?.["data-meta"] ?? "";
+            const pathnameMatch = meta.match(/pathname="([^"]+)"/);
+            const pathname = pathnameMatch?.[1];
+
+            const code = codeElement.children
+              .map((c: any) => ("data" in c ? c.data : ""))
+              .join("");
+
+            return (
+              <CodeBlock code={code} language={language} filename={pathname} />
+            );
+          }
         }
       }
     },

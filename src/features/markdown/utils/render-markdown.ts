@@ -26,8 +26,12 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   const result = await unified()
     .use(remarkParse) // Parse markdown
     .use(remarkGfm) // Support GitHub Flavored Markdown
-    .use(remarkRehype, { allowDangerousHtml: true }) // Convert to HTML AST
+    .use(remarkCodeMeta)
+    .use(remarkRehype, {
+      allowDangerousHtml: true,
+    }) // Convert to HTML AST
     .use(rehypeRaw) // Process raw HTML in markdown
+    .use(rehypeCodeMeta) // ← 여기 추가
     .use(rehypeSlug) // Add IDs to headings
     .use(rehypeAutolinkHeadings, {
       behavior: "wrap",
@@ -50,5 +54,30 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   return {
     markup: String(result),
     headings,
+  };
+}
+
+/**
+ * 마크다운 코드에 메타데이터를 심고, 가져오기 위한 custom plugin
+ */
+function rehypeCodeMeta() {
+  return (tree: any) => {
+    visit(tree, "element", (node) => {
+      if (node.tagName === "code" && node.data?.meta) {
+        node.properties["data-meta"] = node.data.meta;
+      }
+    });
+  };
+}
+
+function remarkCodeMeta() {
+  return (tree: any) => {
+    visit(tree, "code", (node: any) => {
+      if (node.meta) {
+        node.data = node.data ?? {};
+        node.data.hProperties = node.data.hProperties ?? {};
+        node.data.hProperties["data-meta"] = node.meta;
+      }
+    });
   };
 }

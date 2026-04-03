@@ -8,7 +8,7 @@
   "files": {
     "ignoreUnknown": true,
     "includes": ["**", "!node_modules", "!.next", "!dist", "!build"],
-    "excludes": ["routeTree.gen.ts"]
+    "excludes": ["routeTree.gen.ts", "*.mdx"]
   },
   "formatter": {
     "enabled": true,
