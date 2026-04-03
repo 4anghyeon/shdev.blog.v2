@@ -1,44 +1,26 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import parse, {
   type DOMNode,
   domToReact,
   Element,
   type HTMLReactParserOptions,
 } from "html-react-parser";
-import { useEffect, useState } from "react";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
-import {
-  type MarkdownResult,
-  renderMarkdown,
-} from "#/features/markdown/utils/render-markdown.ts";
-import { localeHelper } from "#/shared/helper/locale.ts";
 
 type MarkdownProps = {
-  content: string;
+  markup: string;
+  slug: string;
   className?: string;
 };
 
-export function Markdown({ content, className }: MarkdownProps) {
-  const [result, setResult] = useState<MarkdownResult | null>(null);
-  const { pathname } = useLocation();
-
+export function Markdown({ markup, slug, className }: MarkdownProps) {
   const resolveImageSrc = (src: string) => {
     if (src.startsWith("/") || src.startsWith("http")) return src;
 
-    const withoutLocale = localeHelper.removeLocaleFromPath(pathname);
-    const slug = withoutLocale.replace(/^\//, "").split("/").pop();
     const filename = src.split("/").pop() ?? src;
 
     return `/images/posts/${slug}/${filename}`;
   };
-
-  useEffect(() => {
-    renderMarkdown(content).then(setResult);
-  }, [content]);
-
-  if (!result) {
-    return <div className={className}>Loading...</div>;
-  }
 
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
@@ -101,5 +83,5 @@ export function Markdown({ content, className }: MarkdownProps) {
     },
   };
 
-  return <div className={className}>{parse(result.markup, options)}</div>;
+  return <div className={className}>{parse(markup, options)}</div>;
 }

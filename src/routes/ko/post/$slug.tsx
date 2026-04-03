@@ -1,27 +1,33 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useParams } from "@tanstack/react-router";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
+import { renderMarkdown } from "#/features/markdown/utils/render-markdown.ts";
 import { allPosts } from "../../../../.content-collections/generated";
 
 export const Route = createFileRoute("/ko/post/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const post = allPosts.find((p) => p.slug === params.slug);
     if (!post) {
       throw notFound();
     }
-    return post;
+    const result = await renderMarkdown(post.content);
+    return {
+      post,
+      markup: result.markup,
+    };
   },
   component: BlogPost,
 });
 
 function BlogPost() {
-  const post = Route.useLoaderData();
+  const { slug } = useParams({ from: "/ko/post/$slug" });
+  const { post, markup } = Route.useLoaderData();
 
   return (
     <article>
       <header>
         <h1>{post.title}</h1>
       </header>
-      <Markdown content={post.content} className="prose" />
+      <Markdown markup={markup} slug={slug} className="prose" />
     </article>
   );
 }
