@@ -1,10 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
-import { allPosts } from "../../.content-collections/generated";
+import { allPosts } from "../../../../.content-collections/generated";
 
-export const Route = createFileRoute("/post/$slug")({
+export const Route = createFileRoute("/ko/post/$slug")({
   loader: ({ params }) => {
-    console.log(allPosts);
     const post = allPosts.find((p) => p.slug === params.slug);
     if (!post) {
       throw notFound();

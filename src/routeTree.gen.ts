@@ -10,43 +10,43 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PostSlugRouteImport } from './routes/post.$slug'
+import { Route as KoPostSlugRouteImport } from './routes/ko/post/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PostSlugRoute = PostSlugRouteImport.update({
-  id: '/post/$slug',
-  path: '/post/$slug',
+const KoPostSlugRoute = KoPostSlugRouteImport.update({
+  id: '/ko/post/$slug',
+  path: '/ko/post/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/post/$slug': typeof PostSlugRoute
+  '/ko/post/$slug': typeof KoPostSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/post/$slug': typeof PostSlugRoute
+  '/ko/post/$slug': typeof KoPostSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/post/$slug': typeof PostSlugRoute
+  '/ko/post/$slug': typeof KoPostSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/post/$slug'
+  fullPaths: '/' | '/ko/post/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/post/$slug'
-  id: '__root__' | '/' | '/post/$slug'
+  to: '/' | '/ko/post/$slug'
+  id: '__root__' | '/' | '/ko/post/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  PostSlugRoute: typeof PostSlugRoute
+  KoPostSlugRoute: typeof KoPostSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,11 +58,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/post/$slug': {
-      id: '/post/$slug'
-      path: '/post/$slug'
-      fullPath: '/post/$slug'
-      preLoaderRoute: typeof PostSlugRouteImport
+    '/ko/post/$slug': {
+      id: '/ko/post/$slug'
+      path: '/ko/post/$slug'
+      fullPath: '/ko/post/$slug'
+      preLoaderRoute: typeof KoPostSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -70,7 +70,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  PostSlugRoute: PostSlugRoute,
+  KoPostSlugRoute: KoPostSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
