@@ -1,26 +1,21 @@
-import { useLayoutEffect, useState } from "react";
+import type { ReactNode } from "react";
 import CodeCopyButton from "#/features/markdown/components/CodeCopyButton.tsx";
-import { highlightCode } from "#/features/markdown/utils/highlight-code.ts";
 
-type CodeBlockProps = {
+interface CodeBlockProps {
   code: string;
   language?: string;
-  filename?: string;
+  pathname?: string;
   className?: string;
-};
+  children?: ReactNode;
+}
 
 export function CodeBlock({
   code,
   language = "text",
-  filename,
+  pathname,
   className,
+  children,
 }: CodeBlockProps) {
-  const [html, setHtml] = useState<string | null>(null);
-
-  useLayoutEffect(() => {
-    highlightCode(code.trim(), language).then(setHtml);
-  }, [code, language]);
-
   return (
     <div
       className={`group relative rounded-lg border border-gray-200 dark:border-gray-700 ${className ?? ""}`}
@@ -28,20 +23,13 @@ export function CodeBlock({
       <span className="absolute -top-2 right-4 cursor-default bg-white px-2 text-gray-400 text-xs transition-all duration-500 group-hover:opacity-0">
         {language}
       </span>
-      {filename && (
-        <div className="flex cursor-default items-center justify-between border-gray-200 border-b px-2 py-1">
-          <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700">{`${filename}.${language}`}</span>
-        </div>
+      {pathname && (
+        <pre className="flex cursor-default items-center justify-between border-gray-200 border-b px-2 py-1">
+          <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700">{`${pathname}.${language}`}</span>
+        </pre>
       )}
       <CodeCopyButton code={code} />
-
-      {/* 코드 영역 */}
-      {html && (
-        <div
-          className="text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:p-4"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
-      )}
+      <pre className="m-0 overflow-x-auto p-4 text-sm">{children}</pre>
     </div>
   );
 }

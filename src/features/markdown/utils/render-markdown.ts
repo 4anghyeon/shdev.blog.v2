@@ -1,6 +1,6 @@
+import rehypeShiki from "@shikijs/rehype";
 import type { Element } from "hast";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
@@ -26,13 +26,25 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   const result = await unified()
     .use(remarkParse) // Parse markdown
     .use(remarkGfm) // Support GitHub Flavored Markdown
-    .use(remarkCodeMeta)
     .use(remarkRehype, {
       allowDangerousHtml: true,
     }) // Convert to HTML AST
-    .use(rehypeRaw) // Process raw HTML in markdown
-    .use(rehypeCodeMeta) // ← 여기 추가
     .use(rehypeSlug) // Add IDs to headings
+    .use(rehypeShiki, {
+      themes: {
+        light: "slack-ochin",
+        dark: "slack-dark",
+      },
+      transformers: [
+        {
+          name: "custom-html-postprocessor",
+          code(node) {
+            node.properties["data-meta"] = this.options.meta?.__raw;
+            return node;
+          },
+        },
+      ],
+    })
     .use(rehypeAutolinkHeadings, {
       behavior: "wrap",
       properties: { className: ["anchor"] },
@@ -54,30 +66,5 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   return {
     markup: String(result),
     headings,
-  };
-}
-
-/**
- * 마크다운 코드에 메타데이터를 심고, 가져오기 위한 custom plugin
- */
-function rehypeCodeMeta() {
-  return (tree: any) => {
-    visit(tree, "element", (node) => {
-      if (node.tagName === "code" && node.data?.meta) {
-        node.properties["data-meta"] = node.data.meta;
-      }
-    });
-  };
-}
-
-function remarkCodeMeta() {
-  return (tree: any) => {
-    visit(tree, "code", (node: any) => {
-      if (node.meta) {
-        node.data = node.data ?? {};
-        node.data.hProperties = node.data.hProperties ?? {};
-        node.data.hProperties["data-meta"] = node.meta;
-      }
-    });
   };
 }

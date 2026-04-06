@@ -25,12 +25,9 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
       if (domNode instanceof Element) {
-        // Customize rendering of specific elements
         if (domNode.name === "a") {
-          // Handle links
           const href = domNode.attribs.href;
           if (href?.startsWith("/")) {
-            // Internal link - use your router's Link component
             return (
               <Link to={href}>
                 {domToReact(domNode.children as DOMNode[], options)}
@@ -40,18 +37,13 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         }
 
         if (domNode.name === "img") {
-          // Add lazy loading to images
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
-
-          console.log(domNode.attribs);
-          // const imageSrc = `../posts/${domNode.attribs.src}`;
           return (
             <img
               {...domNode.attribs}
               loading="lazy"
               className="rounded-lg shadow-md"
               alt={domNode.attribs.alt}
-              // src={imageSrc}
               src={resolvedSrc}
             />
           );
@@ -75,7 +67,9 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
               .join("");
 
             return (
-              <CodeBlock code={code} language={language} filename={pathname} />
+              <CodeBlock code={code} language={language} pathname={pathname}>
+                {domToReact([codeElement])}
+              </CodeBlock>
             );
           }
         }
