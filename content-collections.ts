@@ -16,7 +16,8 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     published: z.iso.date(),
-    description: z.string().optional(),
+    description: z.string(),
+    tags: z.array(z.string()),
   }),
   transform: async ({ content, ...post }) => {
     const frontMatter = extractFrontMatter(content);
@@ -29,7 +30,6 @@ const posts = defineCollection({
       ...post,
       slug,
       excerpt: frontMatter.excerpt,
-      description: frontMatter.data.description,
       headerImage,
       content: frontMatter.body,
       markup,
