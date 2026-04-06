@@ -1,7 +1,7 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import { Header } from "#/composites/layout/Header.tsx";
+import { Navbar } from "#/composites/layout/Navbar.tsx";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -36,7 +36,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <title>shdev.blog</title>
       </head>
       <body className="min-h-svh font-sans antialiased">
-        <Header />
+        <Navbar />
         {children}
         <TanStackDevtools
           config={{

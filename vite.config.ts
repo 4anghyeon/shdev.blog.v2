@@ -8,6 +8,12 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const config = defineConfig({
+  optimizeDeps: {
+    include: ["echo-text"],
+  },
+  ssr: {
+    noExternal: ["echo-text"],
+  },
   plugins: [
     devtools(),
     tsconfigPaths({ projects: ["./tsconfig.json"] }),

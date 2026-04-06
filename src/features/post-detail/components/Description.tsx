@@ -18,7 +18,6 @@ export function Description({ children }: DescriptionProps) {
       et.on("update", ({ text }) => {
         setDescription(text);
       });
-
       et.start();
     }
   }, [children?.toString]);

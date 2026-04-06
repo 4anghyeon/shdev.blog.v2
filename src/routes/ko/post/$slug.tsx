@@ -1,6 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
 import { Description } from "#/features/post-detail/components/Description.tsx";
+import { Tag } from "#/shared/components/Tag.tsx";
+import { dateHelper } from "#/shared/helper/date.ts";
 import { allPosts } from "../../../../.content-collections/generated";
 
 export const Route = createFileRoute("/ko/post/$slug")({
@@ -22,12 +24,28 @@ function BlogPost() {
   const { post, markup, slug } = Route.useLoaderData();
 
   return (
-    <article className="relative my-5 mr-auto ml-auto w-full max-w-[calc(100%-48px)] lg:max-w-[calc(100%-280px)]">
+    <article className="relative my-5 mr-auto ml-auto w-full px-6 py-4 lg:max-w-185">
       <header className="mb-4 flex flex-col gap-y-4 border-gray-200 border-b pb-10 lg:mb-12">
-        <h1 className="scroll-m-20 font-bold text-3xl tracking-tight lg:text-4xl">
+        <h1 className="scroll-m-20 font-bold text-3xl leading-tight tracking-tight lg:text-4xl">
           {post.title}
         </h1>
         <Description>{post.description}</Description>
+        <div className="flex flex-wrap items-center justify-between">
+          <div className="flex gap-2">
+            {post.tags.map((tag) => (
+              <Tag key={tag}>{tag}</Tag>
+            ))}
+          </div>
+          <div className="flex items-center gap-x-1 text-gray-600 text-sm">
+            <span>마지막 수정일:</span>
+            <time dateTime={post.updated ? post.updated : post.published}>
+              {dateHelper.format(
+                post.updated ? post.updated : post.published,
+                "LOCAL",
+              )}
+            </time>
+          </div>
+        </div>
       </header>
       <Markdown markup={markup} slug={slug} className="prose" />
     </article>

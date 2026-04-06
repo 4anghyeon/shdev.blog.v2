@@ -24,6 +24,7 @@
     "@tanstack/react-router-ssr-query": "latest",
     "@tanstack/react-start": "latest",
     "@tanstack/router-plugin": "^1.132.0",
+    "dayjs": "^1.11.20",
     "echo-text": "^1.0.3",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",

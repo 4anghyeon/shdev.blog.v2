@@ -7,7 +7,15 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build", "!routeTree.gen.ts", "!*.mdx"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build",
+      "!routeTree.gen.ts",
+      "!*.mdx"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -19,7 +27,13 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noUnknownAtRules": "off"
+        "noUnknownAtRules": "off",
+        "noConsole": {
+          "options": {
+            "allow": ["assert", "error", "warn", "info"]
+          },
+          "level": "error"
+        }
       },
       "complexity": {
         "useLiteralKeys": "off"
