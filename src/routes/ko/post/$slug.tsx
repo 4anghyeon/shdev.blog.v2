@@ -1,6 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+import { Suspense } from "react";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
 import { Description } from "#/features/post-detail/components/Description.tsx";
+import { TableOfContents } from "#/features/post-detail/components/TableOfContents.tsx";
 import { Tag } from "#/shared/components/Tag.tsx";
 import { dateHelper } from "#/shared/helper/date.ts";
 import { allPosts } from "../../../../.content-collections/generated";
@@ -48,6 +50,9 @@ function BlogPost() {
         </div>
       </header>
       <Markdown markup={markup} slug={slug} className="prose" />
+      <Suspense>
+        <TableOfContents headings={post.headings} />
+      </Suspense>
     </article>
   );
 }

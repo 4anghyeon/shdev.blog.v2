@@ -28,8 +28,11 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
       if (domNode instanceof Element) {
         if (domNode.name === "h2") {
           return (
-            <div className="mb- mt-14">
-              <h2 className="scroll-m-20 font-bold text-2xl text-gray-800 tracking-tight first:mt-0">
+            <div className="mt-14 mb-3">
+              <h2
+                id={domNode.attribs.id}
+                className="scroll-m-20 font-bold text-2xl text-gray-800 tracking-tight first:mt-0"
+              >
                 {domToReact(domNode.children as DOMNode[])}
               </h2>
             </div>
@@ -38,7 +41,10 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         if (domNode.name === "h3") {
           return (
             <div className="mt-14 mb-3">
-              <h3 className="scroll-m-20 font-semibold text-gray-800 text-xl tracking-tight">
+              <h3
+                id={domNode.attribs.id}
+                className="scroll-m-20 font-semibold text-gray-800 text-xl tracking-tight"
+              >
                 {domToReact(domNode.children as DOMNode[])}
               </h3>
             </div>

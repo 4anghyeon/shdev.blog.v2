@@ -1,5 +1,6 @@
 import rehypeShiki from "@shikijs/rehype";
 import type { Element } from "hast";
+import { toString as hastToString } from "hast-util-to-string";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
@@ -45,20 +46,20 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
         },
       ],
     })
-    .use(rehypeAutolinkHeadings, {
-      behavior: "wrap",
-      properties: { className: ["anchor"] },
-    })
     .use(() => (tree) => {
       visit(tree, "element", (node: Element) => {
         if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(node.tagName)) {
           headings.push({
             id: String(node.properties?.id || ""),
-            text: toString(),
+            text: hastToString(node),
             level: parseInt(node.tagName.charAt(1), 10),
           });
         }
       });
+    })
+    .use(rehypeAutolinkHeadings, {
+      behavior: "wrap",
+      properties: { className: ["anchor"] },
     })
     .use(rehypeStringify) // Serialize to HTML string
     .process(content);
