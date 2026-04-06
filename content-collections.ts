@@ -1,6 +1,7 @@
 import { defineCollection, defineConfig } from "@content-collections/core";
 import matter from "gray-matter";
 import { z } from "zod";
+import { renderMarkdown } from "#/features/markdown/utils/render-markdown.ts";
 import { localeHelper } from "#/shared/helper/locale.ts";
 
 function extractFrontMatter(content: string) {
@@ -17,20 +18,22 @@ const posts = defineCollection({
     published: z.string().date(),
     description: z.string().optional(),
   }),
-  transform: ({ content, ...post }) => {
+  transform: async ({ content, ...post }) => {
     const frontMatter = extractFrontMatter(content);
-
-    // Extract header image (first image in the document)
     const headerImageMatch = content.match(/!\[([^\]]*)\]\(([^)]+)\)/);
     const headerImage = headerImageMatch ? headerImageMatch[2] : undefined;
+    const slug = localeHelper.removeLocaleFromPath(post._meta.path);
+    const { markup, headings } = await renderMarkdown(frontMatter.body);
 
     return {
       ...post,
-      slug: localeHelper.removeLocaleFromPath(post._meta.path),
+      slug,
       excerpt: frontMatter.excerpt,
       description: frontMatter.data.description,
       headerImage,
       content: frontMatter.body,
+      markup,
+      headings,
     };
   },
 });
