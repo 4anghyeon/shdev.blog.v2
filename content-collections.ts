@@ -11,7 +11,7 @@ function extractFrontMatter(content: string) {
 
 const posts = defineCollection({
   name: "posts",
-  directory: "./posts", // Directory containing your .md files
+  directory: "./posts",
   include: "**/*.mdx",
   schema: z.object({
     title: z.string(),

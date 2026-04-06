@@ -37,7 +37,6 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
       },
       transformers: [
         {
-          name: "custom-html-postprocessor",
           code(node) {
             node.properties["data-meta"] = this.options.meta?.__raw;
             return node;
