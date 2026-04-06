@@ -21,7 +21,7 @@ function BlogPost() {
   const { post, markup, slug } = Route.useLoaderData();
 
   return (
-    <article>
+    <article className="relative my-5 mr-auto ml-auto w-full max-w-[calc(100%-48px)] lg:max-w-[calc(100%-280px)]">
       <header>
         <h1>{post.title}</h1>
       </header>

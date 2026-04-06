@@ -5,6 +5,7 @@ import parse, {
   Element,
   type HTMLReactParserOptions,
 } from "html-react-parser";
+import { ArrowUpRight } from "lucide-react";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
 
 type MarkdownProps = {
@@ -25,27 +26,100 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
       if (domNode instanceof Element) {
+        if (domNode.name === "h2") {
+          return (
+            <div className="mt-12 mb-6">
+              <h2 className="mt-16 scroll-m-20 font-bold text-2xl text-gray-800 tracking-tight first:mt-0">
+                {domToReact(domNode.children as DOMNode[])}
+              </h2>
+            </div>
+          );
+        }
+        if (domNode.name === "h3") {
+          return (
+            <div className="mt-8 mb-3">
+              <h3 className="mt-12 scroll-m-20 font-semibold text-gray-800 text-xl tracking-tight">
+                {domToReact(domNode.children as DOMNode[])}
+              </h3>
+            </div>
+          );
+        }
+        if (domNode.name === "p") {
+          return (
+            <p className="my-3 text-gray-800 text-md leading-[1.6]">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </p>
+          );
+        }
+
         if (domNode.name === "a") {
           const href = domNode.attribs.href;
-          if (href?.startsWith("/")) {
-            return (
-              <Link to={href}>
-                {domToReact(domNode.children as DOMNode[], options)}
-              </Link>
-            );
-          }
+          const isInternal = href?.startsWith("/") || href?.startsWith("#");
+          return (
+            <Link
+              className="text-blue-500 text-md hover:underline"
+              to={href}
+              target={isInternal ? "_self" : "_blank"}
+              rel={isInternal ? "" : "noopener noreferrer nofollow external"}
+            >
+              {domToReact(domNode.children as DOMNode[], options)}
+              {!isInternal && (
+                <span className="not-prose inline-flex">
+                  <ArrowUpRight size={16} />
+                </span>
+              )}
+            </Link>
+          );
+        }
+
+        if (domNode.name === "strong") {
+          return (
+            <strong className="break-keep font-bold text-gray-800 text-md">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </strong>
+          );
+        }
+
+        if (domNode.name === "ul") {
+          return (
+            <ul className="mt-2 block list-disc break-all ps-5 text-md">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </ul>
+          );
+        }
+
+        if (domNode.name === "ol") {
+          return (
+            <ol className="mt-2 block list-decimal break-all ps-5 text-md">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </ol>
+          );
+        }
+
+        if (domNode.name === "li") {
+          return (
+            <li className="list-item text-gray-800 text-md leading-relaxed">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </li>
+          );
+        }
+
+        if (domNode.name === "hr") {
+          return <hr className="my-15 border-gray-300/50" />;
         }
 
         if (domNode.name === "img") {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
-            <img
-              {...domNode.attribs}
-              loading="lazy"
-              className="rounded-lg shadow-md"
-              alt={domNode.attribs.alt}
-              src={resolvedSrc}
-            />
+            <div className="my-3 flex w-full items-center justify-center rounded-xl bg-gray-50/80 p-2 lg:p-5">
+              <img
+                {...domNode.attribs}
+                loading="lazy"
+                className="rounded-md shadow-gray-400/50 shadow-lg"
+                alt={domNode.attribs.alt}
+                src={resolvedSrc}
+              />
+            </div>
           );
         }
 
@@ -66,11 +140,21 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
               .join("");
 
             return (
-              <CodeBlock code={code} language={lang} pathname={pathname}>
-                {domToReact([codeElement])}
-              </CodeBlock>
+              <div className="py-5">
+                <CodeBlock code={code} language={lang} pathname={pathname}>
+                  {domToReact([codeElement])}
+                </CodeBlock>
+              </div>
             );
           }
+        }
+
+        if (domNode.name === "code") {
+          return (
+            <code className="rounded-sm bg-muted px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm">
+              {domToReact(domNode.children as DOMNode[])}
+            </code>
+          );
         }
       }
     },

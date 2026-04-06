@@ -29,7 +29,7 @@ export function CodeBlock({
         </pre>
       )}
       <CodeCopyButton code={code} />
-      <pre className="m-0 overflow-x-auto p-4 text-sm">{children}</pre>
+      <pre className="overflow-x-auto p-4 text-sm">{children}</pre>
     </div>
   );
 }
