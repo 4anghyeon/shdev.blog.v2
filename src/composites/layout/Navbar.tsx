@@ -1,5 +1,5 @@
-import { Link } from "@tanstack/react-router";
 import { SkyHeader } from "#/features/header/SkyHeader.tsx";
+import { Link } from "#/shared/components/Link.tsx";
 
 export function Navbar() {
   return (

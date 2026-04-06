@@ -1,4 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { Link } from "#/shared/components/Link.tsx";
 import { allPosts } from "../../.content-collections/generated";
 
 export const Route = createFileRoute("/")({ component: App });

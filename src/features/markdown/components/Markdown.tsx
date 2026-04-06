@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import parse, {
   type DOMNode,
   domToReact,
@@ -7,6 +6,7 @@ import parse, {
 } from "html-react-parser";
 import { ArrowUpRight } from "lucide-react";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
+import { Link } from "#/shared/components/Link.tsx";
 
 type MarkdownProps = {
   markup: string;
@@ -69,12 +69,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const href = domNode.attribs.href;
           const isInternal = href?.startsWith("/") || href?.startsWith("#");
           return (
-            <Link
-              className="text-blue-500 text-md hover:underline"
-              to={href}
-              target={isInternal ? "_self" : "_blank"}
-              rel={isInternal ? "" : "noopener noreferrer nofollow external"}
-            >
+            <Link className="text-blue-500 text-md hover:underline" to={href}>
               {domToReact(domNode.children as DOMNode[], options)}
               {!isInternal && (
                 <span className="not-prose inline-flex">
