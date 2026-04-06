@@ -30,7 +30,7 @@ export const ClientComponent = () => {
 
 이런 경우는 어떨까? 서버 컴포넌트를 클라이언트 컴포넌트 안에 선언해보자.
 
-```jsx
+```jsx pathname="ServerComponent"
 import React from 'react';
 
 export const ServerComponent = async () => {
@@ -52,7 +52,7 @@ async function getData() {
 export default ServerComponent;
 ```
 
-```jsx
+```jsx pathname="ClientComponent"
 'use client'
 
 import ServerComponent from './ServerComponent'
@@ -79,7 +79,7 @@ export const ClientComponent = () => {
 ## 🔧 해결방법: Props 패턴 활용하기
 그렇다면 클라이언트 컴포넌트 내부에서 서버 컴포넌트를 사용하려면 어떻게 해야 할까? 답은 간단하다. props로 전달하면 된다.
 
-```jsx
+```jsx pathname="ClientComponent"
 // 동작하는 패턴
 'use client'
 export const ClientComponent = ({ children }) => {

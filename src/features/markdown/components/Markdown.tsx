@@ -56,9 +56,8 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
 
           if (codeElement) {
-            const className = codeElement.attribs?.class ?? "";
-            const language = className.replace("language-", "") || "text";
             const meta = codeElement.attribs?.["data-meta"] ?? "";
+            const lang = codeElement.attribs?.["data-lang"] ?? "";
             const pathnameMatch = meta.match(/pathname="([^"]+)"/);
             const pathname = pathnameMatch?.[1];
 
@@ -67,7 +66,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
               .join("");
 
             return (
-              <CodeBlock code={code} language={language} pathname={pathname}>
+              <CodeBlock code={code} language={lang} pathname={pathname}>
                 {domToReact([codeElement])}
               </CodeBlock>
             );

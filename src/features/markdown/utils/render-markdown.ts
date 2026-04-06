@@ -38,7 +38,9 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
       transformers: [
         {
           code(node) {
+            console.log(this.options.lang);
             node.properties["data-meta"] = this.options.meta?.__raw;
+            node.properties["data-lang"] = this.options.lang;
             return node;
           },
         },
