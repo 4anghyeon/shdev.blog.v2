@@ -10,7 +10,7 @@ function App() {
   );
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-4 pt-14 pb-8">
+    <main className="mx-auto w-full max-w-2xl flex-1 px-4 pt-4 pb-8 lg:pt-14">
       <ul className="flex flex-col gap-y-6">
         {sortedPosts.map((post) => (
           <PostListItem

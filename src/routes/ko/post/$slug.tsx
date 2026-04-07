@@ -28,7 +28,7 @@ function BlogPost() {
 
   return (
     <article className="relative mr-auto ml-auto w-full px-6 py-4 lg:my-5 lg:max-w-185">
-      <AllListLink className="mb-6" />
+      <AllListLink className="mb-6" viewTransition />
       <header className="mb-4 flex flex-col gap-y-4 border-gray-200 border-b pb-10 lg:mb-12">
         <h1
           className="scroll-m-20 font-bold text-3xl leading-tight tracking-tight lg:text-4xl"

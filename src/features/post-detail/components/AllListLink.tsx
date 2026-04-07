@@ -4,9 +4,10 @@ import { cn } from "#/shared/lib/tailwind.ts";
 
 interface AllListLinkProps {
   className?: string;
+  viewTransition?: boolean;
 }
 
-export function AllListLink({ className }: AllListLinkProps) {
+export function AllListLink({ className, viewTransition }: AllListLinkProps) {
   return (
     <Link
       className={cn(
@@ -14,6 +15,7 @@ export function AllListLink({ className }: AllListLinkProps) {
         className,
       )}
       to="/"
+      viewTransition={viewTransition}
     >
       <List />
       전체 글 보기
