@@ -87,6 +87,7 @@ export function SkyHeader() {
       <div className="mask-alpha mask-b-from-black mask-b-from-50% mask-b-to-transparent sticky top-16 z-3 h-10 w-full bg-linear-to-b from-cyan-100/60 via-cyan-100/30 to-cyan-100/10 dark:from-gray-200/60 dark:via-gray-200/30 dark:to-gray-100/10" />
       <div className="fixed -top-10 z-5">
         {CLOUDS.map((cloud, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: <not important>
           <Cloud key={i} config={cloud} />
         ))}
       </div>
