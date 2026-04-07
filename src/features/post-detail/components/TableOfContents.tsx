@@ -84,7 +84,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
           ease: "easeOut",
         }}
       >
-        <div className="mb-2 border-stone-300 border-b pb-1 font-semibold text-gray-600 text-sm">
+        <div className="mb-2 border-stone-300 border-b pb-1 font-semibold text-gray-600 text-sm dark:text-gray-400">
           목차
         </div>
         <ul className="max-h-100 space-y-1 overflow-y-auto">
@@ -97,9 +97,9 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                 to="."
                 hash={heading.id}
                 className={cn(
-                  `block py-1 text-gray-600 text-xs transition-colors hover:text-primary`,
+                  `block py-1 text-gray-600 text-xs transition-colors hover:text-primary dark:text-gray-400`,
                   {
-                    "font-bold text-cyan-600":
+                    "font-bold text-cyan-600 dark:text-cyan-500":
                       mounted && activeId === heading.id,
                   },
                 )}

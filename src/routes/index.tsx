@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "#/shared/components/Link.tsx";
+import { PostListItem } from "#/features/post-list/components/PostListItem.tsx";
 import { allPosts } from "../../.content-collections/generated";
 
 export const Route = createFileRoute("/")({ component: App });
@@ -10,20 +10,19 @@ function App() {
   );
 
   return (
-    <main className="px-4 pt-14 pb-8">
-      <div>
-        <h1>Blog</h1>
-        <ul>
-          {sortedPosts.map((post) => (
-            <li key={post.slug}>
-              <Link to="/ko/post/$slug" params={{ slug: post.slug }}>
-                <h2>{post.title}</h2>
-                <span>{post.published}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <main className="mx-auto w-full max-w-2xl flex-1 px-4 pt-14 pb-8">
+      <ul className="flex flex-col gap-y-6">
+        {sortedPosts.map((post) => (
+          <PostListItem
+            key={post.slug}
+            slug={post.slug}
+            title={post.title}
+            description={post.description}
+            published={post.published}
+            tags={post.tags}
+          />
+        ))}
+      </ul>
     </main>
   );
 }
