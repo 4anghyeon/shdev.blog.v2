@@ -20,13 +20,13 @@ const CodeCopyButton = ({ code }: { code: string }) => {
   return (
     <button
       type="button"
-      className="absolute top-1 right-4 cursor-copy rounded-md border border-gray-200 bg-background p-1.5 opacity-0 transition-all duration-300 group-hover:opacity-100"
+      className="absolute top-1 right-4 cursor-copy rounded-md border border-gray-200 bg-background p-1 opacity-0 transition-all duration-300 group-hover:opacity-100 dark:border-gray-600"
       onClick={handleClick}
       onTransitionEnd={handleTransitionEnd}
     >
       {copied ? (
         <>
-          <span className="fade-in slide-in-from-bottom-2 absolute -top-5 left-1/2 origin-bottom -translate-x-1/2 transform animate-in break-keep bg-white text-gray-400 text-xs">
+          <span className="fade-in slide-in-from-bottom-2 absolute -top-5 left-1/2 origin-bottom -translate-x-1/2 transform animate-in break-keep bg-background text-gray-400 text-xs dark:text-gray-200">
             복사됨
           </span>
           <ClipboardCheck className="text-gray-400" size={20} />

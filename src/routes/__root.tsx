@@ -37,7 +37,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
         <title>shdev.blog</title>
       </head>
-      <body className="min-h-svh bg-background font-sans text-primary antialiased">
+      <body className="min-h-svh bg-background font-sans text-text-default antialiased">
         <ThemeProvider>
           <Navbar />
           {children}

@@ -31,7 +31,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <div className="mt-14 mb-3">
               <h2
                 id={domNode.attribs.id}
-                className="scroll-m-20 font-bold text-2xl text-gray-800 tracking-tight first:mt-0"
+                className="scroll-m-20 font-bold text-2xl tracking-tight first:mt-0"
               >
                 {domToReact(domNode.children as DOMNode[])}
               </h2>
@@ -43,7 +43,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <div className="mt-14 mb-3">
               <h3
                 id={domNode.attribs.id}
-                className="scroll-m-20 font-semibold text-gray-800 text-xl tracking-tight"
+                className="scroll-m-20 font-semibold text-xl tracking-tight"
               >
                 {domToReact(domNode.children as DOMNode[])}
               </h3>
@@ -58,14 +58,14 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
           if (hasImage) {
             return (
-              <div className="my-3 text-gray-800 text-md leading-[1.6]">
+              <div className="my-3 text-md leading-[1.6]">
                 {domToReact(domNode.children as DOMNode[], options)}
               </div>
             );
           }
 
           return (
-            <p className="my-3 text-gray-800 text-md leading-[1.6]">
+            <p className="my-3 text-md leading-[1.6]">
               {domToReact(domNode.children as DOMNode[], options)}
             </p>
           );
@@ -75,7 +75,10 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const href = domNode.attribs.href;
           const isInternal = href?.startsWith("/") || href?.startsWith("#");
           return (
-            <Link className="text-blue-500 text-md hover:underline" to={href}>
+            <Link
+              className="text-blue-500 text-md hover:underline dark:text-blue-400"
+              to={href}
+            >
               {domToReact(domNode.children as DOMNode[], options)}
               {!isInternal && (
                 <span className="not-prose inline-flex">
@@ -88,7 +91,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domNode.name === "strong") {
           return (
-            <strong className="break-keep font-bold text-gray-800 text-md">
+            <strong className="break-keep font-bold text-md">
               {domToReact(domNode.children as DOMNode[], options)}
             </strong>
           );
@@ -112,20 +115,22 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domNode.name === "li") {
           return (
-            <li className="list-item text-gray-800 text-md leading-relaxed">
+            <li className="list-item text-md leading-relaxed">
               {domToReact(domNode.children as DOMNode[], options)}
             </li>
           );
         }
 
         if (domNode.name === "hr") {
-          return <hr className="my-15 border-gray-300/50" />;
+          return (
+            <hr className="my-15 border-gray-300/50 dark:border-gray-600" />
+          );
         }
 
         if (domNode.name === "img") {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
-            <div className="my-3 flex w-full items-center justify-center rounded-xl bg-gray-50/80 p-2 lg:p-5">
+            <div className="my-3 flex w-full items-center justify-center rounded-xl bg-gray-50/80 p-2 lg:p-5 dark:bg-gray-700/80">
               <img
                 {...domNode.attribs}
                 loading="lazy"
@@ -165,7 +170,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domNode.name === "code") {
           return (
-            <code className="rounded-sm bg-muted px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm">
+            <code className="rounded-sm bg-gray-100 px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm dark:bg-gray-600 dark:text-orange-400">
               {domToReact(domNode.children as DOMNode[])}
             </code>
           );

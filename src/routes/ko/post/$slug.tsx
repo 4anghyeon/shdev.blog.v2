@@ -38,7 +38,7 @@ function BlogPost() {
               <Tag key={tag}>{tag}</Tag>
             ))}
           </div>
-          <div className="flex items-center gap-x-1 text-gray-600 text-sm">
+          <div className="flex items-center gap-x-1 text-gray-600 text-sm dark:text-gray-400">
             <span>마지막 수정일:</span>
             <time dateTime={post.updated ? post.updated : post.published}>
               {dateHelper.format(
