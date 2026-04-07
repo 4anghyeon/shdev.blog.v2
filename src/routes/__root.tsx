@@ -3,6 +3,7 @@ import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Footer } from "#/composites/layout/Footer.tsx";
 import { Navbar } from "#/composites/layout/Navbar.tsx";
+import { ThemeProvider } from "#/features/theme/provider/ThemeProvider.tsx";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -36,10 +37,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
         <title>shdev.blog</title>
       </head>
-      <body className="min-h-svh font-sans antialiased">
-        <Navbar />
-        {children}
-        <Footer />
+      <body className="min-h-svh bg-background font-sans text-primary antialiased">
+        <ThemeProvider>
+          <Navbar />
+          {children}
+          <Footer />
+        </ThemeProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",

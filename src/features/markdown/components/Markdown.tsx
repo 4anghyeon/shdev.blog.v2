@@ -156,7 +156,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             return (
               <div className="my-5">
                 <CodeBlock code={code} language={lang} pathname={pathname}>
-                  {domToReact([codeElement])}
+                  {domToReact([domNode])}
                 </CodeBlock>
               </div>
             );

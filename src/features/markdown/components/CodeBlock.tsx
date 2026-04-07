@@ -21,7 +21,7 @@ export function CodeBlock({
   return (
     <div
       className={cn(
-        "group relative rounded-lg border border-gray-200 dark:border-gray-700",
+        "group relative rounded-lg border border-gray-200 p-1 dark:border-gray-700",
         className,
       )}
     >
@@ -29,14 +29,16 @@ export function CodeBlock({
         {language}
       </span>
       {filename && (
-        <pre className="flex cursor-default items-center justify-between border-gray-200 border-b px-2 py-1">
+        <pre className="flex cursor-default items-center justify-between px-2 py-1">
           <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700">
             {filename}
           </span>
         </pre>
       )}
       <CodeCopyButton code={code} />
-      <pre className="overflow-x-auto p-4 text-sm">{children}</pre>
+      <div className="text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:rounded-xl [&>pre]:border [&>pre]:border-gray-100 [&>pre]:bg-transparent [&>pre]:p-4">
+        {children}
+      </div>
     </div>
   );
 }
