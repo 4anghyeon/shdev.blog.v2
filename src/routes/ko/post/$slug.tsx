@@ -5,6 +5,7 @@ import { AllListLink } from "#/features/post-detail/components/AllListLink.tsx";
 import { Description } from "#/features/post-detail/components/Description.tsx";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents.tsx";
 import { Tag } from "#/shared/components/Tag.tsx";
+import { BASE_URL } from "#/shared/constant/base.ts";
 import { dateHelper } from "#/shared/helper/date.ts";
 import { allPosts } from "../../../../.content-collections/generated";
 
@@ -18,6 +19,59 @@ export const Route = createFileRoute("/ko/post/$slug")({
       post,
       markup: post.markup,
       slug: post.slug,
+    };
+  },
+  head: ({ loaderData }) => {
+    if (!loaderData?.post) return {};
+
+    const { post } = loaderData;
+
+    const canonicalUrl = `${BASE_URL}ko/post/${post.slug}`;
+
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.description,
+      author: { "@type": "Person", name: "Lee SangHyeon" },
+      datePublished: post.published,
+      dateModified: post.updated ?? post.published,
+      keywords: post.tags?.join(","),
+      mainEntityOfPage: {
+        "@type": "WebPage",
+        "@id": canonicalUrl,
+      },
+    };
+
+    return {
+      meta: [
+        { title: post.title },
+        { name: "description", content: post.description },
+        { name: "author", content: "sanghyeon" },
+        { name: "robots", content: "index, follow" },
+        { property: "og:type", content: "article" },
+        { property: "og:url", content: canonicalUrl },
+        { property: "og:title", content: post.title },
+        { property: "og:description", content: post.description },
+        { property: "og:site_name", content: "shdev.blog" },
+        { property: "og:locale", content: "ko_KR" },
+        { property: "article:published_time", content: post.published },
+        {
+          property: "article:modified_time",
+          content: post.updated ?? post.published,
+        },
+      ],
+      links: [
+        { rel: "canonical", href: canonicalUrl },
+        { rel: "alternate", hrefLang: "x-default", href: canonicalUrl },
+        { rel: "alternate", hrefLang: "ko-KR", href: canonicalUrl },
+      ],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify(jsonLd),
+        },
+      ],
     };
   },
   component: BlogPost,
