@@ -7,6 +7,7 @@ import parse, {
 import { ArrowUpRight } from "lucide-react";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
 import { Link } from "#/shared/components/Link.tsx";
+import { cn } from "#/shared/lib/tailwind.ts";
 
 type MarkdownProps = {
   markup: string;
@@ -138,6 +139,39 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
                 alt={domNode.attribs.alt}
                 src={resolvedSrc}
               />
+            </div>
+          );
+        }
+
+        if (domNode.name === "div") {
+          const domClass = domNode.attribs.class;
+          return (
+            <div
+              className={cn(
+                "my-6 rounded-lg px-4 py-3 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
+                {
+                  "border border-blue-200 bg-blue-100/20 dark:border-blue-900 dark:bg-blue-900/20 [&>p>svg]:fill-blue-400 [&>p]:first:text-blue-400":
+                    domClass?.includes("note"),
+                },
+                {
+                  "border border-green-200 bg-green-100/20 [&>p>svg]:fill-green-400 [&>p]:first:text-green-400":
+                    domClass?.includes("tip"),
+                },
+                {
+                  "border border-purple-200 bg-purple-100/20 [&>p>svg]:fill-purple-400 [&>p]:first:text-purple-400":
+                    domClass?.includes("important"),
+                },
+                {
+                  "border border-amber-200 bg-yellow-100/20 [&>p>svg]:fill-amber-400 [&>p]:first:text-amber-400":
+                    domClass?.includes("warning"),
+                },
+                {
+                  "border border-red-200 bg-red-100/20 [&>p>svg]:fill-red-400 [&>p]:first:text-red-400":
+                    domClass?.includes("caution"),
+                },
+              )}
+            >
+              {domToReact(domNode.children as DOMNode[], options)}
             </div>
           );
         }

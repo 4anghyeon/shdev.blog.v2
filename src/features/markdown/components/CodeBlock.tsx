@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import CodeCopyButton from "#/features/markdown/components/CodeCopyButton.tsx";
+import { getLangExtension } from "#/features/markdown/utils/langauge-extension.ts";
 import { cn } from "#/shared/lib/tailwind.ts";
 
 interface CodeBlockProps {
@@ -17,7 +18,9 @@ export function CodeBlock({
   className,
   children,
 }: CodeBlockProps) {
-  const filename = pathname ? `${pathname}.${language}` : undefined;
+  const filename = pathname
+    ? `${pathname}.${getLangExtension(language)}`
+    : undefined;
   return (
     <div
       className={cn(
@@ -36,7 +39,15 @@ export function CodeBlock({
         </div>
       )}
       <CodeCopyButton code={code} />
-      <div className="text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:rounded-xl [&>pre]:border [&>pre]:border-gray-100 [&>pre]:bg-transparent [&>pre]:p-4 dark:[&>pre]:border-gray-800">
+      <div
+        className={cn(
+          "text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:rounded-xl [&>pre]:bg-transparent [&>pre]:p-4",
+          {
+            "[&>pre]:border [&>pre]:border-gray-100 dark:[&>pre]:border-gray-800":
+              filename,
+          },
+        )}
+      >
         {children}
       </div>
     </div>

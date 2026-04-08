@@ -2,6 +2,7 @@ import rehypeShiki from "@shikijs/rehype";
 import type { Element } from "hast";
 import { toString as hastToString } from "hast-util-to-string";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { rehypeGithubAlerts } from "rehype-github-alerts";
 import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
@@ -31,6 +32,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
       allowDangerousHtml: true,
     }) // Convert to HTML AST
     .use(rehypeSlug) // Add IDs to headings
+    .use(rehypeGithubAlerts, {})
     .use(rehypeShiki, {
       themes: {
         light: "slack-ochin",
