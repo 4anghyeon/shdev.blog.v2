@@ -1,0 +1,14 @@
+[[redirects]]
+  from = "/cn/post/:slug"
+  to = "/ko/post/:slug"
+  status = 301
+
+[[redirects]]
+  from = "/en/post/:slug"
+  to = "/ko/post/:slug"
+  status = 301
+
+[[redirects]]
+  from = "/jp/post/:slug"
+  to = "/ko/post/:slug"
+  status = 301
