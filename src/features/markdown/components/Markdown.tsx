@@ -47,9 +47,10 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <div className="mt-14 mb-3">
               <h3
                 id={domNode.attribs.id}
-                className="scroll-m-20 font-semibold text-xl tracking-tight"
+                className="group flex scroll-m-20 items-center gap-1.5 font-semibold text-xl tracking-tight"
               >
                 {domToReact(domNode.children as DOMNode[])}
+                <AnchorCopyButton anchor={`#${domNode.attribs.id}`} />
               </h3>
             </div>
           );
