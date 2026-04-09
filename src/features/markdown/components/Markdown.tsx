@@ -146,7 +146,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         if (domNode.name === "img") {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
-            <div className="my-3 flex w-full items-center justify-center rounded-xl bg-gray-50/80 p-2 lg:p-5 dark:bg-gray-700/30">
+            <div className="my-3 flex w-full items-center justify-center rounded-lg bg-gray-50/80 p-2 lg:p-5 dark:bg-stone-700/30">
               <img
                 {...domNode.attribs}
                 loading="lazy"
