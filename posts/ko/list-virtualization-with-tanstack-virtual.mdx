@@ -1,0 +1,134 @@
+---
+title: 'Tanstack Virtual로 Grid 리스트 가상화하기'
+description: 'Grid 레이아웃에 Tanstack Virtual을 적용해 DOM을 최적화한 경험을 공유합니다'
+published: '2024-10-02'
+updated: '2026-04-09'
+tags: ['JavaScript', 'React']
+---
+
+## Tanstack Virtual 이란?
+
+[Tanstack Virtual](https://tanstack.com/virtual/latest)은 대량의 스크롤 목록을 효율적으로 렌더링할 수 있는 가상화 라이브러리다.
+
+![tanstack-virtual-example1](list-virtualization-with-tanstack-virtual/tanstack-virtual-example1.webp)
+
+가상화는 화면에 표시해야 할 요소가 아무리 많아도, 실제 DOM에는 현재 뷰포트(Viewport)에 보이는 일정 수의 요소만 유지하는 기법이다.
+
+DOM에 렌더링 되는 요소가 많아질수록 어느 순간부터 성능이 급격하게 저하되므로 보여줘야 할 요소가 많을 경우 이러한 가상화 기법을 적용해볼 수 있다.
+
+Virtualize 라이브러리는 Tanstack Virtual 외에도 react-virtualized, react-window 등이 있다.
+
+
+## 직면한 문제
+
+![Image.png](list-virtualization-with-tanstack-virtual/Image.png)
+
+기존 프로젝트는 Grid 레이아웃을 사용하고 있었으며, 화면 크기(Viewport)에 따라 한 줄에 보여주는 카드의 개수가 달라지는 구조였다.
+
+Tanstack Virtual을 사용하게 되면 스크롤 div 안에 아이템들을 absolute로 적용하고, transform을 통해 위치를 조정하도록 되어있다.
+
+문제는 Tanstack Virtual의 기본 동작 방식이 **하나의 Row에 하나의 요소** 가 들어가는 것을 전제로 한다는 점이다. 단순히 기존 Grid 부모 요소에 Virtualizer를 입히는 것만으로는 다중 열(Column)로 구성된 Grid 레이아웃을 완벽하게 대응하기 어려웠다.
+
+## 해결 방법
+
+핵심 아이디어는 **"하나의 가상 행(Virtual Row)을 하나의 Grid 행으로 정의"** 하는 것이다. 이를 위해 기존의 1차원 데이터 배열을 화면에 보여줄 열의 개수(Column Size)에 맞춰 2차원 배열로 재구성했다.
+
+### 데이터 구조 변경
+기존 코드는 1차원 배열을 그대로 map으로 렌더링하고 있었다.
+
+```tsx
+const itemList = [item1, item2, item3, item4, item5, item6, item7];
+
+return (
+  <div className='grid grid-cols-1 tablet:grid-cols-3 desktop:grid-cols-5'>
+    {itemList.map(item => <Card key={item.id} item={item} />)}
+  </div>
+);
+```
+
+한 row에 하나의 요소만 들어가도록, 아이템 리스트를 `columnSize` 단위로 쪼개 2차원 배열로 변환했다.
+
+```tsx
+// columnSize가 3인 경우
+const chunkedItemList = chunkArray(itemList, 3);
+// 결과: [[item1, item2, item3], [item4, item5, item6], [item7]]
+
+return (
+  <div>
+    {chunkedItemList.map((row, index) => (
+      <div key={index} className='grid grid-cols-1 tablet:grid-cols-3 desktop:grid-cols-5'>
+        {row.map(item => <Card key={item.id} item={item} />)}
+      </div>
+    ))}
+  </div>
+);
+```
+
+그림으로 살펴 보면 이런 느낌이다.
+
+![Image.png](list-virtualization-with-tanstack-virtual/Image%20(2).png)
+
+핵심은 두 가지다. **한 row에 요소가 하나만 들어가도록 할 것, 그리고 그 안에 몇 개의 아이템을 담을지 `columnSize`로 제어할 것.**
+
+### 가상화 로직 적용
+
+이제 가상화 라이브러리가 인식하는 아이템의 단위는 개별 카드가 아니라 **카드가 담긴 하나의 행** 이 된다. 뷰포트 변화에 따라 `columnSize`를 동적으로 계산하고, 이에 맞춰 데이터를 다시 청크(Chunk)화하는 로직을 추가했다.
+
+```tsx
+// 반응형을 고려한 열 개수 상태 관리
+const [columnSize, setColumnSize] = useState(COLUMN_SIZE.desktop);
+
+// 데이터를 columnSize에 맞춰 2차원 배열로 변환
+const chunkedList = chunkArray(flatPages(data) ?? [], columnSize);
+
+const rowVirtualizer = useVirtualizer({
+  count: chunkedList.length,
+  getScrollElement: () => document.getElementById("main-section"),
+  estimateSize: () => 390, // 행의 예상 높이
+  overscan: 1,
+});
+
+// 반응형 대응: 화면 크기에 따라 열 개수 조정
+useEffect(() => {
+  if (isLaptop) setColumnSize(COLUMN_SIZE.laptop);
+  else if (isMobile) setColumnSize(COLUMN_SIZE.mobile);
+  else setColumnSize(COLUMN_SIZE.desktop);
+}, [isLaptop, isMobile]);
+
+// 렌더링 부분
+{rowVirtualizer.getVirtualItems().map((virtualRow) => {
+  const rowData = chunkedList[virtualRow.index];
+  if (!rowData) return null;
+
+  return (
+    <div
+      key={virtualRow.key}
+      className="absolute top-0 left-0 w-full"
+      style={{
+        height: `${virtualRow.size}px`,
+        transform: `translateY(${virtualRow.start}px)`,
+      }}
+    >
+      <div className="grid grid-cols-1 laptop:grid-cols-3 desktop:grid-cols-5 w-full gap-6">
+        {rowData.map((item) => (
+          <Card key={item.id} item={item} />
+        ))}
+      </div>
+    </div>
+  );
+})}
+```
+
+결과로 아래처럼 특정 개수만 실제 DOM에 그려지도록 가상화할 수 있었다!
+
+![list-virtualization-with-tanstack-virtual-example2](list-virtualization-with-tanstack-virtual/tanstack-virtual-example2.webp)
+
+
+## 요약 및 결과
+Grid 환경에서 가상화를 적용할 때 가장 중요한 것은 한 줄에 들어갈 아이템들을 하나의 그룹으로 묶어주는 것이다.
+
+- **데이터 가공**: 1차원 배열을 `columnSize` 기준의 2차원 배열로 청크화한다.
+- **가상화 단위 설정**: 개별 아이템이 아닌 '행(Row)' 단위를 가상화 요소로 등록한다.
+- **반응형 대응**: 화면 너비가 변할 때마다 `columnSize`를 업데이트하여 청크 데이터와 가상화 계산을 동기화한다.
+
+결과적으로 수많은 카드가 존재하더라도 실제 DOM에는 사용자가 보고 있는 영역의 행들만 렌더링되어, 성능 저하 없이 부드러운 스크롤링을 구현할 수 있었다.
