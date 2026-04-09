@@ -37,10 +37,6 @@ export const Route = createFileRoute("/ko/post/$slug")({
       datePublished: post.published,
       dateModified: post.updated ?? post.published,
       keywords: post.tags?.join(","),
-      mainEntityOfPage: {
-        "@type": "WebPage",
-        "@id": canonicalUrl,
-      },
     };
 
     return {

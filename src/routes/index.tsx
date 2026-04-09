@@ -1,8 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PostListItem } from "#/features/post-list/components/PostListItem.tsx";
+import { BASE_URL } from "#/shared/constant/base.ts";
 import { allPosts } from "../../.content-collections/generated";
 
-export const Route = createFileRoute("/")({ component: App });
+export const Route = createFileRoute("/")({
+  head: () => ({
+    links: [
+      { rel: "canonical", href: BASE_URL },
+      { rel: "alternate", hrefLang: "x-default", href: BASE_URL },
+    ],
+  }),
+  component: App,
+});
 
 function App() {
   const sortedPosts = allPosts.sort(

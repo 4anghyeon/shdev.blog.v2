@@ -35,8 +35,6 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "canonical", href: BASE_URL },
-      { rel: "alternate", hrefLang: "x-default", href: BASE_URL },
     ],
   }),
   shellComponent: RootDocument,
@@ -47,7 +45,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="ko" suppressHydrationWarning>
       <head>
         <HeadContent />
-        <title>shdev.blog</title>
       </head>
       <body className="flex min-h-svh flex-col bg-background font-sans text-text-default antialiased">
         <ThemeProvider>
