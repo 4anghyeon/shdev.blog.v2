@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
 import { AllListLink } from "#/features/post-detail/components/AllListLink.tsx";
 import { Description } from "#/features/post-detail/components/Description.tsx";
+import { PostNavigation } from "#/features/post-detail/components/PostNavigation.tsx";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents.tsx";
 import { Tag } from "#/shared/components/Tag.tsx";
 import { BASE_URL } from "#/shared/constant/base.ts";
@@ -15,10 +16,35 @@ export const Route = createFileRoute("/ko/post/$slug")({
     if (!post) {
       throw notFound();
     }
+
+    const sortedPosts = allPosts.sort(
+      (a, b) =>
+        new Date(b.published).getTime() - new Date(a.published).getTime(),
+    );
+    const index = sortedPosts.findIndex((p) => p.slug === params.slug);
+
+    const next =
+      index > 0
+        ? {
+            slug: sortedPosts[index - 1].slug,
+            title: sortedPosts[index - 1].title,
+          }
+        : null;
+
+    const prev =
+      index < sortedPosts.length - 1
+        ? {
+            slug: sortedPosts[index + 1].slug,
+            title: sortedPosts[index + 1].title,
+          }
+        : null;
+
     return {
       post,
       markup: post.markup,
       slug: post.slug,
+      prev,
+      next,
     };
   },
   head: ({ loaderData }) => {
@@ -74,7 +100,7 @@ export const Route = createFileRoute("/ko/post/$slug")({
 });
 
 function BlogPost() {
-  const { post, markup, slug } = Route.useLoaderData();
+  const { post, markup, slug, prev, next } = Route.useLoaderData();
 
   return (
     <article className="relative mr-auto ml-auto w-full px-6 py-4 lg:my-5 lg:max-w-185">
@@ -105,7 +131,8 @@ function BlogPost() {
         </div>
       </header>
       <Markdown markup={markup} slug={slug} className="prose" />
-      <AllListLink className="mt-16" />
+      <PostNavigation prev={prev} next={next} />
+      <AllListLink className="mt-8" />
       <Suspense>
         <TableOfContents headings={post.headings} />
       </Suspense>

@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { MarkdownHeading } from "#/features/markdown/utils/render-markdown.ts";
 import { Link } from "#/shared/components/Link.tsx";
 import { cn } from "#/shared/lib/tailwind.ts";
@@ -16,7 +16,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   );
   const [mounted, setMounted] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // 초기 active 설정
     // 현재 화면에 보이는 첫 번째 헤딩 찾기
     for (const { id } of headings) {
