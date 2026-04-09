@@ -7,7 +7,7 @@ const CodeCopyButton = ({ code }: { code: string }) => {
   return (
     <button
       type="button"
-      className="absolute top-1 right-4 cursor-copy rounded-md border border-gray-200 bg-background p-1 opacity-0 transition-all duration-300 group-hover:opacity-100 dark:border-gray-600"
+      className="absolute top-3 right-5.5 cursor-copy rounded-md border border-gray-200 bg-background p-1 opacity-0 transition-all duration-300 group-hover:opacity-100 dark:border-gray-600"
       onClick={() => copy(code)}
       onTransitionEnd={resetOnTransitionEnd}
     >

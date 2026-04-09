@@ -28,7 +28,7 @@ export function CodeBlock({
         className,
       )}
     >
-      <span className="absolute -top-2 right-4 cursor-default bg-background px-2 text-gray-400 text-xs transition-none group-hover:opacity-0">
+      <span className="absolute -top-2 right-4 cursor-default rounded-md bg-background px-2 text-gray-400 text-xs transition-none group-hover:opacity-0">
         {language}
       </span>
       {filename && (

@@ -102,8 +102,14 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         }
 
         if (domNode.name === "ul") {
+          const parent = domNode.parent;
+          const isParentNull = !parent;
           return (
-            <ul className="mt-2 block list-disc break-all ps-5 text-md">
+            <ul
+              className={cn("mt-2 block list-disc break-all ps-5 text-md", {
+                "[&>li]:mb-3": isParentNull,
+              })}
+            >
               {domToReact(domNode.children as DOMNode[], options)}
             </ul>
           );
@@ -134,11 +140,11 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         if (domNode.name === "img") {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
-            <div className="my-3 flex w-full items-center justify-center rounded-xl bg-gray-50/80 p-2 lg:p-5 dark:bg-gray-700/80">
+            <div className="my-3 flex w-full items-center justify-center rounded-xl bg-gray-50/80 p-2 lg:p-5 dark:bg-gray-700/30">
               <img
                 {...domNode.attribs}
                 loading="lazy"
-                className="rounded-md shadow-gray-400/50 shadow-lg"
+                className="rounded-md shadow-gray-400/50 shadow-lg dark:shadow-gray-900/50"
                 alt={domNode.attribs.alt}
                 src={resolvedSrc}
               />

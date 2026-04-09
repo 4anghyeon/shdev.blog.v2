@@ -1,0 +1,107 @@
+---
+title: 'Git cherry-pick 알아보기'
+description: 'git cherry-pick은 특정 커밋을 선택적으로 다른 브랜치에 가져오는 명령어로, 버그 수정, 기능 이전, 릴리스 관리에 유용하다.'
+published: '2024-10-27'
+updated: '2026-04-09'
+tags: ['Git']
+---
+
+`git cherry-pick`은 특정 커밋을 현재 branch로 가져오게 하는 명령어이다. 이름에서도 쉽게 알 수 있듯이 여러 커밋 중에서 특정 커밋(체리)만 따오는 행위라고 이해하면 쉽다.
+
+![cherry-pick 개념](git-cherry-pick/cherry-pick-concept.png)
+
+
+## 사용법
+
+모든 커밋은 고유한 식별자인 해시(hash) 값을 가진다. `git cherry-pick`은 이 해시 값을 사용해 특정 커밋을 현재 브랜치로 가져온다.
+
+![커밋 해시 설명](git-cherry-pick/commit-hash-overview.png)
+
+### 단일 커밋 가져오기
+
+```bash
+git cherry-pick <commit-hash>
+```
+
+위 명령어를 실행하면 해당 커밋의 변경 내용이 현재 브랜치에 새로운 커밋으로 생성된다.
+
+merge 없이 특정 커밋만 main 브랜치로 가져오는 예시를 살펴보자. 현재 main 브랜치의 로그는 다음과 같다.
+
+![cherry-pick 전 main 브랜치 로그](git-cherry-pick/main-branch-log-before.png)
+
+`git cherry-pick` 사용!
+
+![cherry-pick 명령어 실행](git-cherry-pick/cherry-pick-command.png)
+
+`git cherry-pick` 사용 후 브랜치 로그
+
+![cherry-pick 후 브랜치 로그](git-cherry-pick/main-branch-log-after.png)
+
+commit된 변경 사항을 main branch로 가져오고, HEAD가 `cherry-pick` 으로 가져온 commit을 가리키게 되었다.
+
+### 여러 커밋 및 범위 지정
+
+여러 개의 커밋을 가져올 수도, 혹은 범위를 지정할 수도 있다.
+
+```bash
+# 여러 개의 커밋을 개별적으로 선택
+git cherry-pick <hash1> <hash2>
+
+# 범위로 가져오기 (start는 제외, end는 포함)
+git cherry-pick <start-commit>..<end-commit>
+
+# 시작 커밋까지 포함하여 범위 가져오기
+git cherry-pick <start-commit>^..<end-commit>
+```
+
+### 주요 옵션
+단순한 복사 외에도 실무에서 유용하게 사용할 수 있는 옵션들이다.
+
+- `-edit` 또는 `-e`: 커밋 메시지를 편집할 수 있다.
+- `-no-commit` 또는 `-n`: 변경사항을 스테이징 영역에만 추가하고 커밋하지 않는다.
+- `-signoff` 또는 `-s`: 커밋 메시지에 서명을 추가한다.
+- `-x`: 원본 커밋 해시를 커밋 메시지에 추가한다.
+
+## 언제 사용하면 좋을까?
+
+- **버그 수정 적용**
+  - 특정 브랜치에서 발견된 버그를 다른 브랜치에도 빠르게 적용해야 할 때
+  - 예: 프로덕션 브랜치의 긴급 버그 수정을 개발 브랜치에도 적용
+- **특정 기능 이전**
+  - 한 브랜치에서 개발된 기능의 일부만 다른 브랜치로 가져와야 할 때
+  - 예: 실험적 브랜치의 성공적인 기능을 메인 개발 라인에 통합
+- **릴리스 관리**
+  - 특정 릴리스에 포함되어야 할 변경사항만 선택적으로 가져올 때
+  - 예: 다음 버전 릴리스에 포함될 기능만 선택적으로 적용
+
+## 충돌(Conflict) 발생 시 대처법
+
+cherry-pick도 커밋 내역을 합치는 작업이므로 충돌이 발생할 수 있다.
+
+충돌이 발생하면 충돌을 해결한 후 아래 명령어로 계속 진행한다.
+
+```bash
+git cherry-pick --continue
+```
+
+추가 옵션:
+
+상황에 따라 아래 옵션을 활용할 수 있다.
+
+- cherry-pick 중단: cherry-pick을 취소하고 시작 전 상태로 되돌린다.
+
+```bash
+git cherry-pick --abort
+```
+
+- 현재 충돌 건너뛰기: 여러 커밋을 cherry-pick하는 중 현재 충돌을 건너뛰고 다음 커밋으로 진행한다.
+
+```bash
+git cherry-pick --skip
+```
+
+## 주의사항
+
+cherry-pick을 사용하면 동일한 변경 내용을 가진 새로운 커밋이 생성된다. 이는 커밋 히스토리를 파편화하거나, 나중에 해당 브랜치들을 다시 merge 할 때 중복된 내용으로 인해 혼란을 야기할 수 있다.
+
+따라서 협업 규칙에 따라 꼭 필요한 경우에만 사용하도록 하자.
