@@ -1,4 +1,5 @@
 import rehypeShiki from "@shikijs/rehype";
+import { transformerNotationHighlight } from "@shikijs/transformers";
 import type { Element } from "hast";
 import { toString as hastToString } from "hast-util-to-string";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -46,6 +47,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
             return node;
           },
         },
+        transformerNotationHighlight(),
       ],
     })
     .use(() => (tree) => {

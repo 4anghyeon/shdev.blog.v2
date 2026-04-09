@@ -24,7 +24,7 @@ export function CodeBlock({
   return (
     <div
       className={cn(
-        "group relative rounded-lg border border-gray-200 bg-background p-1 dark:border-gray-700",
+        "group relative rounded-md border border-gray-200 bg-background p-1 dark:border-gray-700",
         className,
       )}
     >
@@ -41,7 +41,7 @@ export function CodeBlock({
       <CodeCopyButton code={code} />
       <div
         className={cn(
-          "text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:rounded-xl [&>pre]:bg-transparent [&>pre]:p-4",
+          "text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:rounded-sm [&>pre]:bg-transparent [&>pre]:p-4",
           {
             "[&>pre]:border [&>pre]:border-gray-100 dark:[&>pre]:border-gray-800":
               filename,

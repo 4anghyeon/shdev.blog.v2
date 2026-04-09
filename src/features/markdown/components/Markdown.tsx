@@ -66,7 +66,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           }
 
           return (
-            <p className="my-3 text-md leading-[1.6]">
+            <p className="mt-5 mb-3 text-md leading-[1.6]">
               {domToReact(domNode.children as DOMNode[], options)}
             </p>
           );
@@ -148,7 +148,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           return (
             <div
               className={cn(
-                "my-6 rounded-lg px-4 py-3 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
+                "my-4 rounded-md px-4 py-0.5 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
                 {
                   "border border-blue-200 bg-blue-100/20 dark:border-blue-900 dark:bg-blue-900/20 [&>p>svg]:fill-blue-400 [&>p]:first:text-blue-400":
                     domClass?.includes("note"),
@@ -207,6 +207,32 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <code className="rounded-sm bg-gray-100 px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm dark:bg-gray-600 dark:text-orange-400">
               {domToReact(domNode.children as DOMNode[])}
             </code>
+          );
+        }
+
+        if (domNode.name === "table") {
+          return (
+            <div className="my-5 overflow-x-auto rounded-md border border-gray-200 dark:border-gray-700">
+              <table className="w-full border-separate border-spacing-0">
+                {domToReact(domNode.children as DOMNode[], options)}
+              </table>
+            </div>
+          );
+        }
+
+        if (domNode.name === "th") {
+          return (
+            <th className="border-gray-200 border-b bg-gray-100 px-3 py-2 text-left font-semibold text-gray-700 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </th>
+          );
+        }
+
+        if (domNode.name === "td") {
+          return (
+            <td className="text-nowrap border-gray-100 border-b px-3 py-2 text-gray-700 text-sm dark:border-gray-700/60 dark:text-gray-300">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </td>
           );
         }
       }

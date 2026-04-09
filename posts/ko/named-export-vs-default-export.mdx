@@ -1,0 +1,101 @@
+---
+title: 'Named Export와 Default Export의 이해'
+description: 'Named Export와 Default Export에 대해 알아보기'
+published: '2024-09-30'
+updated: '2026-04-08'
+tags: ['JavaScript']
+---
+
+JavaScript 모듈 시스템에는 Named Export와 Default Export라는 두 가지 내보내기 방식이 있다. 두 방식의 차이를 이해하면 모듈 구조를 더 명확하게 설계할 수 있고, 팀 내 코드 일관성을 유지하는 데도 도움이 될 수 있다.
+
+## Named Export
+
+Named Export는 모듈에서 여러 개의 변수, 함수, 클래스를 내보낼 때 사용한다. 각 요소는 이름을 가지며, 필요한 것만 선택적으로 가져올 수 있다.
+
+```javascript pathname="utils"
+export const PI = 3.14;
+
+export function add(a, b) {
+  return a + b;
+}
+
+export class Calculator {
+  subtract(a, b) {
+    return a - b;
+  }
+}
+```
+
+가져올 때는 중괄호(`{ }`)를 사용하여 내보낸 이름과 동일하게 작성해야 한다.
+
+```javascript pathname="main"
+import { PI, add, Calculator } from './utils.js'; // [!code highlight]
+
+console.log(PI); // 3.14
+console.log(add(2, 3)); // 5
+
+const calc = new Calculator();
+console.log(calc.subtract(5, 2)); // 3
+```
+
+## Default Export
+
+Default Export는 모듈당 단 하나의 기본값만 내보낼 수 있다. 파일의 주요 기능을 명확히 드러낼 때 유용하며, 가져올 때 개발자가 임의로 이름을 지정할 수 있다는 특징이 있다.
+```javascript pathname="logger"
+export default function log(message) {
+  console.log(`-> ${message}`);
+}
+```
+
+가져올 때는 중괄호 없이 이름을 자유롭게 정하여 사용한다.
+
+```javascript pathname="app"
+import customLogger from './logger.js'; // [!code highlight]
+
+customLogger('안녕하세요!'); // -> 안녕하세요!
+```
+
+## 주요 차이점
+
+| 항목 | Named Export | Default Export |
+|------|-------------|----------------|
+| export 개수 | 여러 개 가능 | 모듈당 하나만 가능 |
+| import 문법 | `import { name } from './module'` | `import anyName from './module'` |
+| 이름 변경 | `import { original as newName } from './module'` | 가져올 때 자유롭게 지정 |
+| 전체 가져오기 | `import * as m from './module'` | 해당 없음 |
+| 동적 가져오기 | `import('./m').then(m => m.namedExport)` | `import('./m').then(m => m.default)` |
+
+
+## Default Export 사용을 지양해야 하는 이유
+
+[TypeScript Deep Dive](https://basarat.gitbook.io/typescript/main-1/defaultisbad)에서는 TypeScript 프로젝트에서 Default Export 사용을 지양하도록 권장한다. 주요 이유는 아래와 같다.
+
+### 리팩토링 및 심볼 추적의 한계
+
+IDE(VS Code, WebStorm 등)의 핵심 기능 중 하나는 변수나 클래스 이름을 바꿀 때 이를 참조하는 모든 파일의 코드를 동시에 수정해 주는 것이다.
+
+- **Named Export**: 이름이 명시적으로 연결되어 있어, 선언부의 이름을 바꾸면 해당 심볼을 import하는 모든 곳이 안전하게 바뀐다.
+- **Default Export**: 가져오는 쪽에서 이름을 자유롭게 정하기 때문에, 선언부의 이름을 바꿔도 가져오는 쪽의 이름은 그대로 유지되는 경우가 많다. 이는 결국 런타임 에러나 개발자의 수동 수정을 유발한다.
+
+### 코드 일관성 결여 및 인지 부하 증가
+
+Default Export는 가져오는 사람에 따라 이름을 내키는 대로 지을 수 있다.
+
+- 파일 A에서는 `import UserService from './User'`
+- 파일 B에서는 `import UserLogic from './User'`
+- 파일 C에서는 `import User from './User'`
+
+동일한 모듈을 두고 개발자마다 다른 이름을 사용하게 되면, 프로젝트 전체에서 특정 기능을 검색(Find in Files)하거나 구조를 파악할 때 불필요한 혼란을 준다. Named Export를 사용하면 강제로 이름이 통일되어 코드의 가독성이 올라간다.
+
+### 순환 참조와 배럴 파일(index.ts) 문제
+
+프로젝트 구조를 잡기 위해 `index.ts`에서 여러 모듈을 모아서 내보낼 때, Default Export가 섞여 있으면 관리 포인트가 늘어나고 순환 참조 발생 시 디버깅이 까다로워진다.
+
+
+## 마무리
+
+Named Export와 Default Export 중 어느 것이 옳다고 단정 짓기는 어렵다.
+
+TypeScript Deep Dive에서는 Default Export를 지양하라고 하지만, 실제로는 Next.js나 React Router처럼 프레임워크 차원에서 Default Export를 요구하는 경우도 많다. 결국 팀의 컨벤션과 프로젝트 상황에 맞게 선택하는 것이 중요하다.
+
+각 방식의 장단점을 명확히 인지한 상태에서 현재 프로젝트의 유지보수 비용과 생산성을 고려해 최선의 선택을 해보도록 하자
