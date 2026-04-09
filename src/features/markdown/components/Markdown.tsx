@@ -4,8 +4,7 @@ import parse, {
   Element,
   type HTMLReactParserOptions,
 } from "html-react-parser";
-
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButton.tsx";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
 import { Link } from "#/shared/components/Link.tsx";
@@ -178,7 +177,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
                     domClass?.includes("important"),
                 },
                 {
-                  "border border-amber-200 bg-yellow-100/20 [&>p>svg]:fill-amber-400 [&>p]:first:text-amber-400":
+                  "border border-amber-200 bg-amber-400/10 dark:border-amber-500 dark:bg-amber-500/10 [&>p>svg]:fill-amber-500 [&>p]:first:text-amber-500":
                     domClass?.includes("warning"),
                 },
                 {
@@ -223,6 +222,35 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <code className="rounded-sm bg-gray-100 px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm dark:bg-stone-700 dark:text-orange-400">
               {domToReact(domNode.children as DOMNode[])}
             </code>
+          );
+        }
+
+        if (domNode.name === "details") {
+          const summaryNode = domNode.children.find(
+            (child): child is Element =>
+              child instanceof Element && child.name === "summary",
+          );
+          const contentNodes = domNode.children.filter(
+            (child) => !(child instanceof Element && child.name === "summary"),
+          );
+          return (
+            <details className="group my-5 rounded-md border border-gray-200 open:border-gray-300 dark:border-gray-700 dark:open:border-gray-600">
+              {summaryNode && domToReact([summaryNode] as DOMNode[], options)}
+              <div className="px-4 pb-2">
+                {domToReact(contentNodes as DOMNode[], options)}
+              </div>
+            </details>
+          );
+        }
+
+        if (domNode.name === "summary") {
+          return (
+            <summary className="flex cursor-pointer select-none list-none items-center gap-2 rounded-md px-4 py-3 font-semibold text-gray-700 text-md hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800/50 [&::-webkit-details-marker]:hidden">
+              <span className="transition-transform duration-200 group-open:rotate-90">
+                <ChevronRight className="size-4" />
+              </span>
+              {domToReact(domNode.children as DOMNode[], options)}
+            </summary>
           );
         }
 

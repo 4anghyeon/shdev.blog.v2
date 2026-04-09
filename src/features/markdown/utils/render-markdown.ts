@@ -1,5 +1,8 @@
 import rehypeShiki from "@shikijs/rehype";
-import { transformerNotationHighlight } from "@shikijs/transformers";
+import {
+  transformerNotationDiff,
+  transformerNotationHighlight,
+} from "@shikijs/transformers";
 import type { Element } from "hast";
 import { toString as hastToString } from "hast-util-to-string";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -48,6 +51,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
           },
         },
         transformerNotationHighlight(),
+        transformerNotationDiff(),
       ],
     })
     .use(() => (tree) => {
@@ -65,7 +69,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
       behavior: "wrap",
       properties: { className: ["anchor"] },
     })
-    .use(rehypeStringify) // Serialize to HTML string
+    .use(rehypeStringify, { allowDangerousHtml: true }) // Serialize to HTML string
     .process(content);
 
   return {

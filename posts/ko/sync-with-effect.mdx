@@ -1,0 +1,357 @@
+---
+title: '공식문서 Effect로 동기화하기 읽고 정리하기'
+description: 'React에 존재하는 Effect에 관하여 공식 문서를 읽고 올바른 사용 방법에 대해 알아보자.'
+published: '2024-12-26'
+updated: '2026-04-09'
+tags: ['React']
+---
+
+React 공식 문서의 [Effect로 동기화하기](https://ko.react.dev/learn/synchronizing-with-effects)를 읽고 핵심 내용을 정리했다. Effect를 언제 써야 하는지, 의존성은 어떻게 지정하는지, 클린업은 왜 필요한지를 파악하면 불필요한 Effect 사용과 버그를 줄일 수 있다.
+
+
+## Effect로 동기화하기
+
+일부 컴포넌트들은 외부 시스템과 동기화가 필요할 수 있다. 예를 들어, 리액트의 상태(state)와 상관 없는 서버 연결, 분석 로그 전송과 같은것들을 컴포넌트가 화면에 나타난 뒤 제어하는 경우다.
+
+Effect는 렌더링 이후에 React 바깥의 시스템과 컴포넌트를 동기화하는 수단이다.
+
+> [!NOTE]
+> 여기서 "Effect"는 React에서 특화된 의미로 쓰인다. 렌더링에 의한 부수 효과(side effect)를 가리키며, 일반적인 프로그래밍 용어의 "부수 효과"와 구분하기 위해 이 글에서는 Effect로 표기한다.
+
+
+## Effects란? 이벤트와의 차이점은?
+
+Effect를 이해하려면 먼저 React 컴포넌트 안의 두 가지 로직 유형을 알아야 한다.
+
+- **렌더링 코드**: 컴포넌트의 최상위 레벨에 위치하며, props와 state를 변형해 새로운 JSX를 반환한다. 순수 함수여야 하며 DOM 수정과 같은 부수 효과를 포함해서는 안 된다.
+- **이벤트 핸들러**: 컴포넌트 내부의 중첩 함수로, 단순 계산을 넘어 실제 작업을 수행한다. 입력 필드 업데이트, HTTP 요청 전송, 페이지 이동 등 사용자 상호작용에 의해 발생하는 부수 효과를 포함한다.
+
+하지만 이 두 로직만으로 부족한 경우가 있다. 예를 들어 화면에 표시될 때마다 채팅 서버와 연결되어야 하는 `ChatRoom` 컴포넌트가 있다면, 서버 연결은 순수 함수가 아니므로 렌더링 중에 일어날 수 없다. 또한 특정 버튼 클릭과 같은 이벤트도 아니다.
+
+***Effect*는 특정 이벤트가 아닌, 렌더링 그 자체에 의해 발생하는 부수 효과다.** 채팅에서 메시지를 보내는 것은 *이벤트* 이다. 왜냐면 사용자가 특정 버튼을 클릭하면서 일어나기 때문이다. 그러나, 서버 연결은 *Effect* 다. 왜냐하면 상호작용과 상관 없이 컴포넌트가 나타나는 순간 일어나야 하기 때문이다. Effects는 화면 업데이트 후, 커밋이 끝날 때 실행된다. 이 시점이 리액트 컴포넌트와 외부 시스템을 동기화하기 좋은 타이밍이다.
+
+
+
+## Effect가 필요하지 않을 수 있다
+
+**컴포넌트에 무작정 Effect를 추가하지 않는 게 좋다.** Effect는 주로 React 코드 바깥의 외부 시스템(브라우저 API, 서드 파티 위젯, 네트워크 등)과 동기화할 때 사용한다. 하려는 작업이 단순히 다른 state에 기반한 계산이라면, Effect가 필요 없을 수 있다.
+
+
+## Effect를 작성하는 방법
+
+Effect를 작성할 때는 아래 세 단계를 따른다
+
+1. **Effect 선언**: 기본적으로, Effect는 모든 commit 이후에 실행된다.
+2. **Effect 의존성 지정**: 대부분의 Effect는 모든 렌더링 후가 아닌, 필요할 때만 다시 실행되어야 한다.
+3. **필요한 경우 클린업 함수 추가**: 일부 Effect는 리렌더시 중지하고, 되돌리고, 정리하는 방법을 지정해야 한다. 예를 들어, 연결한 경우 연결을 취소해야 하고, 구독한 경우 구독을 취소해야 한다.
+
+### 1 단계: Effect 선언
+
+컴포넌트에서 Effect를 선언하려면 `useEffect` Hook을 사용한다. 컴포넌트 최상위 레벨에서 호출하고, 내부에 코드를 작성한다.
+
+
+```tsx
+function MyComponent() {
+  useEffect(() => {
+    // 모든 렌더링 이후에 실행된다
+  });
+  return ;
+}
+```
+
+컴포넌트가 렌더링될 때 마다 리액트는 화면을 업데이트 하고, `useEffect`안의 코드를 실행 시킨다. **즉, `useEffect`는 렌더링이 화면에 반영될 때까지 코드의 실행을 지연 시킨다.**
+
+`VideoPlayer` 컴포넌트로 예를 들어보자.
+
+```tsx
+function VideoPlayer({ src, isPlaying }) {
+  // TODO: isPlaying에 따라 재생/일시정지 처리
+  return <video src={src} />;
+}
+```
+
+브라우저의 `<video>` 태그에는 `isPlaying` 과 같은 속성이 없기 때문에, 이를 컨트롤할 수 있는 방법은 수동으로 DOM element에서 `play()` 나 `pause()` 메서드를 실행 시키는 것이다. 이 컴포넌트에서는 동영상이 현재 재생 중인지 여부를 알려주는 isPlaying prop의 값을 `play()`  및 `pause()` 등의 호출과 동기화해야 한다.
+
+이를 위해 `ref`를 가져와 렌더링 중에 호출하려고 시도할 수 있지만, 이는 올바른 접근이 아니다.
+
+```tsx
+function VideoPlayer({ src, isPlaying }) {
+  const ref = useRef(null);
+
+  if (isPlaying) {
+    ref.current.play();  // 렌더링 중 호출 불가
+  } else {
+    ref.current.pause(); // 렌더링 중 호출 불가
+  }
+
+  return ;
+}
+```
+
+![Image.png](sync-with-effect/Image.png)
+
+이 코드가 올바르지 않은 이유는 렌더링 중에 DOM 노드와 뭔가를 하려고 하기 때문이다. 리액트에서 렌더링은 순수 함수여야 하고, DOM 조작과 같은 부수 효과가 일어나서는 안된다.
+
+게다가, 처음으로 `VideoPlayer`가 호출될 때는 해당 DOM이 아직 존재하지 않는다. `play()` 나 `pause()` 를 실행할 노드가 없는 것이다.
+
+해결책은 **이러한 부수 효과를 렌더링 연산에서 분리하기 위해 `useEffect` 로 감싸는 것이다.**
+
+```tsx
+import { useEffect, useRef } from 'react';
+
+function VideoPlayer({ src, isPlaying }) {
+  const ref = useRef(null);
+
+  useEffect(() => { // [!code ++]
+    if (isPlaying) {
+      ref.current.play();
+    } else {
+      ref.current.pause();
+    }
+  }); // [!code ++]
+
+  return <video ref={ref} src={src} loop playsInline />;
+}
+```
+
+DOM 업데이트를 Effect로 감싸면 먼저 리액트가 화면을 업데이트 시킨 후, Effect가 실행된다.
+
+
+> [!WARNING]
+> 기본적으로, Effect는 *모든* 렌더링 후에 실행된다. 이러한 이유로 다음과 같은 코드는 **무한 루프를 만들어낼** 것이다.
+> ```ts
+> const [count, setCount] = useState(0);
+> useEffect(() => {
+>   setCount(count + 1);
+> });
+> ```
+> state가 변하면 리렌더링이 발생하고, Effect가 다시 실행되고, 다시 state가 변하는 식으로 무한히 반복된다.
+
+### 2 단계: Effect 의존성 지정
+
+기본적으로 Effect는 모든 렌더링 이후에 실행되지만, 대부분의 경우 이를 원하지 않는다.
+
+- 외부 시스템과 동기화하는 것이 항상 즉시 이루어지지 않기 때문에, 필요하지 않은 경우에는 동작을 생략하고 싶을 수 있다. 예를 들어, 모든 키 입력마다 서버와 다시 연결하고 싶지는 않을 것이다.
+- 모든 키 입력마다 컴포넌트가 fade-in 애니메이션을 트리거하기를 원치 않을 것이다. 이러한 애니메이션은 컴포넌트가 처음 나타날 때 한 번만 실행되기를 원한다.
+
+```ts
+useEffect(() => {
+    if (isPlaying) { // It's used here...
+      // ...
+    } else {
+      // ...
+    }
+  }, [isPlaying]); // ...so it must be declared here!
+```
+
+의존성 배열로 `[isPlaying]`을 지정하면, 이전 렌더링과 `isPlaying` 값이 동일할 때 Effect를 다시 실행하지 않는다.
+
+의존성 배열에는 여러 값을 포함할 수 있다. 지정한 값들이 이전 렌더링 시의 값과 모두 일치할 때만 Effect 재실행을 건너뛴다. React는 `Object.is`로 값을 비교한다.
+
+**의존성은 임의로 고를 수 없다.** 지정한 의존성이 Effect 내부 코드를 기반으로 React가 예상하는 것과 다르면 lint 에러가 발생한다. 재실행을 원하지 않는다면, Effect 내부를 수정해서 해당 값이 의존성으로 필요하지 않도록 만들어야 한다.
+
+> [!NOTE]
+> **왜 ref는 의존성 배열에서 생략해도 되나요?**
+>
+> 아래 코드에서 Effect 내부는 `ref`와 `isPlaying`을 모두 사용하지만 의존성에는 `isPlaying`만 명시하고 있다.
+>
+>```ts
+> function VideoPlayer({ src, isPlaying }) {
+>  const ref = useRef(null);
+>  useEffect(() => {
+>    if (isPlaying) {
+>      ref.current.play();
+>    } else {
+>      ref.current.pause();
+>    }
+>  }, [isPlaying]);
+> }
+>```
+>
+> `ref`는 안정된 식별성(stable identity)을 가지기 때문이다. 동일한 `useRef` 호출은 항상 같은 객체를 반환함이 보장되어 있어, 의존성 배열에 포함 여부와 관계없이 동작이 동일하다. `useState`에서 반환되는 setter 함수도 마찬가지다.
+
+### 3 단계: 필요시 클린업을 추가하라
+
+나타날 때 채팅 서버와 연결해야 하는 `ChatRoom` 컴포넌트를 작성한다고 해보자. `connect()`와 `disconnect()` 메서드를 가진 객체를 반환하는 `createConnection()` API를 제공받았다.
+
+```ts
+useEffect(() => {
+  const connection = createConnection();
+  connection.connect(); // ✅ Connecting...
+}, []);
+```
+
+Effect 내부에서 어떤 props나 state도 사용하지 않으므로 빈 의존성 배열(`[]`)을 지정했다. 컴포넌트가 처음 화면에 나타날 때만 Effect가 실행된다.
+
+이 Effect는 마운트 될 때만 실행하기 때문에 "✅ Connecting..." 라는 콘솔이 한 번만 찍힐 거라고 예상한다. **하지만 콘솔을 체크하면 두 번 찍혀있는걸 볼 수 있다.**
+
+`ChatRoom`이 있는 페이지에서 다른 페이지로 이동했다가 돌아오면 `connect()`가 다시 호출되면서 두 번째 연결이 맺어진다. 문제는 첫 번째 연결이 끊어지지 않았다는 점이다. 이런 식으로 연결이 계속 쌓인다.
+
+이런 버그는 수동으로 테스트하지 않으면 놓치기 쉽다. 그래서 React는 개발 모드에서 초기 마운트 후 모든 컴포넌트를 한 번 다시 마운트한다.
+
+해결 방법은 Effect에서 클린업 함수를 반환하는 것이다.
+
+```ts
+useEffect(() => {
+    const connection = createConnection();
+    connection.connect(); // ✅ Connecting...
+    return () => {
+      connection.disconnect(); // ❌ Disconnected.
+    };
+  }, []);
+```
+
+React는 Effect가 다시 실행되기 전마다, 그리고 컴포넌트가 제거될 때 마지막으로 클린업 함수를 호출한다.
+
+이제 개발 환경에서는 아래 세 로그가 순서대로 찍힌다.
+
+1. `"✅ Connecting..."`
+2. `"❌ Disconnected."`
+3. `"✅ Connecting..."`
+
+
+**개발 모드에서는 이게 올바른 동작이다.** 컴포넌트를 다시 마운트해서 다른 곳을 탐색했다 돌아와도 코드가 정상적으로 동작하는지 확인하는 것이다. 연결을 해제하고 다시 연결하는 흐름이 정확하게 동작해야 한다. 이를 없애려 하지 않아도 된다.
+
+**배포 환경에서는** `"✅ Connecting..."`**한 번만 출력 된다.**
+
+## 개발 환경에서 Effect가 두 번 실행되는 경우를 다루는 방법
+
+리액트는 위에서의 예시처럼 개발 환경에서 버그를 찾기 위해 컴포넌트를 리마운트 한다. **여기서 올바른 질문은 "어떻게 Effect를 한 번만 실행하게 하냐" 가 아닌, "어떻게 Effect가 리마운트 후에도 작동되도록 고치냐" 이다.**
+
+일반적인 정답은 클린업 함수를 구현하는 것이다. 클린업 함수는 Effect가 수행중이던 작업을 중단하거나 되돌린다. 기본 원칙은 사용자가 배포환경에서와 같이 한 번 실행되는 효과와, 리마운트 되는 효과를 구분할 수 없어야 한다.
+
+앞으로 작성할 대부분의 Effect는 아래의 일반적인 패턴 중 하나에 해당될 것이다.
+
+### React로 작성되지 않은 위젯 제어하기
+
+가끔씩 리액트로 작성되지 않은 UI 위젯을 추가해야할 때가 있다. 예를 들어, 지도 컴포넌트를 추가하는 경우를 보자.  지도 컴포넌트에 `setZomLevel()` 메서드가 있고, `zoomLevel` state와 동기화 할 경우, Effect는 다음과 비슷할 것이다.
+
+```ts
+useEffect(() => {
+  const map = mapRef.current;
+  map.setZoomLevel(zoomLevel);
+}, [zoomLevel]);
+```
+
+이 경우에는 클린업이 필요하지 않다. 개발 모드에서 리액트가 Effect를 두 번 호출해서 `setZomLevel()` 를 두 번 호출하겠지만, 배포 환경에서는 불필요하게 다시 마운트되지 않으므로 문제되지 않는다.
+
+일부 API는 연속으로 두 번 호출하는 것이 안될 수도 있다. 예를 들어, `<dialog>` 의 `showModal` 메서드의 경우이다. 두 번 호출하면 예외를 던진다. 이 때는 클린업 함수를 구현해서 dialog를 닫히게 하자.
+
+```ts
+useEffect(() => {
+  const dialog = dialogRef.current;
+  dialog.showModal();
+  return () => dialog.close();
+}, []);
+```
+
+### 이벤트 구독하기
+
+만약 Effect에서 무언가를 구독한다면, 클린업 함수에서 구독을 해지해야 한다.
+
+```ts
+useEffect(() => {
+  function handleScroll(e) {
+    console.log(window.scrollX, window.scrollY);
+  }
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
+```
+
+### 애니메이션 트리거
+
+Effect에서 어떤 요소를 애니메이션 효과를 주는 경우, 클린업 함수에서 애니메이션을 초기 값으로 설정해야 한다.
+
+```ts
+useEffect(() => {
+  const node = ref.current;
+  node.style.opacity = 1; // Trigger the animation
+  return () => {
+    node.style.opacity = 0; // Reset to the initial value
+  };
+}, []);
+```
+
+### 데이터 페칭
+
+만약 Effect가 어떤 데이터를 fetch해 온다면, 클린업 함수에서는 fetch를 중단하거나 결과를 무시해야 한다.
+
+```ts
+useEffect(() => {
+  let ignore = false;
+
+  async function startFetching() {
+    const json = await fetchTodos(userId);
+    if (!ignore) {
+      setTodos(json);
+    }
+  }
+
+  startFetching();
+
+  return () => {
+    ignore = true;
+  };
+}, [userId]);
+```
+
+이미 발생한 네트워크 요청을 "취소" 할 수는 없지만, 클린업 함수가 더 이상 관련이 없는 fetch에 영향이 없도록 해야 한다.
+
+**개발 환경에서는 네트워크 탭에 두 개의 fetch가 표시된다.** 위의 접근 방식을 사용하면 첫 번째 Effect는 즉시 클린업 되어 `ignore` 변수의 복사본이 `true` 로 설정되기 때문에 추가 요청이 있더라도 `if` 검사 덕분에 state에 영향을 미치지 않는다.
+
+**배포 환경에서는 하나의 요청만 있을 것이다.** 만약 개발 환경에서 두 번째 요청이 귀찮게 한다면, 컴포넌트 간에 응답을 캐싱하는 솔루션을 사용하는 것이 가장 좋은 방법이다.
+
+```javascript
+function TodoList() {
+  const todos = useSomeDataLibrary(`/api/user/${userId}/todos`);
+  // ...
+```
+
+<details>
+  <summary>Effect에서 데이터를 fetch하는 좋은 대안은?</summary>
+
+  Effect 안에서 `fetch` 를 호출하는 것은 데이터를 가져오는 가장 인기 있는 방법이다, 특히 완전 클라이언트 사이드 앱에서. 그러나 이는 매우 수동적인 접근이며, 중요한 단점이 있다.
+
+  - **Effect는 서버에서 실행되지 않는다.** 모든 자바스크립트를 다운로드하고 앱을 렌더링해야만 데이터를 로드할 수 있다. 이는 효율적이지 않다.
+  - **Effect 안에서 직접 가져오는 것은 "네트워크 폭포"를 쉽게 만들 수 있다.** 부모 컴포넌트를 렌더링 하고, 일부 데이터를 가져오고, 다시 자식 컴포넌트를 렌더링 하고, 자식 컴포넌트는 자신들의 데이터를 가져오기 시작한다. 네트워크가 빠르지 않으면 병렬로 가져오는 것보다 훨씬 느리다.
+  - **Effect 안에서 직접 가져오는 것은 미리 로드하거나 캐시되지 않음을 의미한다.** 예를 들어, 컴포넌트가 리마운트 되면 데이터를 다시 가져와야 한다.
+  - **그리 편리하지 않다.** 버그에 영향을 받지 않는 방식으로 작성하려면 많은 보일러플레이트 코드가 필요하다.
+
+  데이터를 페칭하는 것은 잘 수행하기 어려운 작업이므로 다음 접근 방식을 권장한다.
+
+  - **프레임워크를 사용하는 경우 해당 프레임워크의 내장 데이터 페칭 메커니즘을 사용해라.**
+  - **그렇지 않을 경우 React Query, useSWR, React Router 6.4+ 등의 오픈 소스 솔루션 도입을 고려해라.**
+</details>
+
+### 분석 전송
+
+페이지 방문시 분석 정보를 보내는 코드를 살펴보자.
+
+```ts
+useEffect(() => {
+  logVisit(url); // POST 요청 보내기
+}, [url]);
+```
+
+개발 환경에서는 `logVisit` 이 두 번 호출되므로 수정하고 싶을 수 있다. 그러나 이대로 유지하는 것을 권장한다. 이전 예시와 마찬가지로 한 번 실행하거나 두 번 실행하는 것 사이에서 *사용자가 볼 수 있는 동작 차이가 없다.* 실제로 개발 환경에서는 `logVisit` 이 아무런 작업도 수행하지 않아야 한다. 왜냐하면 개발 환경에서는 로그를 수집하여 제품 지표를 왜곡시키면 안되기 때문이다.
+
+**배포 환경에서는 중복 방문 로그가 없을 것이다.**
+
+### Effect가 아닌 경우: 애플리케이션 초기화
+
+일부 로직은 애플리케이션이 시작되야할 때 한 번 수행되어야 한다. 이러한 로직은 컴포넌트 바깥에 배치할 수 있다.
+
+```ts
+if (typeof window !== 'undefined') { // 브라우저에서 실행 중인지 확인
+  checkAuthToken();
+  loadDataFromLocalStorage();
+}
+
+function App() {
+  // ...
+}
+```
+
+위와 같이 컴포넌트 외부에서 해당 로직을 실행하면, 페이지를 로드한 후 한 번만 실행됨이 보장된다.
+
