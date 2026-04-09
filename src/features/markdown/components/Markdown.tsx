@@ -107,7 +107,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           return (
             <ul
               className={cn("mt-2 block list-disc break-all ps-5 text-md", {
-                "[&>li]:mb-3": isParentNull,
+                "[&>li]:mb-2": isParentNull,
               })}
             >
               {domToReact(domNode.children as DOMNode[], options)}
@@ -116,8 +116,14 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         }
 
         if (domNode.name === "ol") {
+          const parent = domNode.parent;
+          const isParentNull = !parent;
           return (
-            <ol className="mt-2 block list-decimal break-all ps-5 text-md">
+            <ol
+              className={cn("mt-2 block list-decimal break-all ps-5 text-md", {
+                "[&>li]:mb-2": isParentNull,
+              })}
+            >
               {domToReact(domNode.children as DOMNode[], options)}
             </ol>
           );
