@@ -23,7 +23,7 @@ export function PostListItem({
         to="/ko/post/$slug"
         params={{ slug }}
         viewTransition
-        className="flex flex-col gap-y-2 rounded-lg border border-gray-100 px-3 py-5 no-underline transition-colors hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-900"
+        className="flex flex-col gap-y-2 rounded-lg border border-gray-100 px-3 py-5 no-underline transition-colors hover:bg-gray-50 dark:border-stone-600 dark:hover:bg-stone-900"
       >
         <h2
           className="font-semibold text-gray-900 text-lg leading-snug group-hover:text-blue-500 dark:text-gray-100 dark:group-hover:text-blue-400"
@@ -31,7 +31,7 @@ export function PostListItem({
         >
           {title}
         </h2>
-        <p className="line-clamp-2 text-gray-500 text-sm dark:text-gray-400">
+        <p className="line-clamp-2 text-gray-500 text-sm dark:text-gray-200">
           {description}
         </p>
         <div className="flex items-center justify-between">
@@ -42,7 +42,7 @@ export function PostListItem({
           </div>
           <time
             dateTime={published}
-            className="shrink-0 text-gray-400 text-xs dark:text-gray-500"
+            className="shrink-0 text-gray-400 text-xs dark:text-gray-400"
           >
             {dateHelper.format(published, "LOCAL")}
           </time>

@@ -84,7 +84,7 @@ function Cloud({ config }: { config: CloudConfig }) {
 export function SkyHeader() {
   return (
     <>
-      <div className="mask-alpha mask-b-from-black mask-b-from-50% mask-b-to-transparent sticky top-16 z-3 h-10 w-full bg-linear-to-b from-cyan-100/60 via-cyan-100/30 to-cyan-100/10 dark:from-gray-900/60 dark:via-gray-800/30 dark:to-gray-800/10" />
+      <div className="mask-alpha mask-b-from-black mask-b-from-50% mask-b-to-transparent sticky top-16 z-3 h-10 w-full bg-linear-to-b from-cyan-100/60 via-cyan-100/30 to-cyan-100/10 dark:from-stone-900/60 dark:via-stone-800/30 dark:to-stone-800" />
       <div className="fixed -top-10 z-5">
         {CLOUDS.map((cloud, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: <not important>

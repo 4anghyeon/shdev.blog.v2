@@ -3,7 +3,7 @@ import { Link } from "#/shared/components/Link.tsx";
 
 export function Footer() {
   return (
-    <footer className="flex flex-col items-center justify-center gap-y-4 border-gray-200 border-t py-10 sm:pb-20">
+    <footer className="flex flex-col items-center justify-center gap-y-4 border-gray-200 border-t py-10 sm:pb-20 dark:border-stone-600">
       <div className="flex gap-4 [&>a]:hover:animate-bounce">
         <Link
           className="hover:text-gray-500 dark:fill-primary"

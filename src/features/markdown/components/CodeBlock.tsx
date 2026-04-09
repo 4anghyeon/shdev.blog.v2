@@ -24,7 +24,7 @@ export function CodeBlock({
   return (
     <div
       className={cn(
-        "group relative rounded-md border border-gray-200 bg-background p-1 dark:border-gray-700",
+        "group relative rounded-md border border-gray-200 bg-background p-1 dark:border-stone-700",
         className,
       )}
     >
@@ -33,7 +33,7 @@ export function CodeBlock({
       </span>
       {filename && (
         <div className="flex cursor-default items-center justify-between px-1 pb-1">
-          <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700 dark:border-slate-900/80 dark:bg-slate-900 dark:text-gray-200">
+          <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700 dark:border-stone-900/80 dark:bg-stone-900 dark:text-gray-200">
             {filename}
           </span>
         </div>
@@ -43,7 +43,7 @@ export function CodeBlock({
         className={cn(
           "text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:rounded-sm [&>pre]:bg-transparent [&>pre]:p-4",
           {
-            "[&>pre]:border [&>pre]:border-gray-100 dark:[&>pre]:border-gray-800":
+            "[&>pre]:border [&>pre]:border-gray-100 dark:[&>pre]:border-stone-800":
               filename,
           },
         )}

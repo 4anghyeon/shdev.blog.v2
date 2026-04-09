@@ -58,11 +58,11 @@
     --text-default: var(--color-gray-900);
 
     /* Shiki highlighted line */
-    --shiki-highlight-bg: oklch(0.941 0.032 239.36);
+    --shiki-highlight-bg: oklch(0.944 0.021 248.047);
   }
 
   .dark {
-    --background: var(--color-gray-800);
+    --background: var(--color-stone-800);
     --foreground: oklch(0.985 0.001 106.423);
     --text-default: var(--color-gray-100);
 

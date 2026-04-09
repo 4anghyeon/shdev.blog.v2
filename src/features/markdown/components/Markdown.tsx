@@ -213,7 +213,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domNode.name === "code") {
           return (
-            <code className="rounded-sm bg-gray-100 px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm dark:bg-gray-600 dark:text-orange-400">
+            <code className="rounded-sm bg-gray-100 px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm dark:bg-stone-700 dark:text-orange-400">
               {domToReact(domNode.children as DOMNode[])}
             </code>
           );

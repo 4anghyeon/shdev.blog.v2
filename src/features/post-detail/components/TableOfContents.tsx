@@ -99,7 +99,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                 className={cn(
                   `block py-1 text-gray-600 text-xs transition-colors hover:text-primary dark:text-gray-400`,
                   {
-                    "font-bold text-cyan-600 dark:text-cyan-500":
+                    "font-bold text-sky-600 dark:text-sky-400":
                       mounted && activeId === heading.id,
                   },
                 )}

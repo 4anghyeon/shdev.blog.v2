@@ -28,7 +28,7 @@ export function PostNavigation({ prev, next, className }: PostNavigationProps) {
           to="/ko/post/$slug"
           params={{ slug: prev.slug }}
           viewTransition
-          className="group flex w-1/2 flex-col gap-1 rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500"
+          className="group flex w-1/2 flex-col gap-1 rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:border-gray-400 dark:border-stone-700 dark:hover:border-stone-500"
         >
           <span className="flex items-center gap-1 text-gray-500 text-xs dark:text-gray-400">
             <NavArrowLeft className="size-3.5" />
@@ -47,7 +47,7 @@ export function PostNavigation({ prev, next, className }: PostNavigationProps) {
           to="/ko/post/$slug"
           params={{ slug: next.slug }}
           viewTransition
-          className="group ml-auto flex w-1/2 flex-col items-end gap-1 rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500"
+          className="group ml-auto flex w-1/2 flex-col items-end gap-1 rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:border-stone-400 dark:border-stone-700 dark:hover:border-stone-500"
         >
           <span className="flex items-center gap-1 text-gray-500 text-xs dark:text-gray-400">
             다음 글
