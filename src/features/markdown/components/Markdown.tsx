@@ -4,7 +4,9 @@ import parse, {
   Element,
   type HTMLReactParserOptions,
 } from "html-react-parser";
+
 import { ArrowUpRight } from "lucide-react";
+import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButton.tsx";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
 import { Link } from "#/shared/components/Link.tsx";
 import { cn } from "#/shared/lib/tailwind.ts";
@@ -32,9 +34,10 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <div className="mt-14 mb-3">
               <h2
                 id={domNode.attribs.id}
-                className="scroll-m-20 font-bold text-2xl tracking-tight first:mt-0"
+                className="group flex scroll-m-20 items-center gap-1.5 font-bold text-2xl tracking-tight first:mt-0"
               >
                 {domToReact(domNode.children as DOMNode[])}
+                <AnchorCopyButton anchor={`#${domNode.attribs.id}`} />
               </h2>
             </div>
           );

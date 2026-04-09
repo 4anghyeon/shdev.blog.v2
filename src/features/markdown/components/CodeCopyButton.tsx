@@ -1,28 +1,15 @@
 import { Clipboard, ClipboardCheck } from "lucide-react";
-import { useState } from "react";
+import { useCopy } from "@/shared/hooks/useCopy";
 
 const CodeCopyButton = ({ code }: { code: string }) => {
-  const [copied, setCopied] = useState(false);
-  const handleClick = () => {
-    navigator.clipboard.writeText(code).then(() => {
-      setCopied(true);
-    });
-  };
-
-  // 버튼이 완전히 사라진 후 상태 초기화
-  const handleTransitionEnd = (e: React.TransitionEvent) => {
-    // opacity 트랜지션이 끝나고 버튼이 보이지 않을 때만 초기화
-    if (e.propertyName === "opacity") {
-      setCopied(false);
-    }
-  };
+  const { copied, copy, resetOnTransitionEnd } = useCopy();
 
   return (
     <button
       type="button"
       className="absolute top-1 right-4 cursor-copy rounded-md border border-gray-200 bg-background p-1 opacity-0 transition-all duration-300 group-hover:opacity-100 dark:border-gray-600"
-      onClick={handleClick}
-      onTransitionEnd={handleTransitionEnd}
+      onClick={() => copy(code)}
+      onTransitionEnd={resetOnTransitionEnd}
     >
       {copied ? (
         <>
