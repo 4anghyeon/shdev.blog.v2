@@ -19,7 +19,7 @@ export function PostNavigation({ prev, next, className }: PostNavigationProps) {
   return (
     <nav
       className={cn(
-        "mt-16 flex items-stretch justify-between gap-4 border-gray-200 border-t pt-8",
+        "mt-16 flex items-stretch justify-between gap-4 border-gray-200 border-t pt-8 dark:border-stone-600",
         className,
       )}
     >
