@@ -165,7 +165,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
               <img
                 {...domNode.attribs}
                 loading="lazy"
-                className="rounded-md shadow-gray-400/50 shadow-lg dark:shadow-gray-900/50"
+                className="rounded-md bg-gray-50 shadow-gray-400/50 shadow-lg dark:bg-stone-100 dark:shadow-gray-900/50"
                 alt={domNode.attribs.alt}
                 src={resolvedSrc}
               />
