@@ -1,0 +1,79 @@
+---
+title: 'Server Action이 간헐적으로 실행되지 않는 문제'
+description: 'Vercel의 서버리스 환경에서 Server Action 콜백이 간헐적으로 실행되지 않는 문제의 원인 분석과 해결 방법'
+published: '2025-02-21'
+tags: ['Vercel', 'Next.js']
+---
+
+Vercel 배포 환경에서 Server Action으로 등록한 Mixpanel 트래킹 코드가 간헐적으로 실행되지 않는 문제를 겪었다.
+로컬에서는 정상적으로 동작했지만, 배포 환경에서는 일부 이벤트만 기록되었다.
+원인은 Vercel의 서버리스 특성에 있었고, 콜백을 Promise로 감싸는 것으로 해결했다.
+
+## 문제 상황
+
+
+서버 사이드에서 아래와 같은 Mixpanel 트래킹 코드를 실행했을 때, 이벤트가 **간헐적으로만** 기록되는 현상이 발생했다.
+
+```typescript
+mixpanel.track(event, { distinct_id: userId, properties }, err => {
+  if (err) {
+    reject(err);
+  } else {
+    resolve("success");
+  }
+});
+```
+
+로컬 환경에서는 모든 이벤트가 정상적으로 기록되었지만, Vercel 배포 환경에서는 일부 이벤트만 기록되는 문제가 있었다.
+
+## 원인 분석
+
+원인을 파악하려면 먼저 [Vercel Function](https://vercel.com/docs/functions)을 이해해야 한다. Vercel에 배포된 모든 서버 사이드 코드는 Vercel의 인프라 위에서 실행되며, 이는 **FaaS(Function as a Service)** 방식으로 동작한다는 의미다.
+
+
+<details>
+  <summary>FaaS 란?</summary>
+
+  *Funtion as a Service*의 약자로, 서버리스 컴퓨팅을 구현하는 방식 중 하나이다. 여기서 Function은 우리가 개발시 사용하는 그 Function이며 이러한 함수들을 클라우드 서비스에 올려 필요할 때만 호출하는 개념이다. <br/>
+  즉, FaaS를 사용하면 서버를 개발할 필요없이 함수만을 작성하여 실행할 수 있게 해준다. <br/>
+  Vercel의 이러한 기능 덕에, 우리가 서버설정을 딱히 하지 않아도 API Routes나, SSR등을 이용할 수 있는 것이다.
+</details>
+
+> [!NOTE]
+> Vercel의 Serverless architecture는 AWS의 Lambda를 통해 구동된다.
+
+문제가 발생한 코드도 Server Action으로 서버에서 실행되었고, 서버리스 함수로 등록되었다.
+서버리스 함수는 실행 도중 프로세스가 종료될 수 있으며, 이 경우 **비동기 작업이 완료되기 전에 함수가 종료**된다.
+결국 콜백 함수가 실행되지 않아 이벤트가 정상적으로 전송되지 않았다.
+
+### 해결 방법
+
+콜백을 `Promise`로 감싸서 비동기 작업이 완료될 때까지 함수가 종료되지 않도록 수정했고, 모든 이벤트가 정상적으로 들어왔다.
+
+```typescript
+return new Promise((resolve, reject) => {
+    mixpanel.track(event, { distinct_id: userId, properties }, (err) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve('success')
+      }
+    })
+  })
+```
+
+## 서버 사이드에서 트래킹한 이유
+
+그렇다면 왜 `mixpanel.track`과 같은 트래킹 코드를 클라이언트 사이드에서 실행 시키지 않았는가?
+
+- **데이터 무결성**: 클라이언트에서 이벤트를 직접 전송하면 광고 차단기나 네트워크 문제로 이벤트가 누락될 수 있다. 서버 사이드에서 실행하면 이러한 외부 요인을 줄여 더 신뢰할 수 있는 데이터를 수집할 수 있다.
+- **비즈니스 로직과의 통합**: 결제 처리나 사용자 인증처럼 서버 사이드 로직과 트래킹 이벤트가 밀접하게 연관될 때, 서버에서 직접 처리하는 것이 자연스럽고 효율적이다.
+
+이러한 이유들 때문에, 가능하면 클라이언트가 아닌 서버 사이드에서 실행하는게 더 정확하고 안정적인 지표를 얻을 수 있다.
+
+---
+**참고**
+- [https://vercel.com/blog/behind-the-scenes-of-vercels-infrastructure](https://vercel.com/blog/behind-the-scenes-of-vercels-infrastructure)
+- [https://github.com/mixpanel/mixpanel-node/issues/175](https://github.com/mixpanel/mixpanel-node/issues/175)
+- [https://vercel.com/docs/functions](https://vercel.com/docs/functions)
+
