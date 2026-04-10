@@ -66,7 +66,7 @@
   }
 
   .dark {
-    --background: var(--color-stone-800);
+    --background: var(--color-stone-900);
     --foreground: oklch(0.985 0.001 106.423);
     --text-default: var(--color-gray-100);
 
