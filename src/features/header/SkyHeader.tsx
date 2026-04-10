@@ -139,7 +139,7 @@ export function SkyHeader() {
   return (
     <>
       <div className="mask-alpha mask-b-from-black mask-b-from-50% mask-b-to-transparent sticky top-16 z-3 h-10 w-full bg-linear-to-b from-cyan-100/60 via-cyan-100/30 to-cyan-100/10 dark:from-stone-950/40 dark:via-stone-950/30 dark:to-stone-950/10" />
-      <div className="fixed -top-10 z-5 h-40 w-full">
+      <div className="pointer-events-none fixed -top-10 z-0 h-40 w-full">
         {isDark
           ? STARS.map((star, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: <not important>

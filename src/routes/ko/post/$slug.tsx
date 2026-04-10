@@ -109,6 +109,8 @@ function BlogPost() {
         <h1
           className="scroll-m-20 font-bold text-3xl leading-tight tracking-tight lg:text-4xl"
           style={{ viewTransitionName: `post-title-${slug}` }}
+          data-pagefind-filter="lang[data-lang]"
+          data-lang="ko"
         >
           {post.title}
         </h1>

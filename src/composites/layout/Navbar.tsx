@@ -1,4 +1,5 @@
 import { SkyHeader } from "#/features/header/SkyHeader.tsx";
+import { SearchButton } from "#/features/search/components/SearchButton.tsx";
 import { ThemeToggleButton } from "#/features/theme/components/ThemeToggleButton.tsx";
 import { Link } from "#/shared/components/Link.tsx";
 
@@ -11,6 +12,7 @@ export function Navbar() {
             shdev.blog
           </Link>
         </div>
+        <SearchButton />
       </div>
       <ThemeToggleButton />
       <SkyHeader />

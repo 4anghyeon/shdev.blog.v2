@@ -15,3 +15,4 @@ todos.json
 .content-collections
 # Local Netlify folder
 .netlify
+public/pagefind

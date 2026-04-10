@@ -1,0 +1,173 @@
+---
+title: 'pagefind를 이용한 블로그 검색 기능 구현하기'
+description: '정적 웹사이트를 위한 클라이언트 사이드 검색 라이브러리 pagefind를 활용해 블로그에 빠르고 쉽게 검색 기능을 추가해 보았다.'
+published: '2025-03-10'
+updated: '2026-04-10'
+tags: ['Next.js', 'Pagefind']
+og:
+  logo: 'pagefind'
+  type: 1
+---
+
+Pagefind는 정적 웹사이트를 위해 설계된 클라이언트 사이드 검색 라이브러리이다. 정적 사이트 생성기(SSG)로 만든 웹사이트나 Next.js, Gatsby, Hugo, Jekyll 등의 프레임워크로 구축된 사이트에 강력한 검색 기능을 추가할 수 있게 해준다. 외부 API나 서비스키 없이 로컬에서 설치 및 설정이 가능하기 때문에 아주 쉽고 빠르게 적용해볼 수 있다.
+
+## 작동 방식
+
+Pagefind는 다음과 같은 프로세스로 작동한다.
+
+1. **인덱싱 단계**: 사이트 빌드 후 HTML 파일을 분석하여 검색 인덱스를 생성한다. 이 단계에서는 텍스트 콘텐츠, 제목, 메타데이터 등이 추출되고 처리되며, 인덱싱된 데이터를 이용할 수 있게 해주는 js 파일이 생성된다. 이 말은 즉, 빌드시 html을 만들어내는 경우에만 사용이 가능하다는 뜻이다.
+2. **검색 API**: 인덱스 생성 후, 제공된 JavaScript API를 사용하여 사이트에 검색 인터페이스를 구현할 수 있다.
+3. **UI 생성**: 사용자가 검색어를 입력하면 Pagefind는 미리 생성된 인덱스를 사용하여 관련 페이지와 섹션을 빠르게 찾아 결과를 제공하고, 우리는 이 결과를 이용해 UI만 구현하면 된다.
+
+다양한 기능과 사용법은 공식 Docs에서 확인할 수 있다.
+
+[Getting Started with Pagefind](https://pagefind.app/docs/)
+
+## 빠른 시작!
+
+### script 작성
+
+거두절미하고 바로 적용해보자. 어떤 패키지도 설치할 필요 없이 아래 내용을 따라가면 된다. 개발 환경은 `TanStack Start`와 `pnpm`, `Vite` 를 사용하고 있다.
+
+우선 `package.json`에 `postbuild` 를 추가한다.
+
+```json
+"scripts": {
+  "postbuild": "npx pagefind --site dist/client --output-path public/pagefind",
+},
+```
+
+- `--site dist/client`: TanStack Start의 클라이언트 사이드 빌드 결과물이 저장되는 경로다.
+- `--output-path public/pagefind`: 생성된 인덱스 파일을 public 폴더 내에 저장하여 런타임에 접근할 수 있도록 한다.
+
+**인덱싱이 되려면 html을 생성해야 하고, html이 생성되려면 빌드가 완료되어야 한다는 점을 유념하자.**
+
+빌드를 해보면 `public` 폴더 아래 pagefind 관련 파일들이 생기는 것을 확인할 수 있다.
+
+![pagefind-build-output.png](blog-search-using-pagefind/pagefind-build-output.png)
+
+이제 여기서 생긴 `pagefind.js` 만 import해서 사용하면 된다.
+
+### API 호출
+
+Vite 환경에서는 public 폴더의 파일을 소스 코드 내에서 직접 import 하려 할 때 정적 분석 오류가 발생할 수 있다. 이를 해결하기 위해 `window.location.origin`과 `/* @vite-ignore */`를 활용한 동적 임포트 방식을 사용한다.
+
+아래 코드는 React 19에서 도입된 use API를 활용한 예시다.
+
+```typescript
+import { use, useMemo } from "react";
+
+export const usePagefind = () => {
+  const pagefindPromise = useMemo(async () => {
+    if (typeof window === "undefined") return Promise.resolve(null);
+
+    try {
+      // Vite의 정적 분석을 피하기 위해 완전한 URL 경로 사용
+      const pagefindPath = `${window.location.origin}/pagefind/pagefind.js`;
+      return await import(/* @vite-ignore */ pagefindPath);
+    } catch (error) {
+      console.error("Pagefind 초기화 실패:", error);
+      return null;
+    }
+  }, []);
+
+  return use(pagefindPromise);
+};
+```
+
+위 훅을 사용하여 검색 컴포넌트를 구현할 수 있다.
+
+```tsx
+export default function Search() {
+  const [search, setSearch] = useState("");
+  const [results, setResults] = useState<any[]>([]);
+  const pagefind = usePagefind();
+
+  const handleSearch = async (e: any) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    if (!pagefind || value === "") {
+      setResults([]);
+      return;
+    }
+
+    const searchRes = await pagefind.search(value);
+    const resultsData = await Promise.all(
+      searchRes.results.slice(0, 10).map((r: any) => r.data())
+    );
+    setResults(resultsData);
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={search}
+        onChange={handleSearch}
+        placeholder="검색어를 입력하세요..."
+      />
+
+      <div>
+        {results.map((result) => (
+          <div key={result.url}>
+            <a href={result.url}>{result.meta.title}</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## Vite public 파일 import 오류
+
+Vite 에서는 `public` 디렉토리에 있는 파일을 소스 코드에서 직접 `import` 하는 것을 제한한다. `import("/pagefind/pagefind.js")`와 같이 작성하면 빌드 시 에러가 발생한다.
+
+**해결 방법**
+- 동적 임포트 경로에 `window.location.origin`을 결합하여 런타임에 결정되도록 하고, `/* @vite-ignore */` 주석을 추가하여 Vite의 정적 분석을 우회한다.
+- `vite.config.ts`의 `build.rollupOptions.external`에 해당 경로를 추가하여 번들링에서 제외한다.
+    ```ts
+    const config = defineConfig({
+      build: {
+        rollupOptions: {
+          external: ["/pagefind/pagefind.js"],
+        },
+      },
+    });
+    ```
+
+
+## 다국어 검색 지원
+
+다국어를 지원할 경우 검색 결과에 모든 언어가 섞여 나올 수 있다.
+
+Pagefind는 기본적으로 `html` 태그의 `lang` 속성을 기준으로 언어를 구분하지만, 정적 빌드 시점에 이를 동적으로 제어하기 어려운 경우 `data-pagefind-filter`를 활용할 수 있다.
+
+### 해결 방법
+
+각 페이지의 메인 섹션이나 제목 태그에 필터 속성을 추가한다.
+
+```html
+<h1
+  data-pagefind-filter="lang[data-lang]"
+  data-lang="ko"
+>
+  {title}
+</h1>
+```
+
+검색 요청 시 현재 페이지의 언어에 맞는 필터를 적용한다.
+
+```typescript
+const search = await pagefind.search(value, {
+  filters: {
+    lang: "ko",
+  },
+});
+```
+
+## 마치며
+
+작고 가벼운 라이브러리 pagefind 를 통해 검색 기능을 빠르게 구현해보았다. 외부 서비스에 의존하지 않고 자체적으로 검색 인덱스를 생성하니 프라이버시와 제어 측면에서도 장점이 있고, 또한 사용자 경험 측면에서도 빠른 응답 속도를 제공하니 블로그나 문서 사이트를 운영할경우 매우 유용할듯 하다.
+

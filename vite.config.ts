@@ -8,6 +8,11 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const config = defineConfig({
+  build: {
+    rollupOptions: {
+      external: ["/pagefind/pagefind.js"],
+    },
+  },
   optimizeDeps: {
     include: ["echo-text", "es-toolkit"],
   },
