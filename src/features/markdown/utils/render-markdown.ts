@@ -7,6 +7,7 @@ import type { Element } from "hast";
 import { toString as hastToString } from "hast-util-to-string";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { rehypeGithubAlerts } from "rehype-github-alerts";
+import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
@@ -35,6 +36,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
     .use(remarkRehype, {
       allowDangerousHtml: true,
     }) // Convert to HTML AST
+    .use(rehypeRaw)
     .use(rehypeSlug) // Add IDs to headings
     .use(rehypeGithubAlerts, {})
     .use(rehypeShiki, {

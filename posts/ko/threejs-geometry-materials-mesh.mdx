@@ -1,0 +1,235 @@
+---
+title: '[Three.js] Geometry, Materials, Mesh'
+description: 'Three.js에서 3D Object를 구성하는 세 가지 핵심 요소인 Geometry와 Materials, 그리고 Mesh에 대해 알아보자.'
+published: '2025-02-07'
+tags: ['Three.js']
+---
+Three.js에서 3D Object를 구성하는 세 가지 핵심 요소인 Geometry와 Materials, 그리고 Mesh에 대해 알아보자.
+
+## Geometry란?
+Geometry는 3D 객체의 형태를 정의하는 꼭지점(vertices)과 면(faces), 선(line)의 집합이다. 쉽게 말해서 3D 물체의 '골격'이라고 생각하면 된다.
+아래 예제 코드를 보자.
+
+```typescript
+// 사용자 정의 삼각형 만들기
+const geometry = new THREE.BufferGeometry();
+
+// 삼각형의 꼭지점 좌표
+const vertices = new Float32Array([
+    -1.0, -1.0, 0.0,  // v0
+     1.0, -1.0, 0.0,  // v1
+     0.0,  1.0, 0.0   // v2
+]);
+
+// 버퍼 속성으로 지오메트리에 할당
+geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+```
+
+<BufferGeometryExample />
+
+이런 식으로 Matrix 형태의 데이터를 전달하여 화면에 그릴 수 있다. 이와 관련된 더 많은 옵션은 [공식 문서 링크](https://threejs.org/docs/?q=geometr#api/ko/core/BufferGeometry) 에서 찾을 수 있다.
+
+### 기본 Geometry 종류
+Three.js에서는 다양한 기본 도형을 만들 수 있는 Geometry 클래스를 제공한다.
+
+```typescript
+// 박스
+const boxGeometry = new THREE.BoxGeometry(width, height, depth);
+
+// 구
+const sphereGeometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+
+// 평면
+const planeGeometry = new THREE.PlaneGeometry(width, height);
+
+// 원기둥
+const cylinderGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, height);
+
+// 원뿔
+const coneGeometry = new THREE.ConeGeometry(radius, height);
+
+// 도넛 모양
+const torusGeometry = new THREE.TorusGeometry(radius, tube, radialSegments);
+```
+<VariousGeometryExample />
+
+## Materials란?
+
+Material은 3D 객체의 외관을 정의한다. 색상, 투명도, 텍스처 등 객체가 어떻게 보일지 결정하는 모든 시각적 속성을 포함한다. 아래와 같은 주요 속성들을 사용한다.
+
+```typescript
+const material = new THREE.MeshStandardMaterial({
+    // 기본 속성들
+    transparent: true,     // 투명도 사용 여부
+    opacity: 0.5,         // 불투명도 (0.0 ~ 1.0)
+    side: THREE.DoubleSide, // 양면 렌더링
+    visible: true,        // 가시성
+    wireframe: false,     // 와이어프레임 모드
+
+    // 색상 관련
+    color: 0xff0000,      // 기본 색상
+    emissive: 0x000000,   // 자체 발광 색상
+
+    // 등등...
+});
+```
+
+
+### 주요 Material 종류와 특징
+
+
+#### 1. MeshBasicMaterial
+
+
+가장 단순한 Material로, 조명의 영향을 받지 않는다. 성능이 좋고 단순한 용도에 적합하다. 조명 계산이 없기 때문에 가장 빠르게 렌더링할 수 있다.
+
+#### 2. MeshStandardMaterial
+
+
+물리 기반 렌더링(PBR, Physically based rendering)을 사용하는 Material이다. PBR은 실제 물리 법칙을 기반으로 빛의 상호작용을 시뮬레이션하여 매우 사실적인 결과물을 만들어낸다. 그렇기에 다른 Material들 보다 렌더링의 계산 비용이 더 많이 든다.
+
+#### 3. MeshPhongMaterial
+
+
+MeshPhongMaterial은 광택 있는 표면을 표현하는데 적합한 Material이다. Phong 셰이딩 모델을 사용하여 하이라이트와 반사광을 계산하며, 플라스틱이나 도자기 같은 Material을 표현할 때 자주 사용된다.
+
+```typescript
+new THREE.MeshBasicMaterial({
+  color: color,
+  side: THREE.DoubleSide,
+});
+new THREE.MeshStandardMaterial({
+  color: color,
+  roughness: 0.5,
+  metalness: 0.5,
+  side: THREE.DoubleSide,
+}),
+new THREE.MeshPhongMaterial({
+  color: color,
+  shininess: 60,
+  specular: 0x444444,
+  side: THREE.DoubleSide,
+}),
+```
+<VariousMaterialExample />
+
+### Map의 기본 개념 및 종류
+
+
+Material에는 다양한 Map을 사용하여 객체의 외관을 더욱 사실적이고 풍부하게 표현할 수 있다. Map은 텍스처를 3D 객체의 표면에 매핑하는 방법을 제공하며, 각각의 Map은 서로 다른 시각적 특성을 제어하는데 사용된다.
+
+#### 1. map
+
+
+기본적인 색상 텍스처를 적용하는 맵이다.
+
+```typescript
+const textureLoader = new THREE.TextureLoader();
+const colorTexture = textureLoader.load('hangyodon.avif');
+
+const material = new THREE.MeshStandardMaterial({
+    map: colorTexture
+});
+```
+
+
+#### 2. normalMap
+
+
+표면의 디테일을 표현하는 맵이다.
+
+```typescript
+const normalTexture = textureLoader.load('hangyodon.avif');
+
+const material = new THREE.MeshStandardMaterial({
+    normalMap: normalTexture,
+    normalScale: new THREE.Vector2(1, 1)  // 노말맵의 강도 조절
+});
+```
+
+
+#### 3. roughnessMap
+
+
+표면의 거칠기를 제어하는 맵이다. MeshStandardMaterial에서 사용된다.
+
+```typescript
+const roughnessTexture = textureLoader.load('hangyodon.avif');
+
+const material = new THREE.MeshStandardMaterial({
+    roughnessMap: roughnessTexture,
+    roughness: 1.0  // 기본 거칠기 값
+});
+```
+
+<MaterialMapExample />
+
+## Mesh
+
+
+이제 뼈대 역할을 하는 Geometry와, 외관을 정의하는 역할을 하는 Material을 합쳐주는 객체가 Mesh이다. Mesh는 Three.js에서 Object3D를 상속받은 클래스로, 3D 공간에 렌더링될 수 있는 객체를 생성한다.
+
+```typescript
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
+```
+
+
+### Mesh의 속성과 메서드
+
+
+#### 위치(Position)
+
+
+```typescript
+// 위치 설정
+mesh.position.set(x, y, z);
+// 또는
+mesh.position.x = 1;
+mesh.position.y = 2;
+mesh.position.z = 3;
+```
+
+
+#### 회전(Rotation)
+
+
+```typescript
+// 위치 설정
+mesh.position.set(x, y, z);
+// 또는
+mesh.position.x = 1;
+mesh.position.y = 2;
+mesh.position.z = 3;
+```
+
+
+#### 크기(Scale)
+
+
+```typescript
+// 크기 설정
+mesh.scale.set(x, y, z);
+// 또는
+mesh.scale.x = 2;  // X축으로 2배
+mesh.scale.y = 0.5; // Y축으로 0.5배
+mesh.scale.z = 1;   // Z축은 변화 없음
+```
+
+## 마무리
+
+Three.js의 핵심 구성 요소들에 대해 살펴보았다. Geometry로 3D 객체의 형태를 정의하고, Material로 객체의 시각적 특성을 표현하며, 이 둘을 결합한 Mesh를 통해 실제 화면에 렌더링되는 3D 객체를 만들 수 있었다.
+
+이번 글에서는 기본적인 예제들을 통해 핵심 개념을 살펴보았지만, Three.js는 이보다 훨씬 더 다양하고 강력한 기능들을 제공하고 있으니 나중에 더 자세히 알아보면 좋을 것 같다.
+
+또한 3D 그래픽스의 특성상, 객체가 복잡해질수록 더 많은 컴퓨팅 자원이 필요하다. 따라서 실제 프로젝트에서는 아래와 같은 항목들을 신경쓰며 작업해야 한다! (*그렇지 않으면 모바일에서는 터지는 경우가 잦다...*)
+
+
+- 적절한 폴리곤 수 유지
+- 불필요한 객체의 메모리 해제
+
+---
+**참조**
+- [Three.js Docs](https://threejs.org/docs/)

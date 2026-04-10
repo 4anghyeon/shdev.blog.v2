@@ -7,6 +7,7 @@ import parse, {
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButton.tsx";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
+import { ExampleComponents } from "#/features/markdown/components/example-components/index.ts";
 import { Link } from "#/shared/components/Link.tsx";
 import { cn } from "#/shared/lib/tailwind.ts";
 
@@ -154,7 +155,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domNode.name === "hr") {
           return (
-            <hr className="my-15 border-gray-300/50 dark:border-gray-600" />
+            <hr className="my-15 border-gray-300/50 dark:border-stone-600" />
           );
         }
 
@@ -292,6 +293,22 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <td className="text-nowrap border-gray-100 border-b px-3 py-2 text-gray-700 text-sm dark:border-gray-700/60 dark:text-gray-300">
               {domToReact(domNode.children as DOMNode[], options)}
             </td>
+          );
+        }
+
+        const domName = domNode.name.toLowerCase();
+        const componentName = Object.keys(ExampleComponents).find(
+          (key) => key.toLowerCase() === domName,
+        );
+
+        if (componentName) {
+          const Component =
+            ExampleComponents[componentName as keyof typeof ExampleComponents];
+          return (
+            <div className="not-prose my-5">
+              <Component {...domNode.attribs} />
+              {domToReact(domNode.children as DOMNode[], options)}
+            </div>
           );
         }
       }
