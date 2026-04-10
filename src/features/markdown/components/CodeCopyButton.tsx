@@ -1,5 +1,5 @@
 import { Clipboard, ClipboardCheck } from "lucide-react";
-import { useCopy } from "@/shared/hooks/useCopy";
+import { useCopy } from "#/shared/hooks/use-copy.ts";
 
 const CodeCopyButton = ({ code }: { code: string }) => {
   const { copied, copy, resetOnTransitionEnd } = useCopy();

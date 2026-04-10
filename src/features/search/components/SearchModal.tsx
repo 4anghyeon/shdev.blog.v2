@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 import { Search as SearchIcon, X } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Button,
   Dialog,
@@ -55,6 +55,37 @@ export function SearchModal() {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<PagefindResult[]>([]);
   const pagefind = usePagefind();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  const focusResult = (index: number) => {
+    const links = resultsRef.current?.querySelectorAll<HTMLAnchorElement>("a");
+    links?.[index]?.focus();
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown" && results.length > 0) {
+      e.preventDefault();
+      focusResult(0);
+    }
+  };
+
+  const handleResultKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const links = resultsRef.current?.querySelectorAll<HTMLAnchorElement>("a");
+    if (!links) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (index < links.length - 1) focusResult(index + 1);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (index > 0) focusResult(index - 1);
+      else inputRef.current?.focus();
+    } else if (e.key === "Backspace") {
+      e.preventDefault();
+      inputRef.current?.focus();
+    }
+  };
 
   const handleSearch = async (value: string) => {
     setSearch(value);
@@ -68,6 +99,7 @@ export function SearchModal() {
         lang: "ko",
       },
     });
+
     const resultsData = await Promise.all(
       searchRes.results.slice(0, 10).map(async (r: any) => {
         const data = await r.data();
@@ -97,8 +129,10 @@ export function SearchModal() {
                     onChange={handleSearch}
                   >
                     <Input
+                      ref={inputRef}
                       placeholder="게시글 검색..."
                       className="w-full border-none bg-transparent text-lg text-stone-900 outline-hidden placeholder:text-stone-400 dark:text-stone-100"
+                      onKeyDown={handleInputKeyDown}
                     />
                   </TextField>
                   <Button
@@ -111,8 +145,8 @@ export function SearchModal() {
 
                 <div className="max-h-[60vh] overflow-y-auto p-2">
                   {results.length > 0 ? (
-                    <div className="space-y-1">
-                      {results.map((result) => (
+                    <div ref={resultsRef} className="space-y-1">
+                      {results.map((result, index) => (
                         <Link
                           key={result.url}
                           to={result.url}
@@ -121,13 +155,14 @@ export function SearchModal() {
                             setSearch("");
                             setResults([]);
                           }}
-                          className="group flex flex-col rounded-xl px-4 py-3 transition-colors hover:bg-stone-100 dark:hover:bg-stone-800"
+                          onKeyDown={(e) => handleResultKeyDown(e, index)}
+                          className="group flex flex-col rounded-xl px-4 py-3 transition-colors hover:bg-gray-200 focus:bg-gray-200 focus:outline-none dark:focus:bg-stone-700 dark:hover:bg-stone-700"
                         >
-                          <span className="font-semibold text-stone-900 transition-colors group-hover:text-primary dark:text-stone-100">
+                          <span className="font-semibold text-stone-900 transition-colors group-hover:text-primary group-focus:text-primary dark:text-stone-100">
                             {result.meta.title}
                           </span>
                           <p
-                            className="mt-1 line-clamp-2 text-sm text-stone-500 dark:text-stone-400"
+                            className="mt-1 line-clamp-2 text-sm text-stone-500 dark:text-stone-400 [&_mark]:rounded-md [&_mark]:bg-amber-200 [&_mark]:px-1"
                             // biome-ignore lint/security/noDangerouslySetInnerHtml: <>
                             dangerouslySetInnerHTML={{ __html: result.excerpt }}
                           />
