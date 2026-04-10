@@ -54,6 +54,21 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             </div>
           );
         }
+
+        if (domNode.name === "h4") {
+          return (
+            <div className="mt-10 mb-3">
+              <h4
+                id={domNode.attribs.id}
+                className="group flex scroll-m-20 items-center gap-1.5 font-semibold text-lg tracking-tight"
+              >
+                {domToReact(domNode.children as DOMNode[])}
+                <AnchorCopyButton anchor={`#${domNode.attribs.id}`} />
+              </h4>
+            </div>
+          );
+        }
+
         if (domNode.name === "p") {
           // p 안에 img가 있으면 p를 div로 교체
           const hasImage = domNode.children.some(

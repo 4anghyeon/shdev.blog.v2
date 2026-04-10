@@ -1,0 +1,127 @@
+---
+title: '[Three.js] Scene, Renderer, Camera'
+description: 'Three.js에서 무언가를 표현하기 위해 필요한 가장 기본적인 3가지 Scene, Renderer, Camera에 대해 알아보자.'
+published: '2025-01-05'
+updated: '2026-04-10'
+tags: ['Three.js']
+---
+
+Three.js로 3D 그래픽을 구현하려면 반드시 알아야 할 세 가지 개념이 있다. 바로 Scene, Camera, Renderer다. 이 세 요소가 어떤 역할을 하는지 이해하면, 3D 씬을 구성하고 화면에 렌더링하는 전체 흐름을 파악하는데 도움이 될 수 있다.
+
+## Scene
+
+Three.js로 3D 그래픽을 구현할 때 가장 기본이 되는 요소는 바로 Scene이다. Scene은 3D 세계의 컨테이너로서, 우리가 표현하고자 하는 모든 3D 객체들이 배치되는 공간이다.
+
+예를 들어, 영화 촬영 세트장을 떠올려보자. 배우, 소품, 조명 등 모든 요소가 세트장 안에 배치되듯이, Three.js의 Scene도 모든 3D 객체들이 배치되는 공간이다.
+
+```javascript
+// Scene 생성
+const scene = new THREE.Scene();
+```
+
+### Scene Graph
+
+Scene은 트리 구조로 이루어진 Scene Graph를 사용하여 객체들을 관리한다. 이는 부모-자식 관계를 통해 객체들을 체계적으로 구성할 수 있게 해준다.
+
+![Scene Graph](threejs-scene-renderer-camera/scene-graph.png)
+
+여기서 각 노드는 각각의 지역 공간(local space)을 가리킨다. 또한, 자식 객체들은 부모 객체의 변환(위치, 크기, 회전)을 상속 받는다.
+
+```javascript
+// 부모 객체 생성
+const parent = new THREE.Object3D();
+scene.add(parent);
+
+// 자식 객체 생성 및 부모에 추가
+const child = new THREE.Mesh(geometry, material);
+parent.add(child);
+```
+
+이러한 속성을 잘 이용하면, 복잡한 애니메이션도 비교적 쉽게 계산하고 구현할 수 있다. 아래는 예시이다.
+
+#### 그룹화
+
+```javascript
+// Scene Graph 없이 각각의 객체를 개별적으로 관리할 경우
+car.position.x += 10;
+wheel1.position.x += 10;
+wheel2.position.x += 10;
+wheel3.position.x += 10;
+wheel4.position.x += 10;
+
+// Scene Graph를 사용할 경우
+carGroup.position.x += 10;  // 모든 자식 객체들이 자동으로 같이 움직임
+```
+
+#### 상대 위치/회전/크기
+
+```typescript
+// 부모 객체에 대한 상대적인 위치 지정
+const door = new THREE.Mesh(doorGeometry, doorMaterial);
+door.position.set(1, 0, 0);  // 문은 집을 기준으로 오른쪽에 위치
+house.add(door);
+
+// 집이 이동하면 문도 자동으로 따라감
+house.position.set(10, 0, 0);
+
+
+// 팔을 흔드는 애니메이션의 경우
+// Scene Graph 없이 구현하면 어깨 위치를 기준으로 매번 계산해야 함
+arm.position.x = shoulder.position.x + Math.sin(time) * armLength;
+arm.position.y = shoulder.position.y + Math.cos(time) * armLength;
+
+// Scene Graph를 사용하면 단순히 회전만 하면 됨
+shoulder.add(arm);
+shoulder.rotation.z = Math.sin(time);
+```
+
+## Camera
+
+Camera는 3D 씬을 어떤 시점에서 볼 것인지 결정하는 요소이다. 실제 카메라와 마찬가지로, 위치, 방향, 시야각 등을 조절하여 원하는 장면을 표현할 수 있다.
+
+### PerspectiveCamera (원근 카메라)
+
+실제 사람의 눈이나 카메라처럼 원근감을 가지는 카메라이다. `PerspectiveCamera`는 4가지 속성을 바탕으로 [절두체](https://ko.wikipedia.org/wiki/%EC%A0%88%EB%91%90%EC%B2%B4)를 구성한다.
+
+![Perspective Camera Frustum](threejs-scene-renderer-camera/perspective-camera-frustum.png)
+
+![Perspective Camera Parameters](threejs-scene-renderer-camera/perspective-camera-params.png)
+
+1. FOV (Field of View, 시야각)
+    - 카메라가 보는 시야의 각도 (degree 단위)
+2. Aspect Ratio (종횡비)
+    - 카메라 뷰포트의 가로/세로 비율
+    - 보통 브라우저 창의 width/height 비율 사용
+    - 4:3, 16:9 등의 비율로도 설정 가능
+    - 화면이 찌그러져 보이지 않게 하는 중요한 속성
+3. Near (최소 거리)
+    - 카메라가 볼 수 있는 최소 거리
+    - 이 거리보다 가까이 있는 객체는 보이지 않음
+4. Far (최대 거리)
+    - 카메라가 볼 수 있는 최대 거리
+    - 이 거리보다 멀리 있는 객체는 보이지 않음
+
+## Renderer
+
+Renderer는 Scene과 Camera 정보를 받아 실제 화면에 표시할 이미지로 변환한다. 영화 제작 과정에서 원본 필름을 관객이 볼 수 있는 영상으로 현상하는 작업에 비유할 수 있다.
+
+
+```javascript
+const canvas = document.getElementById('canvas') as HTMLCanvasElement
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true })
+renderer.setSize(window.innerWidth, window.innerHeight); // 스크린 크기 설정
+document.body.appendChild(renderer.domElement); // HTML에 추가
+
+// 매 프레임마다 새로운 장면을 만들어내는 과정
+function animate() {
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+animate();
+```
+
+---
+**참고**
+- [https://threejs.org/docs/#manual/ko/introduction/Creating-a-scene](https://threejs.org/docs/#manual/ko/introduction/Creating-a-scene)
+- [https://threejs.org/manual/#ko/cameras](https://threejs.org/manual/#ko/cameras)
+
