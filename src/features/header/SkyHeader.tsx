@@ -71,16 +71,16 @@ interface StarConfig {
 }
 
 const STARS: StarConfig[] = [
-  { top: "10%", left: "10%", size: 2, duration: 3, delay: 0 },
-  { top: "20%", left: "25%", size: 1.5, duration: 4, delay: 2 },
-  { top: "15%", left: "45%", size: 2.5, duration: 3.5, delay: 0.5 },
-  { top: "25%", left: "60%", size: 1.8, duration: 4.5, delay: 1.5 },
-  { top: "10%", left: "80%", size: 2.2, duration: 3.8, delay: 3 },
-  { top: "30%", left: "90%", size: 1.2, duration: 5, delay: 0.2 },
-  { top: "5%", left: "35%", size: 1.6, duration: 4.2, delay: 1.2 },
-  { top: "28%", left: "15%", size: 2.4, duration: 3.6, delay: 0.8 },
-  { top: "18%", left: "70%", size: 1.4, duration: 4.8, delay: 2.8 },
-  { top: "8%", left: "55%", size: 2, duration: 3.4, delay: 0.4 },
+  { top: "50%", left: "10%", size: 2, duration: 3, delay: 0 },
+  { top: "60%", left: "25%", size: 1.5, duration: 4, delay: 2 },
+  { top: "55%", left: "45%", size: 2.5, duration: 3.5, delay: 0.5 },
+  { top: "65%", left: "60%", size: 1.8, duration: 4.5, delay: 1.5 },
+  { top: "50%", left: "80%", size: 2.2, duration: 3.8, delay: 3 },
+  { top: "70%", left: "90%", size: 1.2, duration: 5, delay: 0.2 },
+  { top: "45%", left: "35%", size: 1.6, duration: 4.2, delay: 1.2 },
+  { top: "68%", left: "15%", size: 2.4, duration: 3.6, delay: 0.8 },
+  { top: "58%", left: "70%", size: 1.4, duration: 4.8, delay: 2.8 },
+  { top: "48%", left: "55%", size: 2, duration: 3.4, delay: 0.4 },
 ];
 
 function Cloud({ config }: { config: CloudConfig }) {
@@ -139,7 +139,7 @@ export function SkyHeader() {
   return (
     <>
       <div className="mask-alpha mask-b-from-black mask-b-from-50% mask-b-to-transparent sticky top-16 z-3 h-10 w-full bg-linear-to-b from-cyan-100/60 via-cyan-100/30 to-cyan-100/10 dark:from-stone-950/40 dark:via-stone-950/30 dark:to-stone-950/10" />
-      <div className="fixed -top-10 z-5 h-40 w-full dark:top-3">
+      <div className="fixed -top-10 z-5 h-40 w-full">
         {isDark
           ? STARS.map((star, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: <not important>

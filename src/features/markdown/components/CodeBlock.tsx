@@ -28,9 +28,12 @@ export function CodeBlock({
         className,
       )}
     >
-      <span className="absolute -top-2 right-4 cursor-default rounded-md bg-background px-2 text-gray-400 text-xs transition-none group-hover:opacity-0">
-        {language}
-      </span>
+      {!filename && (
+        <span className="absolute -top-2 right-4 cursor-default rounded-md bg-background px-2 text-gray-400 text-xs transition-none group-hover:opacity-0">
+          {getLangExtension(language)}
+        </span>
+      )}
+
       {filename && (
         <div className="flex cursor-default items-center justify-between px-1 pb-1">
           <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700 dark:border-stone-900/80 dark:bg-stone-900 dark:text-gray-200">
