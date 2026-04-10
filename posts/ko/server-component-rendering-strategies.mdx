@@ -1,0 +1,172 @@
+---
+title: '서버 컴포넌트 렌더링 전략'
+description: '서버 컴포넌트의 렌더링 전략을 이해하고, 주의사항을 살펴본다. 또한 Parallel Routes와 함께 사용할 때 발생할 수 있는 이슈와 그 해결 방법에 대해서도 다루어본다.'
+published: '2025-01-16'
+updated: '2026-04-10'
+tags: ['Next.js']
+---
+
+
+
+리액트의 전통적인 컴포넌트인 클라이언트 컴포넌트는 본인이 가지고 있는 **상태(state)**, 혹은 부모의 상태가 변화하면 리렌더링이 일어난다. 하지만 서버 컴포넌트에서는 hook을 쓸 수 없다. 즉, 서버 컴포넌트는 상태를 가지지 않는다는 뜻이다.
+
+아래 예시 처럼 부모의 상태가 바뀌어도 서버 컴포넌트는 리렌더링 되지 않는다. 그렇다면 서버 컴포넌트는 언제 리렌더링 되는걸까?
+
+![server-component-rendering-strategies-example1](server-component-rendering-strategies/server-component-rendering-strategies-example1.webp)
+
+## 서버 컴포넌트 렌더링 전략
+
+Next.js 공식 문서에 따르면 Static, Dynamic, Streaming 3가지 전략으로 렌더링을 진행한다.
+
+### Static Rendering
+
+Static Rendering은 Next.js의 기본 렌더링 전략이다. 이 전략의 핵심 특징은 빌드 타임에 컴포넌트를 한 번 렌더링하고, 그 결과를 재사용한다는 점이다.
+
+- **빌드 타임 렌더링**
+    - 서버 컴포넌트는 애플리케이션 빌드 시점에 렌더링된다.
+    - 렌더링된 결과는 CDN(Content Delivery Network)에 캐시되어 모든 사용자에게 제공된다.
+- **데이터 불변성**
+    - 한번 렌더링된 컴포넌트의 데이터는 기본적으로 변경되지 않는다.
+    - 페이지를 새로고침해도 동일한 데이터가 표시된다.
+    - 클라이언트 상태 변경은 서버 컴포넌트의 데이터에 영향을 주지 않는다.
+- **Revalidation 메커니즘**
+    - `revalidateTag()` 또는 `revalidatePath()`로 수동으로 캐시를 무효화하고 리렌더링할 수 있다.
+
+
+1. 화면을 새로고침 했을때
+
+    ![server-component-rendering-strategies-example2](server-component-rendering-strategies/server-component-rendering-strategies-example2.webp)
+
+    state를 바꾸고 reload해도 데이터가 바뀌지 않는 것을 확인할 수 있다.
+
+
+2. revalidate를 했을 때
+
+    ![server-component-rendering-strategies-example3](server-component-rendering-strategies/server-component-rendering-strategies-example3.webp)
+
+    `revalidateTag`를 실행하면 서버 컴포넌트의 캐시가 무효화되고, 데이터를 다시 불러와 리렌더링하는 것을 확인할 수 있다.
+
+
+### Dynamic Rendering
+
+Dynamic Rendering은 사용자 요청마다 서버에서 새롭게 컴포넌트를 렌더링하는 전략이다.
+
+서버 컴포넌트는 다음 두 가지 조건 중 하나라도 만족하면 자동으로 Dynamic Rendering으로 전환된다.
+
+1. Dynamic API 사용
+2. fetch 옵션에 `{ cache: 'no-store' }` 적용
+
+#### 렌더링 전략 결정 테이블
+
+| **Dynamic API 사용** | **데이터 캐싱** | **렌더링 결과** |
+| -------------------- | --------------- | --------------- |
+| ❌ No                 | ✅ Cached        | Static          |
+| ✅ Yes                | ✅ Cached        | Dynamic         |
+| ❌ No                 | ❌ Not Cached    | Dynamic         |
+| ✅ Yes                | ❌ Not Cached    | Dynamic         |
+
+즉, Dynamic API를 사용하지 않으면서 fetch에 캐싱을 적용해야만 Static Rendering이 된다.
+
+
+### Dynamic API
+
+Dynamic API는 요청 시점의 컨텍스트에 의존하는 API다. 주요 Dynamic API는 다음과 같다.
+
+#### 1. cookies()
+
+```tsx
+import { cookies } from 'next/headers';
+
+async function Component() {
+  const cookieStore = cookies(); // [!code highlight]
+  const theme = cookieStore.get('theme');
+  return <div>Current theme: {theme?.value}</div>;
+}
+```
+
+#### 2. headers()
+
+```tsx
+import { headers } from 'next/headers';
+
+async function Component() {
+  const headersList = headers(); // [!code highlight]
+  const userAgent = headersList.get('user-agent');
+  return <div>Accessing from: {userAgent}</div>;
+}
+```
+
+#### 3. searchParams
+
+```tsx
+export default function Page({
+  searchParams,
+}: {
+  searchParams: { query: string };
+}) {
+  return <div>Search query: {searchParams.query}</div>;
+}
+```
+
+## Parallel Routes와 함께 사용 시 주의사항
+
+아래 예제처럼 searchParams로 모달을 제어할 때, Dynamic Rendering으로 인해 다음 문제가 발생할 수 있다.
+
+- searchParams 변경 시 서버 컴포넌트가 리렌더링됨
+- 데이터 페칭으로 인한 모달 지연
+- 모달 열림과 동시에 데이터 변경
+
+```tsx
+'use client'
+
+import {useSearchParams} from "next/navigation";
+import {Modal} from "@/app/@modal/(.)post/[id]/modal";
+
+function Default() {
+  const searchParam = useSearchParams();
+  const isModalOpen = searchParam.get('modal') === 'true';
+
+  if (!isModalOpen) {
+    return null;
+  }
+
+  return (
+    <Modal>modal!!</Modal>
+  );
+}
+
+export default Default;
+```
+
+`searchParam`이 붙으면서 모달이 열릴 때, 기존 컴포넌트가 리렌더링 되는걸 볼 수 있다.
+
+![server-component-rendering-strategies-example4](server-component-rendering-strategies/server-component-rendering-strategies-example4.webp)
+
+#### 해결 방법
+
+가장 간단하고 효과적인 방법은 Next.js의 라우팅 시스템을 우회하여 브라우저의 내장 History API를 직접 사용하는 것이다.
+
+```tsx
+'use client';
+
+function ProductList() {
+  const openModal = () => {
+    // Next.js 라우팅을 거치지 않고 URL 직접 변경
+    history.pushState(null, '', `?modal=true`); // [!code highlight]
+  };
+
+  return (
+    <div>
+      <button onClick={openModal}>모달 열기</button>
+    </div>
+  );
+}
+```
+
+`Link`나 `useRouter`를 사용하면 변경된 URL에 대한 탐색이 발생해 렌더링 로직이 다시 실행된다. 반면 History API를 사용하면 Next.js의 라우팅 시스템을 거치지 않고 URL만 변경하므로 렌더링 로직이 실행되지 않는다. 동시에 Next.js가 `useSearchParams`, `usePathname`과 동기화를 지원하기 때문에, URL 변화를 감지해 모달을 띄울 수 있다.
+
+
+## 마치며
+
+서버 컴포넌트는 Next.js에서 중요한 렌더링 최적화 전략이지만, 잘못 사용하면 의도치 않은 리렌더링이나 성능 저하를 일으킬 수 있다. 서버 컴포넌트를 효과적으로 사용하려면 이러한 렌더링 전략들을 잘 이해하고 적절히 활용하는 것이 중요할듯 하다.
+
