@@ -27,6 +27,7 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.20",
     "echo-text": "^1.0.3",
+    "es-toolkit": "^1.45.1",
     "gray-matter": "^4.0.3",
     "hast-util-to-string": "^3.0.1",
     "html-react-parser": "^5.2.17",

@@ -9,10 +9,10 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const config = defineConfig({
   optimizeDeps: {
-    include: ["echo-text"],
+    include: ["echo-text", "es-toolkit"],
   },
   ssr: {
-    noExternal: ["echo-text"],
+    noExternal: ["echo-text", "es-toolkit"],
   },
   plugins: [
     devtools(),
