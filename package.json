@@ -9,7 +9,7 @@
     "dev": "vite dev --port 30005",
     "build": "vite build",
     "preview": "vite preview",
-    "postbuild": "npx pagefind --site dist/client --output-path public/pagefind",
+    "postbuild": "npx pagefind --site dist/client --output-path dist/client/pagefind",
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",

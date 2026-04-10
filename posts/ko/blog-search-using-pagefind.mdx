@@ -33,12 +33,12 @@ Pagefind는 다음과 같은 프로세스로 작동한다.
 
 ```json
 "scripts": {
-  "postbuild": "npx pagefind --site dist/client --output-path public/pagefind",
+  "postbuild": "npx pagefind --site dist/client --output-path dist/client/pagefind",
 },
 ```
 
 - `--site dist/client`: TanStack Start의 클라이언트 사이드 빌드 결과물이 저장되는 경로다.
-- `--output-path public/pagefind`: 생성된 인덱스 파일을 public 폴더 내에 저장하여 런타임에 접근할 수 있도록 한다.
+- `--output-path dist/client/pagefind`: 생성된 인덱스 파일을 public 폴더 내에 저장하여 런타임에 접근할 수 있도록 한다.
 
 **인덱싱이 되려면 html을 생성해야 하고, html이 생성되려면 빌드가 완료되어야 한다는 점을 유념하자.**
 
