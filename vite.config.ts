@@ -27,6 +27,7 @@ const config = defineConfig({
       prerender: {
         enabled: true,
         crawlLinks: true,
+        filter: ({ path }) => !path.includes("#"),
       },
     }),
     nitro(),
