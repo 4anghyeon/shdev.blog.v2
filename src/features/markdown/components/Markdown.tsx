@@ -1,3 +1,4 @@
+import { ElementType } from "domelementtype";
 import parse, {
   type DOMNode,
   domToReact,
@@ -46,7 +47,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         }
         if (domName === "h3") {
           return (
-            <div className="mt-14 mb-3">
+            <div className="mt-10 mb-3">
               <h3
                 id={domNode.attribs.id}
                 className="group flex scroll-m-20 items-center gap-1.5 font-semibold text-xl tracking-tight"
@@ -78,7 +79,12 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             (child) => child instanceof Element && child.name === "img",
           );
 
-          if (hasImage) {
+          const hasTag = domNode.children.every(
+            (child) =>
+              child instanceof Element && child.type === ElementType.Tag,
+          );
+
+          if (hasImage || hasTag) {
             return (
               <div className="my-3 text-md leading-[1.6]">
                 {domToReact(domNode.children as DOMNode[], options)}
