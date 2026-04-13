@@ -1,4 +1,3 @@
-import { ElementType } from "domelementtype";
 import parse, {
   type DOMNode,
   domToReact,
@@ -80,8 +79,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
 
           const hasTag = domNode.children.every(
-            (child) =>
-              child instanceof Element && child.type === ElementType.Tag,
+            (child) => child instanceof Element && child.type === "tag",
           );
 
           if (hasImage || hasTag) {
