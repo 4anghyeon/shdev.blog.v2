@@ -1,0 +1,135 @@
+---
+title: 'CSS 한 줄로 숫자를 깔끔하게 표시하고 정렬하기'
+description: 'CSS font-variant-numeric 속성으로 숫자 정렬, 분수 자동 변환, 0과 O 구분하기 등을 한 줄로 해결해보기!'
+published: '2025-06-23'
+tags: ['CSS']
+---
+
+프론트엔드 개발자라면 다음과 같은 대화를 한 번 쯤은 나눠본적이 있을 것이다.
+
+
+> **💬**
+> **디자이너:** "이 표 숫자들 왜 이렇게 들쭉날쭉해요? 표마다 너비가 다르잖아요." <br/>
+> **개발자:** "폰트 때문에 숫자마다 너비가 달라서..." <br/>
+> **디자이너:** "그럼 꼭 고정폭 폰트를 써야 하나요?"
+
+
+이제 이 글을 읽고서는 이렇게 대답할 수 있을것이다.
+
+**"아니요, `font-variant-numeric` 한 줄이면 해결됩니다."**
+
+
+
+## font-variant-numeric 속성
+
+`font-variant-numeric`은 숫자의 너비, 모양, 분수 표기 등을 CSS 한 줄로 제어할 수 있는 속성이다. 폰트를 바꾸지 않고도 표의 숫자 정렬을 맞추거나, 조리법의 분수 표기를 자연스럽게 바꾸거나, ID 필드에서 0과 O를 명확히 구분할 수 있다.
+
+
+
+
+### 너비 제어 (numeric-spacing-values)
+
+- `tabular-nums`: 숫자마다 동일한 너비를 적용한다. 가변폭 폰트를 쓰는 환경에서 표의 숫자 열을 정렬할 때 유용하다.
+
+    ```css
+    font-variant-numeric: tabular-nums;
+    ```
+
+    <DiffExample className="tabular-nums">
+      <div>0123456789</div>
+      <div>1231231231</div>
+    </DiffExample>
+
+- `proportional-nums`: 반대로 고정폭 폰트 숫자의 너비를 비례폭으로 만든다.
+
+    ```css
+    font-variant-numeric: proportional-nums;
+    ```
+    <DiffExample className="proportional-nums" font="font-source-sans">
+      <div>0123456789</div>
+      <div>1231231231</div>
+    </DiffExample>
+
+
+
+
+### 스타일 제어 (numeric-figure-values)
+
+- `lining-nums`: 모든 숫자를 기준선(baseline)에 맞춰 동일한 높이로 표시한다.
+
+    ```css
+    font-variant-numeric: lining-nums;
+    ```
+    <DiffExample className="lining-nums" font="font-source-sans">
+      <div>0123456789</div>
+    </DiffExample>
+
+- `oldstyle-nums`: 일부 숫자(3, 4, 5, 7, 9)를 소문자처럼 아래로 내려서 표시한다.
+
+    ```css
+    font-variant-numeric: oldstyle-nums;
+    ```
+
+    <DiffExample className="oldstyle-nums" font="font-source-sans">
+      <div>0123456789</div>
+    </DiffExample>
+
+
+
+### 분수값 제어 (numeric-fraction-values)
+
+- `diagonal-fractions`: 일반 분수 표기(1/2, 3/4)를 자동으로 대각선 분수(½, ¾)로 변환한다.
+
+    ```css
+    font-variant-numeric: diagonal-fractions;
+    ```
+
+    <DiffExample className="diagonal-fractions" font="font-source-sans">
+      <div>밀가루 1/2컵</div>
+      <div>설탕 3/4컵</div>
+    </DiffExample>
+
+### 기타 유용한 기능
+
+- `slashed-zero`: 숫자 0에 사선을 넣어 알파벳 O와 명확히 구분한다.
+
+    ```css
+    font-variant-numeric: slashed-zero;
+    ```
+
+    <DiffExample className="slashed-zero">
+      ID: U00123O0
+    </DiffExample>
+
+- `ordinal`: 1st, 2nd, 3rd와 같은 텍스트를 서수 형식으로 보여준다.
+
+    ```css
+    font-variant-numeric: ordinal;
+    ```
+
+    <DiffExample className="ordinal" font="font-source-sans">
+      1st, 2nd, 3rd
+    </DiffExample>
+
+
+## 주의 사항
+
+모든 폰트가 앞서 나열한 CSS 속성이 적용되는 것은 아니다. 사용하는 폰트가 해당 OpenType 기능을 지원해야 효과가 나타난다.
+`font-variant-numeric` 속성은 OpenType 폰트의 고급 기능을 활용하는 것이기 때문에, 웹 폰트나 시스템 폰트가 이 기능들을 내장하고 있어야만 정상적으로 작동한다.
+
+이 포스트에서 예제는 Source Sans 3 사용하고 있어 위 예제를 그대로 확인할 수 있다. 그러나 오래된 폰트나 기본 웹 폰트에서는 `diagonal-fractions`, `oldstyle-nums`
+같은 값이 적용되지 않을 수 있으니, 직접 적용하기 전에 렌더링을 확인해보는 것이 좋다.
+
+
+## 마무리
+
+이제 디자이너가 "표 숫자 정렬이 왜 이렇게 엉망이에요?"라고 물어봐도 당황하지 말자. `font-variant-numeric` 한 줄이면 충분하다.
+작은 CSS 한 줄이지만, 사용자가 느끼는 완성도의 차이는 크다. 다음 프로젝트에서 숫자가 포함된 UI를 작업할 때, `font-variant-numeric`을 떠올려보자. 분명 더 나은 사용자 경험을 만들 수 있을 것이다.
+
+---
+
+**참조**
+
+- [Adobe Fonts OpenType 문법 가이드](https://helpx.adobe.com/kr/fonts/using/open-type-syntax.html)
+- [MDN font-variant-numeric 문서](https://developer.mozilla.org/en-US/docs/Web/CSS/font-variant-numeric)
+

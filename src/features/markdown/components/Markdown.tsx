@@ -315,7 +315,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           return (
             <div className="not-prose my-5">
               {/*@ts-ignore*/}
-              <Component {...domNode.attribs}>
+              <Component {...domNode.attribs} className={domNode.attribs.class}>
                 {domToReact(domNode.children as DOMNode[], options)}
               </Component>
             </div>

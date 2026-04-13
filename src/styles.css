@@ -2,6 +2,22 @@
 @import "tw-animate-css";
 @import "tailwind-animations";
 
+@font-face {
+  font-family: "Pretendard Variable";
+  src: url("/fonts/PretendardVariable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Sans 3";
+  src: url("/fonts/SourceSans3-VariableFont_wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @view-transition {
@@ -52,6 +68,7 @@
 /* 전역 CSS */
 @layer base {
   :root {
+    --font-pretendard: "Pretendard Variable", sans-serif;
     --radius: 0.625rem;
     --background: oklch(1 0 0);
     --foreground: oklch(0.147 0.004 49.25);

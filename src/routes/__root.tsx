@@ -46,7 +46,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className="flex min-h-svh flex-col bg-background font-sans text-text-default antialiased">
+      <body className="flex min-h-svh flex-col bg-background font-pretendard text-text-default antialiased">
         <ThemeProvider>
           <Navbar />
           {children}
