@@ -44,7 +44,7 @@ export function CodeBlock({
       <CodeCopyButton code={code} />
       <div
         className={cn(
-          "text-sm [&>pre]:m-0 [&>pre]:overflow-x-auto [&>pre]:rounded-sm [&>pre]:bg-transparent [&>pre]:p-4",
+          "text-sm [&>pre]:m-0 [&>pre]:max-h-120 [&>pre]:overflow-x-auto [&>pre]:rounded-sm [&>pre]:bg-transparent [&>pre]:p-4",
           {
             "[&>pre]:border [&>pre]:border-gray-100 dark:[&>pre]:border-stone-800":
               filename,

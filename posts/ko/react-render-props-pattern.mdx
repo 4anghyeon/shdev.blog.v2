@@ -1,0 +1,218 @@
+---
+title: 'Render Props 패턴으로 로직과 UI 분리하기'
+description: 'React의 Render Props 패턴이란 어떤 것이고 언제, 어떻게 사용하면 좋을까? Hooks을 사용하는 것과는 어떤 차이점이 있을까? 예제와 함께 알아보자.'
+published: '2026-02-11'
+tags: ['React', '디자인패턴']
+---
+
+React에서는 HOC, Custom Hook 등 컴포넌트와 데이터, 로직을 재사용하기 위한 여러가지 기법이 있다. 이번에는 그 중에서 **render props** 패턴이란걸 알아보자.
+
+
+
+## Render Props 패턴이란?
+
+아주 간단하게, Render Props는 컴포넌트의 prop으로 JSX를 반환하는 함수를 전달하여, 무엇을 렌더링할지를 부모(외부)에게 위임하는 패턴이다. 간단한 예시로 보면 다음과 같다. (참고로 props이름이 꼭 render일 필요는 없다.)
+
+```typescript
+// (1) 껍데기를 제공하는 컴포넌트
+const Box = ({ render }) => {
+  return (
+    <div style={{ border: '2px solid blue', padding: '20px', borderRadius: '8px' }}>
+      {render()}
+    </div>
+  );
+};
+
+// (2) 사용부: "나는 텍스트를 넣을래"
+<Box render={() => <span>간단한 텍스트입니다.</span>} />
+
+// (3) 사용부: "나는 이미지를 넣을래"
+<Box render={() => <img src="logo.png" alt="로고" />} />
+```
+
+이 처럼 함수를 JSX를 반환하는 props로 받아 호출하는 패턴이다. 너무 간단해서 아직까지는 이 패턴이 왜 유용한지 어떻게 쓸 수 있는지 잘 모르겠다.
+
+
+
+## 데이터를 전달하는 Render Props
+
+조금 더 발전 시켜보자. 예를 들어 자식 컴포넌트에서 특정 데이터를 관리하고 있지만, 부모에 따라서 그 데이터를 다르게 보여줄 필요가 있을 수 있다.
+
+```typescript
+// (1) 데이터를 가지고 있는 컴포넌트
+const UserProvider = ({ render }) => {
+  const user = { name: "Sanghyeon", role: "Developer" };
+
+  // 가진 데이터를 render 함수에 실어서 보냄
+  return <div>{render(user)}</div>;
+};
+
+// (2) 사용부 A: 이름만 크게 보고 싶을 때
+<UserProvider render={(user) => <h1>{user.name}</h1>} />
+
+// (3) 사용부 B: 역할과 이름을 같이 보고 싶을 때
+<UserProvider render={(user) => <p>{user.name} ({user.role})</p>} />
+
+
+```
+
+이러한 방식으로 우리는 컴포넌트가 가진 데이터를 외부(부모)에서 자유롭게 다루며 렌더링할 수 있다.
+
+
+
+### children prop 활용하기
+
+위 예시에서는 `render` 라는 이름의 prop을 사용했지만, `children` prop을 활용하는 것이 더 일반적이며, 이 방식을 사용하면 일반적인 컴포넌트처럼 자식을 감싸는 형태가 되어 가독성이 좋아진다.
+
+```typescript
+// (1) render prop 대신 children을 함수로 실행
+const UserProvider = ({ children }) => {
+  const user = { name: "Sanghyeon", role: "Developer" };
+
+  return <div>{children(user)}</div>;
+};
+
+// (2) 사용부: 훨씬 직관적인 구조가 된다.
+<UserProvider>
+  {(user) => (
+    <div>
+      <h1>{user.name}</h1>
+      <p>{user.role}</p>
+    </div>
+  )}
+</UserProvider>
+
+
+```
+
+
+
+### Hooks로 대체
+
+하지만 지금의 코드도, hook으로 충분히 대체할 수 있으며 단순히 데이터만 다루게 된다면 hook을 사용하는게 더 깔끔하고 단순할 수 있다.
+
+```typescript
+// hook으로 전환한 코드
+const useUser = () => {
+  const user = { name: "Sanghyeon", role: "Developer" };
+  return user;
+};
+
+// (1) 사용부 A: 이름만 크게
+function LargeName() {
+  const user = useUser();
+  return <h1>{user.name}</h1>;
+}
+
+// (2) 사용부 B: 역할과 이름
+function NameAndRole() {
+  const user = useUser();
+  return <p>{user.name} ({user.role})</p>;
+}
+```
+
+요즘의 리액트 개발에서는 많은 Render Props 패턴이 Hook으로 대체되었다. 하지만 **Hook이 해결하기 어려운 영역**이 있다. 바로 **"로직에 특정 DOM 구조가 결합되어야 할 때"** 이다.
+
+
+
+## 제대로 활용해보기
+
+무한스크롤을 해보자. 무한스크롤을 구현하기 위한 다양한 방법이 있겠지만,  `IntersectionObserver`와 스크롤의 끝을 감지하는 더미 컴포넌트를 이용한 방법으로 구현한다고 해보자.
+
+```typescript
+function PostListContainer() {
+  const { items, fetchNextPage, hasMore, isLoading } = useInfiniteScrollHook();
+  const observerRef = useRef(null); // 사용자가 직접 관리
+
+  return (
+    <div>
+      <PostList items={items} />
+
+      // (1) 불편함: 데이터(isLoading)에 따른 UI 처리를 여기서 매번 직접 해야 함
+      {isLoading && <MyCustomSpinner />}
+
+      // (2) 불편함: 로직을 위한 '더미 div'를 잊지 말고 직접 넣어야 함
+      {hasMore && <div ref={observerRef} style={{ height: '20px' }} />}
+    </div>
+  );
+}
+```
+
+Hook은 로직만 제공할 뿐, ref와 DOM연결은 개발자가 직접 다시 해야한다. 이러한 로직이 반복된다면, 꽤 불편한 작업이 될 것이다.
+
+
+
+**Render Props 방식으로 수정**
+
+```typescript
+// (1) Render Props 컴포넌트
+function InfiniteScroll({ onLoadMore, hasMore, children }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const observerRef = useRef(null);
+
+  useEffect(() => {
+    if (!hasMore || isLoading) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsLoading(true);
+        onLoadMore().finally(() => setIsLoading(false));
+      }
+    });
+
+    if (observerRef.current) observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [hasMore, onLoadMore, isLoading]);
+
+  return (
+    <div>
+      // 자식 함수에 현재 로딩 상태를 넘겨준다
+      {children(isLoading)}
+
+      // 필수 더미 요소는 컴포넌트가 책임진다
+      {hasMore && <div ref={observerRef} style={{ height: '20px' }} />}
+    </div>
+  );
+}
+
+// (2) 사용부: 내부 상태인 isLoading을 받아서 UI를 결정한다
+<InfiniteScroll hasMore={hasMore} onLoadMore={fetchNextPage}>
+  {(isLoading) => (
+    <>
+      <PostList items={items} />
+      // 로딩 바를 리스트 바로 밑에 둘지, 우측 상단에 작게 띄울지 부모가 결정한다
+      {isLoading && <MyCustomSpinner />}
+    </>
+  )}
+</InfiniteScroll>
+```
+
+Render Props 패턴을 이용하면 로직과 필수 DOM 구조를 한 세트로 제공할 수 있다. 사용자는 `observerRef`를 신경쓸 필요가 없어지고, `isLoading` 을 children prop으로 넘겨서 외부에서 어떻게 표시할지 컨트롤할 수 있게 되었다.
+
+## 장점과 단점
+
+**장점**
+
+- **로직과 구조의 완전한 캡슐화:** `InfiniteScroll` 예제처럼 로직이 돌아가기 위해 특정 DOM 요소(더미 div 등)가 반드시 필요할 때, 이를 컴포넌트 내부에 숨겨서 재사용성을 극대화할 수 있다.
+- **제어권의 위임:** 데이터는 컴포넌트가 관리하지만, "어떻게 보여줄지"는 사용하는 부모가 100% 결정한다. 덕분에 매우 유연한 UI 구성이 가능해진다.
+
+**단점**
+
+- **Render Prop Hell (중첩 문제):** 여러 개의 Render Props를 중첩해서 사용하게 될 경우, 코드의 깊이가 깊어져 가독성이 급격히 떨어질 수 있다.
+- **Hook에 비해 장황한 코드:** 단순한 로직 공유라면 Hook을 사용하는 것보다 작성해야 할 코드가 많아지고 구조가 복잡해 보일 수 있다.
+
+
+
+## 마무리
+
+단순히 데이터나 로직을 재활용하는 용으로는 Hook으로도 충분하다. 하지만 로직과 DOM 구조까지 캡슐화 하고 싶다면 Render Props 패턴을 한 번 사용해보자.
+
+그럼에도 아직 어떻게 활용할지 모르겠다면 [Render Props 패턴을 활용한 라이브러리 모음](https://github.com/jaredpalmer/awesome-react-render-props?tab=readme-ov-file)이 있으니 여기서 영감을 받아보자!
+
+
+
+---
+
+**참조**
+
+- [Render Props 패턴](https://patterns-dev-kr.github.io/design-patterns/render-props-pattern/)

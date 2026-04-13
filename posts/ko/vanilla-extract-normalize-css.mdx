@@ -1,0 +1,339 @@
+---
+title: 'vanilla-extract로 normalize.css 설정하기'
+description: 'vanilla-extract로 프로젝트에 normalize.css를 직접 설정하는 방법'
+published: '2026-03-09'
+tags: ['vanilla-extract']
+---
+
+
+vanilla-extract를 프로젝트에 도입하면서 한 가지 아쉬운 점을 발견했다.
+
+Tailwind CSS v4는 기본적으로 preflight라는 normalize 스타일을 포함하고 있어서 별도 설정 없이도 브라우저 기본 스타일이 정규화되는데, vanilla-extract에는 그런 기능이 없다.
+
+그래서 직접 만들기로 했다.
+
+
+## modern-normalize를 참고하여 작성
+
+Tailwind의 preflight가 기반으로 삼고 있는 [modern-normalize](https://github.com/sindresorhus/modern-normalize)를 참고했다.
+
+modern-normalize는 브라우저 간 스타일 불일치를 최소화하면서 불필요한 스타일 제거는 최대한 자제하는 방향으로 설계된 라이브러리다.
+
+
+
+## CSS Cascade Layers 활용
+
+normalize 스타일은 다른 스타일보다 우선순위가 낮아야 한다. CSS Cascade Layers(이하 레이어)를 사용하면 스타일 간 우선순위를 명시적으로 관리할 수 있어서, normalize 스타일이 의도치 않게 다른 스타일을 덮어쓰는 문제를 방지할 수 있다.
+
+vanilla-extract의 `globalLayer`로 레이어를 먼저 정의했다. `globalLayer`는 레이어 이름을 인자로 받아 레이어를 생성하고, 생성된 레이어 참조값을 반환한다.
+
+공식 문서에서는 이 참조값을 `layers.css.ts`에서 `export`해두고, 스타일을 작성할 때 레이어 이름 문자열 대신 참조값을 가져다 쓰는 방식을 권장한다. 레이어 이름을 문자열로 직접 쓰면 오타가 나도 알아채기 어렵고, 중첩 레이어처럼 이름이 자동으로 계산되는 경우엔 참조값을 써야 정확한 이름이 보장되기 때문이다.
+
+```typescript
+// layers.css.ts
+import { globalLayer } from "@vanilla-extract/css";
+
+export const normalize = globalLayer("normalize");
+```
+
+
+
+## normalize.css 작성
+
+vanilla-extract에서 전역 선택자에 스타일을 적용할 때는 `globalStyle`을 사용한다. 첫 번째 인자로 선택자 문자열을, 두 번째 인자로 스타일 객체를 받는다.
+
+```typescript
+import { globalStyle } from "@vanilla-extract/css";
+import { normalize } from "./layers.css.ts";
+
+/**
+ * CSS Normalize based on modern-normalize v3.0.1
+ * https://github.com/sindresorhus/modern-normalize
+ * MIT License
+ */
+
+/*
+Document
+========
+*/
+
+/**
+더 나은 박스 모델 사용 (opinionated).
+*/
+globalStyle("*, ::before, ::after", {
+  "@layer": {
+    [normalize]: {
+      boxSizing: "border-box",
+    },
+  },
+});
+
+/**
+1. 모든 브라우저에서 일관된 기본 폰트 사용
+2. 모든 브라우저에서 올바른 line height 설정
+3. iOS에서 방향 전환 후 폰트 크기 조정 방지
+4. 더 읽기 쉬운 탭 크기 사용 (opinionated)
+*/
+globalStyle("html", {
+  "@layer": {
+    [normalize]: {
+      fontFamily:
+        'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
+      lineHeight: 1.15,
+      WebkitTextSizeAdjust: "100%",
+      tabSize: 4,
+    },
+  },
+});
+
+/*
+Sections
+========
+*/
+
+/**
+모든 브라우저에서 margin 제거
+*/
+globalStyle("body", {
+  "@layer": {
+    [normalize]: {
+      margin: 0,
+    },
+  },
+});
+
+/*
+Text-level semantics
+====================
+*/
+
+/**
+Chrome과 Safari에서 올바른 폰트 두께 추가
+*/
+globalStyle("b, strong", {
+  "@layer": {
+    [normalize]: {
+      fontWeight: "bolder",
+    },
+  },
+});
+
+/**
+1. 모든 브라우저에서 일관된 기본 폰트 사용
+2. 모든 브라우저에서 이상한 'em' 폰트 크기 수정
+*/
+globalStyle("code, kbd, samp, pre", {
+  "@layer": {
+    [normalize]: {
+      fontFamily:
+        'ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace',
+      fontSize: "1em",
+    },
+  },
+});
+
+/**
+모든 브라우저에서 올바른 폰트 크기 추가
+*/
+globalStyle("small", {
+  "@layer": {
+    [normalize]: {
+      fontSize: "80%",
+    },
+  },
+});
+
+/**
+모든 브라우저에서 'sub'와 'sup' 요소가 line height에 영향을 주지 않도록 방지
+*/
+globalStyle("sub, sup", {
+  "@layer": {
+    [normalize]: {
+      fontSize: "75%",
+      lineHeight: 0,
+      position: "relative",
+      verticalAlign: "baseline",
+    },
+  },
+});
+
+globalStyle("sub", {
+  "@layer": {
+    [normalize]: {
+      bottom: "-0.25em",
+    },
+  },
+});
+
+globalStyle("sup", {
+  "@layer": {
+    [normalize]: {
+      top: "-0.5em",
+    },
+  },
+});
+
+/*
+Tabular data
+============
+*/
+
+/**
+Chrome과 Safari에서 테이블 border 색상 상속 수정
+*/
+globalStyle("table", {
+  "@layer": {
+    [normalize]: {
+      borderColor: "currentcolor",
+    },
+  },
+});
+
+/*
+Forms
+=====
+*/
+
+/**
+1. 모든 브라우저에서 폰트 스타일 변경
+2. Firefox와 Safari에서 margin 제거
+*/
+globalStyle("button, input, optgroup, select, textarea", {
+  "@layer": {
+    [normalize]: {
+      fontFamily: "inherit",
+      fontSize: "100%",
+      lineHeight: 1.15,
+      margin: 0,
+    },
+  },
+});
+
+/**
+iOS와 Safari에서 클릭 가능한 타입 스타일 수정
+*/
+globalStyle('button, [type="button"], [type="reset"], [type="submit"]', {
+  "@layer": {
+    [normalize]: {
+      WebkitAppearance: "button",
+    },
+  },
+});
+
+/**
+모든 브라우저에서 개발자가 'fieldset' 요소의 값을 0으로 설정할 때 혼란을 겪지 않도록 padding 제거
+*/
+globalStyle("legend", {
+  "@layer": {
+    [normalize]: {
+      padding: 0,
+    },
+  },
+});
+
+/**
+Chrome과 Firefox에서 올바른 수직 정렬 추가
+*/
+globalStyle("progress", {
+  "@layer": {
+    [normalize]: {
+      verticalAlign: "baseline",
+    },
+  },
+});
+
+/**
+Safari에서 증가/감소 버튼의 커서 스타일 수정
+*/
+globalStyle("::-webkit-inner-spin-button, ::-webkit-outer-spin-button", {
+  "@layer": {
+    [normalize]: {
+      height: "auto",
+    },
+  },
+});
+
+/**
+1. Chrome과 Safari에서 이상한 외관 수정
+2. Safari에서 outline 스타일 수정
+*/
+globalStyle('[type="search"]', {
+  "@layer": {
+    [normalize]: {
+      WebkitAppearance: "textfield",
+      outlineOffset: "-2px",
+    },
+  },
+});
+
+/**
+macOS의 Chrome과 Safari에서 내부 padding 제거
+*/
+globalStyle("::-webkit-search-decoration", {
+  "@layer": {
+    [normalize]: {
+      WebkitAppearance: "none",
+    },
+  },
+});
+
+/**
+1. iOS와 Safari에서 클릭 가능한 타입 스타일 수정
+2. Safari에서 폰트 속성을 'inherit'으로 변경
+*/
+globalStyle("::-webkit-file-upload-button", {
+  "@layer": {
+    [normalize]: {
+      WebkitAppearance: "button",
+      font: "inherit",
+    },
+  },
+});
+
+/*
+Interactive
+===========
+*/
+
+/**
+Chrome과 Safari에서 올바른 display 추가
+*/
+globalStyle("summary", {
+  "@layer": {
+    [normalize]: {
+      display: "list-item",
+    },
+  },
+});
+
+```
+
+GitHub Gist에도 올려 놓았다! -> [ Modern CSS Normalize with Vanilla Extract & CSS Layers](https://gist.github.com/4anghyeon/92f9752ed5960467cd8288c3a9eb5169)
+
+
+
+## global.css.ts
+
+마지막으로 레이어 정의 파일을 가장 먼저 import해야 한다. CSS 레이어는 선언 순서가 우선순위에 직접 영향을 미치기 때문에, 순서가 보장되지 않으면 normalize 스타일이 의도한 대로 동작하지 않을 수 있다.
+
+```typescript
+// global.css.ts
+import "./layers.css"; // 반드시 가장 먼저
+import "./normalize.css";
+```
+
+이제 프로젝트 진입점에서 `global.css` 파일을 import 하기만 하면 된다!
+
+```ts
+import "../global.css";
+```
+
+
+
+---
+
+**참고**
+
+- [https://github.com/sindresorhus/modern-normalize/blob/main/modern-normalize.css](https://github.com/sindresorhus/modern-normalize/blob/main/modern-normalize.css)
+- [globalLayer — vanilla-extract](https://vanilla-extract.style/documentation/global-api/global-layer/)
+- [globalStyle — vanilla-extract](https://vanilla-extract.style/documentation/global-api/global-style/)
