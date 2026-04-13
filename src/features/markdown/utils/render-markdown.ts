@@ -36,7 +36,6 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
     .use(remarkRehype, {
       allowDangerousHtml: true,
     }) // Convert to HTML AST
-    .use(rehypeRaw)
     .use(rehypeSlug) // Add IDs to headings
     .use(rehypeGithubAlerts, {})
     .use(rehypeShiki, {
@@ -56,6 +55,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
         transformerNotationDiff(),
       ],
     })
+    .use(rehypeRaw)
     .use(() => (tree) => {
       visit(tree, "element", (node: Element) => {
         if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(node.tagName)) {
