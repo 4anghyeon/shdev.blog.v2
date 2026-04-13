@@ -1,0 +1,211 @@
+---
+title: 'React 게으른 초기화 (lazy initialization)와 원리 알아보기'
+description: 'React useState의 게으른 초기화(lazy initialization)로 성능을 최적화하는 방법을 알아보고 그 동작 원리를 React 소스 코드 분석을 통해 이해해보자.'
+published: '2025-06-06'
+tags: ['React']
+---
+
+## 게으른 초기화 (lazy initialization)란?
+
+React에서 게으른 초기화는 상태(state) 초기화 시점에서 초기화 작업이 비용이 많이 들거나 시간이 오래 걸릴 때 유용하게 사용할 수 있는 기술이다.
+
+## 게으른 초기화가 필요한 이유
+
+예를 들어 다음과 같은 코드를 보자. 아래 코드는 React 컴포넌트가 리렌더링될 때마다 `useState`의 초기값으로 전달된 함수가 매번 호출되는 문제가 있다.
+
+```tsx
+const veryHeavyWork = () => {
+  console.log('very heavy work called');
+
+  // localStorage 접근, 복잡한 계산, API 호출 등
+  // 시간이 오래 걸리는 작업들...
+
+  return { data: 'expensive data' };
+};
+
+export const ProblemComponent = () => {
+  // 문제: 리렌더링마다 veryHeavyWork가 호출됨
+  const [expensiveState, setExpensiveState] = useState(veryHeavyWork());
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>
+        증가 (리렌더링 발생)
+      </button>
+    </div>
+  );
+};
+```
+
+위 코드에서 "증가" 버튼을 클릭할 때마다 `veryHeavyWork` 함수가 호출된다. 하지만 `expensiveState`는 이미 초기화되어 react-reconciler에 의해 memoized 되었기 때문에 이 함수의 반환값은 무시되고, 오직 성능 낭비만 발생한다.
+
+![console1.webp](react-lazy-initialization-complete-guide/console1.webp)
+
+
+
+## 게으른 초기화 적용해보기
+
+이런 경우 게으른 초기화를 사용하면, 리렌더링이 되더라도 함수를 다시 실행시키지 않을 수 있다.
+
+방법은 간단하다. 함수를 실행한 결과값을 전달하는 것이 아닌, **함수 자체를 전달하면 된다.**
+
+```tsx
+export const OptimizedComponent = () => {
+    // 해결책: 함수 자체를 전달
+  const [expensiveState, setExpensiveState] = useState(() => veryHeavyWork());
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>
+        증가 (최적화됨)
+      </button>
+    </div>
+  );
+};
+```
+
+![console2.webp](react-lazy-initialization-complete-guide/console2.webp)
+
+
+
+즉, 함수의 실행 시점을 개발자가 직접 정하는 것이 아닌 React에게 위임함으로써 해결할 수 있다. **이와 같이 필요할 때까지 실행을 미루는 기법 때문에 "Lazy Initialization"라는 이름이 붙었다.**
+
+
+
+## JavaScript 평가 시점
+
+### 초기화
+
+`useState`에 인자를 전달하기 전, JavaScript 코드 평가 시점에 `veryHeavyWork` 함수가 먼저 실행된다. 함수에서 반환된 값은 initialState에 담기고, react-reconciler가 그 값을 memoizedState에 저장한다.
+
+```typescript
+const [expensiveState, setexpensiveState] = useState(veryHeavyWork());
+```
+
+
+
+### 리렌더링
+
+리렌더링은 컴포넌트 함수를 다시 실행하는 것이므로, `useState`에 인자를 전달하기 전에 `veryHeavyWork` 함수가 매번 호출된다. react-reconciler가 hook의 memoizedState에 저장된 기존 값을 사용하기 때문에 이 반환값은 무시된다. 즉, 의미 없는 실행이 일어난 것이다.
+
+아래와 같이 작성하면 `veryHeavyWork` 함수를 실행하기 전에 `useState`에 함수가 **값으로서 전달**된다. JavaScript가 코드를 평가하는 시점에는 실행되지 않는다.
+
+```typescript
+const [expensiveState, setexpensiveState] = useState(() => veryHeavyWork());
+```
+
+
+
+## React 내부 동작 원리
+
+### 초기화
+
+React가 이 판단을 어떻게 하는지 [React 소스 코드](https://github.com/facebook/react/blob/main/packages/react-reconciler/src/ReactFiberHooks.js)를 통해 살펴보자.
+
+초깃값이 들어오면 `mountState`가 실행된다. return 값으로 memoizedState와 dispatch를 반환하는걸 볼 수 있다. 이 값들이 우리가 사용하게 되는 `const [state, setState] = useState()` 이다.
+
+```typescript
+function mountState<S>(
+  initialState: (() => S) | S,
+): [S, Dispatch<BasicStateAction<S>>] {
+  const hook = mountStateImpl(initialState);
+  // 생략...
+  queue.dispatch = dispatch;
+  return [hook.memoizedState, dispatch];
+}
+```
+
+
+구현체인 `mountStateImpl`을 살펴보면, 초기값이 함수로 들어올 경우 그 함수를 실행시킨 결과값을 `initialState`에 담고, 그 값을 `memoizedState`에 저장하는 것을 확인할 수 있다.
+
+
+```typescript
+function mountStateImpl<S>(initialState: (() => S) | S): Hook {
+  const hook = mountWorkInProgressHook();
+  if (typeof initialState === 'function') {
+    const initialStateInitializer = initialState;
+    initialState = initialStateInitializer();
+    // 생략...
+  }
+  hook.memoizedState = hook.baseState = initialState;
+  // 생략..
+  return hook;
+}
+```
+
+### 리렌더링
+
+리렌더링 시에는 `rerenderState` → `rerenderReducer` 순으로 동작한다. 기존에 저장된 `memoizedState`를 가져와 반환할 뿐, 초기화 함수는 다시 실행하지 않는다.
+
+```typescript
+function rerenderReducer<S, I, A>(
+  reducer: (S, A) => S,
+  initialArg: I,
+  init?: I => S,
+): [S, Dispatch<A>] {
+  const hook = updateWorkInProgressHook();
+  let newState = hook.memoizedState;
+
+  // 이전 렌더링 단계에서 ⁠dispatch가 호출된 경우 실행
+  if (lastRenderPhaseUpdate !== null) {
+    // 생략
+  }
+  return [newState, dispatch];
+}
+```
+
+## 언제 쓰면 좋을까?
+
+위에서 계속 설명한 것과 같이 초깃값을 생성하는데 연산이 오래 걸릴 경우에 쓰면 좋다. 예를 들어, `localStorage`나 `sessionStorage`에 접근할 때, 배열에 관한 메서드를 사용할 때 등이다.
+
+
+
+1. **localStorage/sessionStorage 접근**
+
+    ```javascript
+    const [user, setUser] = useState(() => {
+      const savedUser = localStorage.getItem('user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    });
+    ```
+
+2. **복잡한 초기 데이터 생성**
+
+    ```javascript
+    const [chartData, setChartData] = useState(() => {
+      return generateComplexChartData(rawData);
+    });
+    ```
+
+3. **큰 배열이나 객체 처리**
+
+    ```javascript
+    const [processedItems, setProcessedItems] = useState(() => {
+      return largeDataSet.map(item => ({
+        ...item,
+        processed: true,
+        timestamp: Date.now()
+      }));
+    });
+    ```
+
+
+
+## useEffect를 이용한 초기화와의 차이
+
+`useState`의 게으른 초기화와 `useEffect`를 통해 컴포넌트가 렌더링 될 때 state를 초기화 하는 것 사이에는 몇 가지 차이가 있다.
+
+### 초기화 시점
+
+- **게으른 초기화:** state 변수 선언 시점에 직접 값을 설정한다. 동기적으로 작동하며 컴포넌트가 처음 렌더링되기 전에 값이 설정되므로, 컴포넌트가 마운트되고 첫 렌더링이 일어나기 전에 값을 사용할 수 있다.
+- **useEffect:** 컴포넌트가 렌더링된 이후에 초기화되기 때문에, 값이 바뀌는 순간을 화면에서 느낄 수 있다.
+
+### 용도
+
+- **게으른 초기화:** 컴포넌트가 마운트되기 전에 값을 사용해야 하는 경우
+- **useEffect**: 비동기 작업이나 side effect가 발생할 경우
+
