@@ -1,0 +1,301 @@
+---
+title: '컨테이너 쿼리(Container Query)로 진짜 반응형 만들기'
+description: '미디어 쿼리로는 해결하기 어려웠던 반응형 디자인 문제를 컨테이너 쿼리로 해결하는 방법을 알아본다. 뷰포트가 아닌 부모 요소의 크기를 기준으로 스타일을 적용하여 진짜 재사용 가능한 컴포넌트를 만들어보자.'
+published: '2026-01-13'
+tags: ['CSS']
+---
+
+대부분의 개발자들이 처음 반응형을 배우고 만들 때, 미디어 쿼리(Media Query)를 이용해서 많이 만들었을 것이다.
+
+반응형 웹을 만들 때 미디어 쿼리를 사용하면 뷰포트 크기에 따라 레이아웃을 바꿀 수 있다. 하지만 개발을 하다 보면 뷰포트가 아니라 **컴포넌트가 실제로 차지하는 공간**에 따라 디자인이 바뀌어야 할 때가 많다.
+
+
+
+예를 들어, 같은 컴포넌트가 넓은 메인 영역에 배치될 수도 있고, 좁은 사이드바 영역에 들어갈 수도 있다. 두 영역이 차지하는 공간이 다르기 때문에 같은 디자인을 적용할 수 없고, 좁은 영역에서는 레이아웃이 깨질 가능성이 높다. 미디어 쿼리로는 이런 상황을 제대로 다루기 어렵다. 이런 경우에 컨테이너 쿼리를 사용하면 부모 요소의 크기에 반응하는 진짜 재사용 가능한 컴포넌트를 만들 수 있다.
+
+
+
+## 미디어 쿼리의 한계
+
+위에서 예시로 들었던 상황을 조금 더 구체적으로 살펴보자.
+
+### 미디어 쿼리는 어떻게 동작 하는가?
+
+미디어 쿼리는 뷰포트의 크기를 기준으로 스타일을 적용한다.
+
+```css
+/* 뷰포트 너비가 768px 이상일 때 */
+@media (min-width: 768px) {
+  .card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+  }
+}
+```
+
+이 코드는 "화면이 넓으면 카드를 가로로 보여준다"는 로직이다. 뷰포트 중심의 설계에서는 충분해 보이지만, **컴포넌트 중심의 설계**에서는 문제가 발생한다.
+
+
+
+### 실제로 겪는 상황
+
+**같은 컴포넌트가 여러 곳에서 다른 크기로 쓰일 때**
+
+카드 컴포넌트가 있다. 미디어쿼리를 통해 데스크톱(1280px)에서는 이미지와 설명 텍스트가 가로로 배치되고, 그 보다 작을 때는 세로로 배치되게 해놨다. 이 컴포넌트를 데스크톱 화면에서 넓은 영역(800px)과 좁은 영역(300px)에 배치한다고 해보자.
+
+미디어 쿼리는 뷰포트만 보기 때문에 "1280px보다 크니 가로 레이아웃을 적용해야지!"라고 판단하고, 그 결과 좁은 영역에서도 가로 레이아웃이 적용돼서 컴포넌트의 이미지가 일그러지거나, 텍스트가 넘치는 등 의도치않게 깨지게 된다.
+
+
+
+<MediaQueryProblem></MediaQueryProblem>
+
+
+
+미디어 쿼리의 한계를 정리하면 다음과 같다.
+
+- **뷰포트만 기준으로 판단한다**: 컴포넌트가 실제로 차지하는 공간은 알 수 없다
+- **컴포넌트 재사용성이 떨어진다**: 같은 컴포넌트를 다른 크기의 영역에 배치하면 의도와 다르게 보일 수 있다
+- **레이아웃 변경에 취약하다**: 부모 레이아웃이 바뀌면 자식 컴포넌트의 스타일도 함께 수정해야 한다
+
+이런 문제들을 컨테이너 쿼리로 해결할 수 있다.
+
+
+
+## 컨테이너 쿼리란?
+
+컨테이너 쿼리는 미디어 쿼리와 다르게 뷰포트가 아닌 **부모 요소(컨테이너)의 크기**를 기준으로 스타일을 적용할 수 있는 CSS 기능이다. 이를 통해 컴포넌트가 실제로 차지하는 공간에 따라 반응하는 진짜 재사용 가능한 컴포넌트를 만들 수 있다.
+
+컨테이너 쿼리는 크기 뿐만 아니라 다음과 같은 컨테이너의 상태를 기준으로 스타일을 적용할 수 있다.
+
+**크기 쿼리 (Size Queries)**
+
+- 컨테이너의 너비(width), 높이(height)를 기준으로 스타일 적용
+- 가장 일반적으로 사용되는 방식
+
+**스크롤 상태 쿼리 (Scroll State Queries)**
+
+- 컨테이너의 스크롤 상태를 기준으로 스타일 적용
+
+
+
+
+
+### 간단한 예제
+
+처음 예시로 들었던 상황에 컨테이너 쿼리를 적용해보자.
+
+```css
+.card-container {
+  container-type: inline-size;
+}
+
+/* 컨테이너가 400px 미만일 때: 세로 레이아웃 */
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 컨테이너가 400px 이상일 때: 가로 레이아웃 */
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+  }
+}
+```
+
+```html
+<div class="layout">
+  <main class="main-content">
+    <!-- 메인 영역: 넓은 컨테이너 -->
+    <div class="card-container">
+      <div class="card">...</div>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <!-- 사이드바: 좁은 컨테이너 -->
+    <div class="card-container">
+      <div class="card">...</div>
+    </div>
+  </aside>
+</div>
+```
+
+같은 컴포넌트이지만 뷰포트가 아닌 컨테이너의 크기를 기준으로 스타일을 적용하기 때문에, 넓은 영역에서는 가로 레이아웃으로, 좁은 영역에서는 세로 레이아웃으로 자연스럽게 표시된다.
+
+
+<ContainerQuerySolution></ContainerQuerySolution>
+
+
+
+## 기본 사용법
+
+컨테이너 쿼리를 사용하려면 먼저 기준이 될 부모 요소에 `container-type` 속성으로 컨테이너 타입을 지정해야 한다.
+
+```css
+/* Keyword values */
+container-type: normal;
+container-type: size;
+container-type: inline-size;
+container-type: scroll-state;
+
+/* Two values */
+container-type: size scroll-state;
+
+/* Global Values */
+container-type: inherit;
+container-type: initial;
+container-type: revert;
+container-type: revert-layer;
+container-type: unset;
+```
+
+- `normal`: 기본값. 크기 쿼리는 불가능하고 스타일 쿼리만 가능하다
+- `size`: 인라인(가로)과 블록(세로) 방향의 사이즈를 기반으로 한다.
+- `inline-size`: 인라인 방향(일반적으로 너비)의 사이즈를 기반으로 한다.
+- `scroll-state`: 스크롤 상태를 기반으로 한다.
+
+
+
+### @container 규칙으로 쿼리 작성하기
+
+컨테이너를 지정했다면, `@container` at-rule을 사용하여 컨테이너 쿼리를 정의할 수 있다. 미디어 쿼리의 `@media`와 유사한 문법을 사용한다.
+
+```css
+/* 기본 문법 */
+@container (min-width: 400px) {
+  .card {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+  }
+}
+
+/* 최대 너비 */
+@container (max-width: 400px) {
+  .card {
+    flex-direction: column;
+  }
+}
+
+/* 범위 지정 */
+@container (min-width: 400px) and (max-width: 800px) {
+  .card {
+    padding: 20px;
+  }
+}
+```
+
+
+
+### 컨테이너 이름 지정하기
+
+여러 컨테이너가 중첩되어 있을 때는 `container-name` 속성으로 특정 컨테이너를 지정할 수 있다.
+
+```css
+/* 컨테이너에 이름 부여 */
+.card-container {
+  container-type: inline-size;
+  container-name: card;
+}
+
+.sidebar-container {
+  container-type: inline-size;
+  container-name: sidebar;
+}
+
+/* 특정 컨테이너를 대상으로 쿼리 */
+@container card (min-width: 400px) {
+  .card-title {
+    font-size: 1.5rem;
+  }
+}
+
+@container sidebar (min-width: 300px) {
+  .sidebar-content {
+    padding: 16px;
+  }
+}
+```
+
+컨테이너 이름을 지정하지 않으면, 가장 가까운 부모 컨테이너를 기준으로 쿼리가 적용된다.
+
+
+
+### 새로운 단위들
+
+컨테이너 쿼리가 등장하면서 컨테이너의 크기를 기준으로 하는 새로운 길이 단위도 함께 등장했다. 뷰포트 단위(`vw`, `vh`)가 뷰포트 크기를 기준으로 하는 것처럼, 컨테이너 쿼리 단위는 컨테이너의 크기를 기준으로 한다.
+
+### 컨테이너 쿼리 길이 단위
+
+**기본 단위**
+
+- `cqw`: 컨테이너 너비의 1% (container query width)
+- `cqh`: 컨테이너 높이의 1% (container query height)
+- `cqi`: 컨테이너 인라인 방향 크기의 1% (container query inline-size)
+- `cqb`: 컨테이너 블록 방향 크기의 1% (container query block-size)
+- `cqmin`: `cqi`와 `cqb` 중 작은 값
+- `cqmax`: `cqi`와 `cqb` 중 큰 값
+
+대부분의 경우 가로 쓰기 모드에서는 `cqi`가 너비를, `cqb`가 높이를 의미한다.
+
+```css
+.card {
+  /* 컨테이너가 커질수록 여백도 함께 증가 */
+  padding: 2cqi;
+  gap: 1cqi;
+}
+```
+
+
+
+## 스타일 쿼리 (Style Queries)
+
+컨테이너 쿼리는 크기뿐만 아니라 컨테이너에 적용된 스타일 값도 쿼리할 수 있다. 스타일 쿼리를 사용하면 CSS 커스텀 속성(CSS 변수)의 값에 따라 자식 요소의 스타일을 동적으로 변경할 수 있다.
+
+### 기본 사용법
+
+스타일 쿼리는 `style()` 함수를 사용하여 컨테이너의 스타일 값을 확인한다.
+
+```css
+/* 컨테이너에 CSS 변수 정의 */
+.card-container {
+  --theme: dark;
+}
+
+/* 컨테이너의 스타일 값에 따라 쿼리 */
+@container style(--theme: dark) {
+  .card {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+}
+
+@container style(--theme: light) {
+  .card {
+    background: #ffffff;
+    color: #000000;
+  }
+}
+```
+
+
+
+## 마무리
+
+자바스크립트뿐만 아니라 CSS도 매년 새로운 기능이 추가되고 있다. 예전에는 자바스크립트로 복잡하게 구현해야 했던 것들을 이제는 CSS만으로도 할 수 있게 되었다. 그래서 CSS의 새로운 기능들도 계속 관심 있게 지켜봐야 할 것 같다.
+
+컨테이너 쿼리를 사용하면 정말 재사용 가능한 컴포넌트를 만들 수 있다. 같은 컴포넌트가 어디에 들어가든 그 공간에 맞게 알아서 반응하니까 훨씬 편하다. 미디어 쿼리로는 해결하기 어려웠던 문제들이 깔끔하게 해결되는 느낌이다.
+
+다만 CSS는 자바스크립트처럼 폴리필을 쓰기 어렵다. 그래서 실제로 프로젝트에 적용하기 전에 브라우저 지원 상황을 꼭 확인해봐야 한다. 다행히 컨테이너 쿼리는 주요 브라우저에서 지원하고 있지만, 스크롤 쿼리나, 스타일 쿼리등은 아직 실험적 단계에 놓인게 많기 때문에 타겟 브라우저를 체크하고 필요하면 점진적으로 적용하는 게 좋을 것 같다.
+
+
+
+
+
+---
+**참조**
+- [CSS container queries - CSS | MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_queries)
+- [컨테이너 쿼리  |  web.dev](https://web.dev/learn/css/container-queries?hl=ko)
+- [컨테이너 쿼리 사용 방법  |  Blog  |  web.dev](https://web.dev/blog/how-to-use-container-queries-now?hl=ko)
+- [https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_size_and_style_queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Containment/Container_size_and_style_queries)
