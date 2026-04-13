@@ -179,7 +179,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           return (
             <div
               className={cn(
-                "my-4 rounded-md px-4 py-0.5 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
+                "my-4 rounded-md px-4 py-3 [&>p]:first:mt-0 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
                 {
                   "border border-blue-200 bg-blue-100/20 dark:border-blue-900 dark:bg-blue-900/20 [&>p>svg]:fill-blue-400 [&>p]:first:text-blue-400":
                     domClass?.includes("note"),
