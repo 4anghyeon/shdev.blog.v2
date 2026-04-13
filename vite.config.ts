@@ -1,5 +1,5 @@
 import contentCollections from "@content-collections/vite";
-import netlify from "@netlify/vite-plugin-tanstack-start";
+import { nitro } from "nitro/vite";
 import tailwindcss from "@tailwindcss/vite";
 import { devtools } from "@tanstack/devtools-vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
@@ -29,7 +29,7 @@ const config = defineConfig({
         crawlLinks: true,
       },
     }),
-    netlify(),
+    nitro(),
     contentCollections(),
     viteReact({
       babel: {

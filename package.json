@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vite dev --port 30005",
     "build": "vite build",
+    "start": "node .output/server/index.mjs",
     "preview": "vite preview",
     "postbuild": "npx pagefind --site dist/client --output-path dist/client/pagefind",
     "test": "vitest run",
@@ -58,7 +59,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.5",
-    "@netlify/vite-plugin-tanstack-start": "^1.3.2",
+    "nitro": "latest",
     "@shikijs/rehype": "^4.0.2",
     "@shikijs/transformers": "^4.0.2",
     "@tailwindcss/typography": "^0.5.16",
