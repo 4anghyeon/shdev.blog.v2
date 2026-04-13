@@ -1,0 +1,253 @@
+---
+title: '쿠키 동의의 법적 필요성부터 구현 방법까지 빠르게 알아보기'
+description: '쿠키 동의 팝업을 구현해야 하는 법적 이유와 다양한 구현 방법을 알아본다. 또한 GDPR 및 개인정보 보호법을 준수하면서 사용자 경험을 해치지 않기 위해 직접 구현 시 고려해야 할 주요 사항들을 정리해보았다.'
+published: '2025-05-21'
+tags: ['Web']
+---
+
+## 쿠키 동의 팝업의 필요성
+
+쿠키 동의 팝업은 GDPR(General Data Protection Regulation)과 ePrivacy Directive(전자 프라이버시 규정)에 따라 필수적이다. GDPR은 EU에서 시행된 개인 데이터 보호 규정으로, 웹사이트가 사용자의 동의 없이 쿠키를 저장하거나 접근하는 것을 금지한다. 이는 쿠키가 개인 식별이 가능한 정보를 포함할 수 있기 때문이다.
+
+이 규정은 사용자가 자신의 데이터가 어떻게 사용되는지 알 권리와 통제권을 보장하기 위한 것으로, 위반 시 다음과 같은 처벌을 받을 수 있다.
+
+- 최대 4%의 전 세계 연간 매출
+- 2000만 유로(약 2800억 원)의 벌금
+
+따라서 글로벌 시장을 타겟으로 하는 **웹사이트라면 쿠키 사용에 대한 동의를 묻는 팝업을 필수적으로 표시해야 한다.**
+
+
+
+> [!NOTE]
+한국에서는 현재(2025년 5월 기준) 쿠키 동의가 법적으로 의무화되지 않았으나, 글로벌 트렌드와 EU 시장 진출을 고려할 때 이러한 정책을 준수하는 것이 권장된다. 만약 EU 거주자를 대상으로 하는 서비스(예: EU 언어로 제공, 유로 결제 지원)를 만든다면, GDPR 적용 대상이 된다.
+
+## 쿠키의 분류
+
+쿠키는 크게 **기능에 따른 분류**와 **관리 주체에 따른 분류**로 나뉜다.
+
+
+
+### 기능에 따른 분류
+
+1. **필수 쿠키(Essential Cookies)**
+    - 웹사이트의 기본 기능을 제공하기 위해 필요한 쿠키 (예: 페이지 탐색, 보안 접속 등)
+    - 사용자의 별도 동의 없이 자동으로 활성화되며, 웹사이트가 제대로 작동하는 데 필수적
+
+2. **기능 쿠키(Functional Cookies)**
+    - 사용자의 선호 설정과 경험을 개선하기 위해 사용됨 (예: 언어 설정, 다크 모드, 맞춤 레이아웃 등)
+    - 사용자 편의를 위한 기능이지만 동의 필요
+
+3. **성능 쿠키(Performance/Analytics Cookies)**
+    - 웹사이트의 성능을 분석하고 개선하기 위해 사용됨 (예: 방문자 행동 분석, 사용 시간, 오류 보고 등)
+    - 익명의 데이터를 수집하지만, 사용자의 동의가 필요함
+
+4. **마케팅 쿠키(Marketing Cookies)**
+    - 광고를 타겟팅하고 사용자 관심에 맞는 콘텐츠를 제공하기 위해 사용됨 (예: 맞춤 광고)
+    - 사용자의 동의가 필수적임
+
+### 관리 주체에 따른 분류
+
+1. **퍼스트 파티 쿠키(First-Party Cookies)**
+    - 사용자가 직접 방문한 웹사이트에서 생성하는 쿠키
+    - 현재 방문 중인 도메인에서만 사용되며, 주로 해당 사이트의 기능 지원을 위해 생성됨
+    - 대부분 필수 쿠키나 기능 쿠키로 분류됨
+2. **서드 파티 쿠키(Third-Party Cookies)**
+    - 방문 중인 웹사이트가 아닌 다른 도메인에서 생성한 쿠키
+    - 주로 사용자 추적, 광고 타겟팅, 분석 등에 사용됨
+    - 최근 많은 브라우저에서 기본적으로 차단하거나 제한하는 추세
+
+
+
+## LocalStorage와 SessionStorage도 정책 대상인가?
+
+쿠키 정책이라고는 하지만, 사실 **쿠키**가 중요한 게 아니다. 모든 개인정보 데이터는 허락 없이 저장되어서는 안 된다. 따라서 개인정보를 다루는 값이라면 쿠키든 LocalStorage든 SessionStorage든 정책을 준수하여 값을 저장해야 한다.
+
+이는 GDPR이 기술이 아닌 데이터 자체에 초점을 맞추고 있기 때문이다. 개인정보가 어떤 방식으로 저장되든 사용자의 동의가 필요하다는 원칙은 변함없다.
+
+
+
+## 쿠키 동의 팝업 구현 방법
+
+이제 쿠키 동의 팝업을 왜 구현하는지에 대해서는 어느 정도 알았으니 실제 구현 방법을 알아보자.
+
+### 1. CMP를 통한 구현
+
+가장 간단한 방법은 CMP(Cookie Management Platform)를 이용하는 것이다. CMP는 웹사이트의 쿠키 및 개인정보 동의를 관리해주는 전문 플랫폼이다.
+
+CMP를 사용하면 계속 변화할 수 있는 다양한 지역의 개인정보 보호법을 계속 추적하며 준수하게 할 수 있고, 다양한 언어를 자동 지원, 직접 구현하지 않아 유지보수할 필요가 없는 등 많은 장점이 있다. 그러나 비용이 발생하고, 커스터마이징이 불편할 수 있는 단점이 있다.
+
+[구글과 파트너십을 맺은 여러 CMP](https://cmppartnerprogram.withgoogle.com/)가 존재하니 조건에 맞는 업체를 찾아 구현하면 된다.
+
+
+
+### 2. 직접 구현
+
+비용 문제나 커스터마이징이 필요한 경우 직접 구현하는 방법도 있다. 직접 구현할 때 주로 고려해야 할 기능은 다음과 같다.
+
+#### 1) 동의 설정 관리
+
+사용자의 동의 설정을 관리하는 상태 구조를 먼저 정의해야 한다.
+
+```typescript
+// 동의 설정 타입 정의
+interface ConsentSettings {
+  essential: boolean; // 필수 쿠키 (항상 true)
+  functional: boolean; // 기능 쿠키
+  analytics: boolean; // 분석 쿠키
+  marketing?: boolean; // 마케팅 쿠키 (선택적)
+}
+
+// 기본 동의 설정 (모든 사용자에게 적용되는 초기값)
+const defaultConsentSettings: ConsentSettings = {
+  essential: true, // 필수는 항상 true
+  functional: false,
+  analytics: false,
+  marketing: false,
+};
+```
+
+#### 2) 동의에 따른 스크립트 관리
+
+사용자가 동의한 항목에 따라 관련 스크립트를 동적으로 로드하는 방식을 구현한다.
+
+```tsx
+export default function ScriptContainer() {
+  const [consentSettings, setConsentSettings] = useState<ConsentSettings>(getStoredConsent() || defaultConsentSettings);
+
+  // 동의 설정에 따라 스크립트 로드
+  return (
+    <>
+      {/* 필수 스크립트는 항상 로드 */}
+      <EssentialScripts />
+
+      {/* 기능 쿠키 동의 시 로드 */}
+      {consentSettings.functional && <FunctionalScripts />}
+
+      {/* 분석 쿠키 동의 시 로드 */}
+      {consentSettings.analytics && (
+        <>
+          <GoogleAnalyticsScript />
+          <ClarityScript />
+        </>
+      )}
+
+      {/* 마케팅 쿠키 동의 시 로드 */}
+      {consentSettings.marketing && <MarketingScripts />}
+    </>
+  );
+}
+```
+
+#### 3) 동의 인터페이스 구현
+
+사용자에게 동의를 받을 UI 구현이 필요하다. 기본적인 동의 팝업과 상세 설정 패널을 구현해야 한다.
+
+```tsx
+function CookieConsentBanner() {
+  const [showSettings, setShowSettings] = useState(false);
+  const [consent, setConsent] = useState(getStoredConsent() || defaultConsentSettings);
+
+  // 동의 설정 저장 함수
+  const saveConsent = (settings: ConsentSettings) => {
+    localStorage.setItem('cookieConsent', JSON.stringify({
+      ...settings,
+      timestamp: new Date().toISOString()
+    }));
+    setConsent(settings);
+    // 필요한 경우 서버에 동의 정보 전송
+  };
+
+  // 이미 동의가 있으면 배너 숨김
+  if (localStorage.getItem('cookieConsent')) {
+    return null;
+  }
+
+  return (
+    <div className="cookie-banner">
+      {!showSettings ? (
+        // 기본 동의 배너
+        <div className="simple-banner">
+          <p>이 웹사이트는 최상의 경험을 제공하기 위해 쿠키를 사용합니다.</p>
+          <div className="button-group">
+            <button onClick={() => saveConsent({...consent, functional: true, analytics: true, marketing: true})}>
+              모두 수락
+            </button>
+            <button onClick={() => saveConsent({...consent, functional: false, analytics: false, marketing: false})}>
+              필수 쿠키만
+            </button>
+            <button onClick={() => setShowSettings(true)}>
+              설정
+            </button>
+          </div>
+        </div>
+      ) : (
+        // 상세 설정 패널
+        <div className="settings-panel">
+          {/* 상세 설정 UI 구현 */}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+
+
+#### 4) 분석 도구 및 마케팅 도구 연동
+
+Google Analytics, Clarity, Google Tag Manager 등의 도구를 사용할 경우 동의 상태에 따라 적절하게 초기화해야 한다.
+
+**GTM 예시**
+
+```typescript
+// 동의 상태에 따라 설정
+if (consentSettings.analytics) {
+  // 분석 동의가 있는 경우
+  window.gtag('consent', 'update', {
+    analytics_storage: 'granted'
+  });
+} else {
+  // 동의가 없는 경우
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied'
+  });
+}
+```
+
+- [웹사이트에서 동의 모드 설정하기](https://developers.google.com/tag-platform/security/guides/consent?hl=ko)
+
+
+
+**Clarity 설정:** Clarity를 사용할 경우 Clarity 대시보드에 들어가 직접 설정을 해줘야 한다.
+
+- [Clarity 쿠키 동의 설정 문서](https://learn.microsoft.com/en-us/clarity/setup-and-installation/cookie-consent)
+
+
+
+## 구현 후 확인 방법
+
+구현 후 쿠키 정책을 잘 준수했는지 테스트할 수 있는 사이트들이 몇 개 있으니 여기서 잘 준수했는지 확인해볼 수도 있다.
+
+- [Cookie Metrix](https://www.cookiemetrix.com): 웹사이트의 쿠키 사용 현황을 스캔하고 GDPR 준수 여부를 확인
+- [2GDPR](https://2gdpr.com): 웹사이트의 개인 정보 보호 및 쿠키 정책 준수 여부를 평가
+
+
+
+## 결론
+
+쿠키 동의 팝업은 단순한 UI 요소가 아닌 법적 요구사항이자 사용자의 개인정보 보호를 위한 중요한 메커니즘이다. CMP를 활용하거나 직접 구현하는 방식 모두 장단점이 있으므로 프로젝트의 규모, 예산, 커스터마이징 요구사항 등을 고려하여 적절한 방식을 선택해야 한다. *(개인적으로는 그냥 CMP 쓰자...)*
+
+개인정보 보호에 대한 인식이 높아지면서 쿠키 동의는 앞으로 더욱 중요해질 것이다. 사용자 친화적이면서도 법적 요구사항을 충족하는 동의 메커니즘을 구현하는 것이 프론트엔드 개발자의 중요한 책임 중 하나가 되고 있다.
+
+
+
+
+
+---
+
+**참조**
+
+- [Do the GDPR and Cookie-Law regulations apply to localStorage?](https://law.stackexchange.com/questions/30739/do-the-gdpr-and-cookie-law-regulations-apply-to-localstorage)
+- [What is GDPR, the EU’s new data protection law? - GDPR.eu](https://gdpr.eu/what-is-gdpr/)
+- [Help with the EU user consent policy – Company – Google](https://www.google.com/about/company/user-consent-policy-help/)
+
