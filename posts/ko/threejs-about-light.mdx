@@ -1,0 +1,114 @@
+---
+title: '[Three.js] Light'
+description: 'Three.js가 제공하는 다양한 조명 타입(AmbientLight, DirectionalLight, PointLight, SpotLight, HemisphereLight, RectAreaLight)의 특성과 활용법을 예제와 함께 알아보았다.'
+published: '2025-03-29'
+tags: ['Three.js']
+---
+
+## Three.js 조명의 기본 개념
+
+조명은 3D에서 실제감과 입체감을 주는 아주 중요한 요소다. Three.js에서 조명은 `THREE.Light`의 하위 클래스로 구현되며. 모든 조명 객체는 위치, 색상, 강도 등의 기본 속성을 가진다. Three.js에서는 다양한 조명을 제공하는데, 그 종류 들을 아래에서 하나씩 알아보자.
+
+> [!NOTE]
+> **🫢 모든 Material에서 조명을 지원하지 않는다.**
+> 대표적으로 `MeshPhongMaterial` 과 `MeshStandardMaterial` 에서 조명을 사용할 수 있다.
+> - 참고:  [https://threejs.org/manual/#en/material-table](https://threejs.org/manual/#en/material-table)
+
+## AmbientLight
+AmbientLight은 특정 방향 없이 장면 전체를 균일하게 비추는 기본적인 조명이다. 그림자를 생성하지 않으며, 일반적으로 다른 조명과 함께 사용해 너무 어두울 경우 밝혀주는 용도로 활용된다.
+조명 색상과 강도를 인자로 받는다.
+
+```ts
+const ambientLight = new THREE.AmbientLight(ambientColor, ambientIntensity);
+scene.add(ambientLight);
+```
+
+<AmbientLightDemo />
+
+
+## DirectionalLight
+
+DirectionalLight은 태양빛처럼 모든 빛이 동일한 방향으로 평행하게 비추는 조명이다. 멀리 있는 강한 광원(일반적으로 태양)을 시뮬레이션하는 데 적합하며, 뚜렷한 그림자를 만들 수 있다.
+
+DirectionalLight의 방향 설정은 다른 조명과 조금 다르다. 일반적인 광원(예: PointLight)은 회전(rotation)으로 방향을 설정할 수 있지만, DirectionalLight는 **광원의 위치(position)에서 타겟(target) 방향으로 빛이 이동한다.**
+
+- 즉, 회전 값을 변경해도 광원의 방향에는 영향을 미치지 않는다. 조명이 태양이라고 생각하면 편하다.
+- **빛의 방향을 바꾸려면 타겟의 위치를 변경해야 한다.**
+
+```ts
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(5, 10, 5);
+directionalLight.castShadow = true;
+
+// 그림자 설정
+directionalLight.shadow.mapSize.width = 1024;
+directionalLight.shadow.mapSize.height = 1024;
+directionalLight.shadow.camera.near = 0.5;
+directionalLight.shadow.camera.far = 50;
+directionalLight.shadow.camera.left = -10;
+directionalLight.shadow.camera.right = 10;
+directionalLight.shadow.camera.top = 10;
+directionalLight.shadow.camera.bottom = -10;
+
+scene.add(directionalLight);
+```
+
+<DirectionalLightDemo />
+
+## PointLight
+PointLight는 전구처럼 한 점에서 모든 방향으로 빛을 방출하는 조명이다. 거리(distance)에 따라 빛의 강도가 감소하며, 감쇠율(decay)로 거리에 따른 빛의 감소율을 조절할 수 있다.
+또한 여러 개의 PointLight를 배치하여 복잡한 조명 환경 구성도 가능하다. 실내 조명 같은 효과를 낼 때 유용하다.
+
+
+```ts
+const pointLight = new THREE.PointLight(0xff0000, 1, 100); // 색상, 강도, 최대 거리
+pointLight.position.set(10, 5, 5);
+pointLight.castShadow = true;
+scene.add(pointLight);
+```
+
+<PointLightDemo />
+
+
+## SpotLight
+
+스포트라이트는 한 점에서 원뿔 모양으로 퍼지는 조명이다. DirectionalLight와 마찬가지로, SpotLight는 **빛이 향하는 타겟을 설정**할 수 있다. 무대 조명이나 손전등 같은 효과를 만들 수 있다.
+
+```ts
+const light = new THREE.SpotLight(0xffffff, 1);
+light.position.set(5, 10, 5); // 광원의 위치 설정
+light.target.position.set(0, 0, 0); // 타겟의 위치 설정
+scene.add(light);
+scene.add(light.target);
+```
+<SpotLightDemo />
+
+## HemisphereLight
+HemisphereLigth는 하늘색과 지면색 두 가지 색상을 혼합해 장면을 비추는 **양방향 조명**이다. 빛이 특정 방향에서만 오는 다른 조명(DirectionalLight, SpotLight)과 달리, **주변 전체에 걸쳐 부드러운 조명을 제공한다.** 자연광을 시뮬레이션할 때 유용하게 사용된다.
+
+```ts
+const light = new THREE.HemisphereLight(0x4488ff, 0x222222, 1);
+```
+
+<HemisphereLightDemo />
+
+
+## RectAreaLight
+RectAreaLight은 사각형 영역에서 빛을 방출하는 조명으로, 창문을 통해 들어오는 빛이나 형광등 같은 효과를 만들 수 있다. PointLight나 SpotLight처럼 한 점에서 퍼지는 빛이 아니라, **넓은 면에서 발산되는 빛이다.** 그림자를 지원하지 않는다.
+
+단, `MeshStandardMaterial`이나 `MeshPhysicalMaterial`과만 함께 사용할 수 있다.
+
+```ts
+const rectLight = new THREE.RectAreaLight(0xffffff, 5, 4, 10); // 색상, 강도, 너비, 높이
+rectLight.position.set(5, 5, 0);
+rectLight.lookAt(0, 0, 0);
+scene.add(rectLight);
+```
+
+<RectAreaLightDemo />
+
+
+## 마무리
+Three.js의 조명 시스템은 간단한 환경광부터 복잡한 광원까지 다양한 옵션을 제공한다. 이러한 조명들을 적절히 조합하고 최적화하면 실감나는 3D 웹 그래픽을 만들 수 있다.
+
+조명은 실제 렌더링 성능에 큰 영향을 주기 때문에 실제 프로젝트에서는 성능과 품질의 균형을 찾으며 조명을 설정하는 것이 중요하다. 또한 재질의 속성에 따라 조명의 효과가 다르게 나타나므로, 조명과 재질을 함께 고려해야 한다.
