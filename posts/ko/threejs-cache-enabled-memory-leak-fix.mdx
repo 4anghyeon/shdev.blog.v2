@@ -1,0 +1,75 @@
+---
+title: 'THREE.Cache.enabled로 인한 메모리 누수 트러블슈팅'
+description: 'GLTFLoader 성능 최적화를 위해 활성화한 THREE.Cache가 동적 URL 환경에서 어떻게 메모리 누수를 일으켰는지를 알아 보았다.'
+published: '2025-08-25'
+tags: ['Three.js']
+---
+
+Three.js를 이용해 3D 모델을 렌더링하는 기능을 개발 중, "모바일에서 모델을 몇 개 보다보면 갑자기 페이지가 새로고침된다"는 버그 리포트가 올라왔다.
+
+처음에는 단순한 네트워크 이슈나 브라우저 호환성 문제로 생각했는데, 재현해보니 확실히 특정 패턴이 있었다. iPhone Safari에서 3-4개 정도의 서로 다른 3D 모델을 연속으로 로드하면 브라우저가 강제로 페이지를 리프레시하는 현상이 반복적으로 발생했다.
+
+모바일 브라우저에서 이런 강제 새로고침이 일어나는 가장 흔한 원인은 메모리 부족이다. iOS Safari는 메모리가 일정 임계치를 넘으면 가차없이 페이지를 날려버린다. 그래서 메모리 누수 가능성을 중점적으로 살펴보기로 했다.
+
+## 문제
+
+Chrome DevTools의 Memory 탭에서 Heap snapshot을 여러 번 찍어가며 메모리 사용량 변화를 추적해봤다. 예상대로 3D 모델을 로드할 때마다 JSArrayBufferData가 해당 GLB 파일 크기만큼 계속 누적되고 있었다. 10MB짜리 모델을 5번 로드하면 50MB가 그대로 메모리에 남아있는 상황이었다.
+
+![jsarraybuffer-memory.png](threejs-cache-enabled-memory-leak-fix/jsarraybuffer-memory.png)
+
+분명 `useEffect`의 cleanup 함수에서 dispose를 꼼꼼히 처리하는 로직을 구현해놨는데, 아무리 `geometry.dispose()`, `material.dispose()`, `texture.dispose()`를 다 호출하고, 심지어 명시적으로 `null` 할당까지 해도 메모리 사용량은 줄어들지 않았다.
+
+## 원인
+
+문제는 프로젝트 초기에 성능 최적화를 위해 전역으로 설정해둔 이 한 줄에 있었다.
+
+```typescript
+THREE.Cache.enabled = true;
+```
+
+이 설정은 GLTFLoader가 동일한 URL의 파일을 재요청할 때 네트워크 비용을 아끼기 위해 메모리에 캐싱해두는 기능이다. 일반적인 상황에서는 좋은 최적화인데, 프로젝트의 특수한 상황이 문제가 되었다.
+
+보안상의 이유로 3D 모델 파일들은 pre-signed URL을 사용하고 있었고, 한 번 다운로드되면 해당 URL은 즉시 만료되고 새로운 URL로 교체되는 구조였다. 즉, 같은 모델이라도 접근할 때마다 완전히 다른 URL을 갖게 되어, Three.js 캐시에는 '서로 다른 파일'로 인식되어 계속 쌓이기만 하고 재사용되지 않는 상황이었다.
+
+## 해결
+
+원인을 파악하고 나니 해결책은 명확했다. useEffect의 cleanup 함수에서 기존 dispose 로직과 함께 캐시도 명시적으로 제거해주는 것이었다.
+
+```typescript
+  useEffect(() => {
+    return () => {
+      // ...
+      THREE.Cache.remove(fbxUrl);
+      THREE.Cache.remove(glbUrl);
+    };
+  }, []);
+```
+
+수정 후 다시 메모리 프로파일링을 해보니, 이제 페이지를 이동할 때마다 JSArrayBufferData가 깔끔하게 정리되는 것을 확인할 수 있었다. 모바일에서도 10개가 넘는 모델을 연속으로 로드해도 강제 새로고침 없이 안정적으로 동작했다.
+
+
+## THREE.Cache.remove vs dispose
+
+THREE.Cache.remove는 **파일 캐시 레벨**에서 메모리를 다룬다. 그러나 dispose는 **GPU 메모리 레벨**에서 Three.js 객체의 리소스를 해제하는 것이다. 즉, 관리하는 관점이 다르다.
+
+- `Cache.remove`: Three.js 파일 캐시 레벨에서 관리 (네트워크로 로드한 원본 파일 데이터)
+- `dispose`: GPU 메모리 레벨에서 관리 (geometry, material, texture 등의 WebGL 리소스)
+
+완전한 메모리 정리를 위해서는 두 가지 모두 필요하다.
+
+
+
+## 마무리
+
+성능 최적화를 위해 켜둔 캐시 기능이 오히려 특수한 상황에서는 메모리 누수의 원인이 될 수 있다는 사실을 알게되었다. 그리고 초기 설정할 때 `THREE.Cache.enabled` 과 같은 캐시 기능을 켜는 것이 정말 필요한지, 프로젝트 특성상 어떤 부작용이 있을지 미리 고려해보는 습관도 길러야겠다는 교훈을 얻었다.
+
+
+
+
+
+---
+
+**참조**
+
+- [The need for a "How to clean things up" section of the docs](https://discourse.threejs.org/t/the-need-for-a-how-to-clean-things-up-section-of-the-docs/5831/5)
+- [Cache – three.js docs](https://threejs.org/docs/#api/en/loaders/Cache)
