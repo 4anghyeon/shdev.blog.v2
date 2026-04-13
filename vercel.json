@@ -1,0 +1,3 @@
+{
+  "buildCommand": "pnpm vite build && npx pagefind --site .vercel/output/static --output-path .vercel/output/static/pagefind"
+}
