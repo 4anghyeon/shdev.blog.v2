@@ -28,10 +28,6 @@ const config = defineConfig({
         enabled: true,
         crawlLinks: true,
       },
-      sitemap: {
-        enabled: true,
-        host: "https://www.shdev.blog",
-      },
     }),
     netlify(),
     contentCollections(),
