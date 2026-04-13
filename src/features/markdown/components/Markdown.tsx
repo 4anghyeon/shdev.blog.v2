@@ -29,7 +29,9 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
       if (domNode instanceof Element) {
-        if (domNode.name === "h2") {
+        const domName = domNode.name;
+
+        if (domName === "h2") {
           return (
             <div className="mt-14 mb-3">
               <h2
@@ -42,7 +44,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             </div>
           );
         }
-        if (domNode.name === "h3") {
+        if (domName === "h3") {
           return (
             <div className="mt-14 mb-3">
               <h3
@@ -56,7 +58,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "h4") {
+        if (domName === "h4") {
           return (
             <div className="mt-10 mb-3">
               <h4
@@ -70,7 +72,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "p") {
+        if (domName === "p") {
           // p 안에 img가 있으면 p를 div로 교체
           const hasImage = domNode.children.some(
             (child) => child instanceof Element && child.name === "img",
@@ -91,7 +93,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "a") {
+        if (domName === "a") {
           const href = domNode.attribs.href;
           const isInternal = href?.startsWith("/") || href?.startsWith("#");
           return (
@@ -109,7 +111,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "strong") {
+        if (domName === "strong") {
           return (
             <strong className="break-keep font-bold text-md">
               {domToReact(domNode.children as DOMNode[], options)}
@@ -117,7 +119,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "ul") {
+        if (domName === "ul") {
           const parent = domNode.parent;
           const isParentNull = !parent;
           return (
@@ -131,7 +133,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "ol") {
+        if (domName === "ol") {
           const parent = domNode.parent;
           const isParentNull = !parent;
           return (
@@ -145,7 +147,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "li") {
+        if (domName === "li") {
           return (
             <li className="list-item text-md leading-relaxed">
               {domToReact(domNode.children as DOMNode[], options)}
@@ -153,13 +155,13 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "hr") {
+        if (domName === "hr") {
           return (
             <hr className="my-15 border-gray-300/50 dark:border-stone-600" />
           );
         }
 
-        if (domNode.name === "img") {
+        if (domName === "img") {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
             <div className="my-3 flex w-full items-center justify-center rounded-lg bg-gray-50/80 p-2 lg:p-5 dark:bg-stone-700/30">
@@ -174,7 +176,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "div") {
+        if (domName === "div") {
           const domClass = domNode.attribs.class;
           return (
             <div
@@ -207,7 +209,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "pre") {
+        if (domName === "pre") {
           const codeElement = domNode.children.find(
             (child): child is Element =>
               child instanceof Element && child.name === "code",
@@ -220,7 +222,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             const pathname = pathnameMatch?.[1];
 
             const code = codeElement.children
-              .map((c: any) => ("data" in c ? c.data : ""))
+              .map((c) => ("data" in c ? c.data : ""))
               .join("");
 
             return (
@@ -233,7 +235,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           }
         }
 
-        if (domNode.name === "code") {
+        if (domName === "code") {
           return (
             <code className="rounded-sm bg-gray-100 px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm dark:bg-stone-700 dark:text-orange-400">
               {domToReact(domNode.children as DOMNode[])}
@@ -241,7 +243,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "details") {
+        if (domName === "details") {
           const summaryNode = domNode.children.find(
             (child): child is Element =>
               child instanceof Element && child.name === "summary",
@@ -259,7 +261,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "summary") {
+        if (domName === "summary") {
           return (
             <summary className="flex cursor-pointer select-none list-none items-center gap-2 rounded-md px-4 py-3 font-semibold text-gray-700 text-md hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800/50 [&::-webkit-details-marker]:hidden">
               <span className="transition-transform duration-200 group-open:rotate-90">
@@ -270,7 +272,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "table") {
+        if (domName === "table") {
           return (
             <div className="my-5 overflow-x-auto rounded-md border border-gray-200 dark:border-gray-700">
               <table className="w-full border-separate border-spacing-0">
@@ -280,7 +282,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "th") {
+        if (domName === "th") {
           return (
             <th className="border-gray-200 border-b bg-gray-100 px-3 py-2 text-left font-semibold text-gray-700 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
               {domToReact(domNode.children as DOMNode[], options)}
@@ -288,7 +290,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "td") {
+        if (domName === "td") {
           return (
             <td className="text-nowrap border-gray-100 border-b px-3 py-2 text-gray-700 text-sm dark:border-gray-700/60 dark:text-gray-300">
               {domToReact(domNode.children as DOMNode[], options)}
@@ -296,7 +298,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        if (domNode.name === "blockquote") {
+        if (domName === "blockquote") {
           return (
             <blockquote className="my-4 border-gray-300 border-l-4 pl-4 dark:border-stone-700">
               {domToReact(domNode.children as DOMNode[], options)}
@@ -304,7 +306,6 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
-        const domName = domNode.name.toLowerCase();
         const componentName = Object.keys(ExampleComponents).find(
           (key) => key.toLowerCase() === domName,
         );
