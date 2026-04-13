@@ -7,7 +7,7 @@ import parse, {
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButton.tsx";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
-import { ExampleComponents } from "#/features/markdown/components/example-components/index.ts";
+import { ExampleComponents } from "#/features/markdown/components/custom-components/index.ts";
 import { Link } from "#/shared/components/Link.tsx";
 import { cn } from "#/shared/lib/tailwind.ts";
 
@@ -296,6 +296,14 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           );
         }
 
+        if (domNode.name === "blockquote") {
+          return (
+            <blockquote className="my-4 border-gray-300 border-l-4 pl-4 dark:border-stone-700">
+              {domToReact(domNode.children as DOMNode[], options)}
+            </blockquote>
+          );
+        }
+
         const domName = domNode.name.toLowerCase();
         const componentName = Object.keys(ExampleComponents).find(
           (key) => key.toLowerCase() === domName,
@@ -306,8 +314,10 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             ExampleComponents[componentName as keyof typeof ExampleComponents];
           return (
             <div className="not-prose my-5">
-              <Component {...domNode.attribs} />
-              {domToReact(domNode.children as DOMNode[], options)}
+              {/*@ts-ignore*/}
+              <Component {...domNode.attribs}>
+                {domToReact(domNode.children as DOMNode[], options)}
+              </Component>
             </div>
           );
         }

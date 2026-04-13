@@ -1,3 +1,4 @@
+import { BookInfo } from "#/features/markdown/components/custom-components/BookInfo.tsx";
 import * as Tabindex from "./tabindex";
 import * as ThreeJSAboutLights from "./threejs-about-lights";
 import * as ThreeJSGeometryMaterialsMesh from "./threejs-geometry-materials-mesh";
@@ -8,4 +9,5 @@ export const ExampleComponents = {
   ...ThreeJSAboutLights,
   ...Tabindex,
   ...WhatIsOklch,
+  BookInfo,
 };
