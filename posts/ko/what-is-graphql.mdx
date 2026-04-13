@@ -1,0 +1,430 @@
+---
+title: 'GraphQL이란?'
+description: 'REST API의 한계를 극복하기 위해 탄생한 데이터 쿼리 언어인 GraphQL과 장단점을 REST API와 비교하며 알아보자.'
+published: '2025-04-16'
+tags: ['GraphQL']
+---
+
+GraphQL은 페이스북에서 개발한 데이터 쿼리 언어로, API를 더욱 빠르고 유연하며 개발자 친화적으로 만들기 위해 설계되었다.
+
+REST API와는 다르게 클라이언트에서 필요한 데이터 구조를 정의할 수 있고, 단일 요청만으로 원하는 정보를 받을 수 있다. 또한 타입 시스템을 사용하여 요청과 응답의 데이터 구조를 명확히 정의하고, 코드의 안정성을 높일 수 있다.
+
+**"원하는 것만, 딱 필요한 만큼만 가져올 수 있다"** 는 점이 가장 큰 특징이다.
+
+## REST API와 GraphQL 비교
+
+다음과 같은 국가 정보를 담는 REST API가 있다고 가정해보자. 국가 목록을 가져오기 위해 `/countries` 엔드포인트를 호출해보자.
+
+**`GET /countries`**
+
+```json
+// GET /countries 응답
+[
+  {
+    "code": "AD",
+    "name": "Andorra",
+    "capital": "Andorra la Vella",
+    "region": "Europe"
+  },
+  {
+    "code": "AE",
+    "name": "United Arab Emirates",
+    "capital": "Abu Dhabi",
+    "region": "Asia"
+  },
+  {
+    "code": "AF",
+    "name": "Afghanistan",
+    "capital": "Kabul",
+    "region": "Asia"
+  },
+  // ... 200개 이상의 국가 데이터
+]
+```
+
+특정 국가의 고유 아이디인 코드를 알아냈다. 이제 그 국가에 대한 자세한 정보를 알아보고 싶으면 그에 대한 API를 다시 호출 해야한다.
+
+**`GET /countires/KR`**
+
+```javascript
+// GET /countries/KR 응답
+{
+  "code": "KR",
+  "name": "South Korea",
+  "native": "대한민국",
+  "phone": "82",
+  "capital": "Seoul",
+  "currency": "KRW",
+  "languages": ["ko"],
+  "emoji": "🇰🇷",
+  "region": "Asia",
+  "subregion": "Eastern Asia",
+  "states": [
+    { "name": "Seoul", "code": "11" },
+    { "name": "Busan", "code": "26" },
+    { "name": "Incheon", "code": "28" },
+    // ... 더 많은 지역
+  ]
+}
+```
+
+이런 방식에는 두 가지 문제가 있다.
+
+- **오버페칭(Over-fetching) 문제**: 국가 이름과 수도만 표시하면 되는 경우에도 API를 호출하면 모든 필드를 받아야 한다. 불필요한 데이터가 포함될수록 트래픽이 늘어나고 성능 저하로 이어질 수 있다.
+- **언더페칭(Under-fetching) 문제**: 국가 상세 정보를 표시하려면 최소 2번의 API 호출이 필요하다. 여러 국가의 상세 정보를 함께 표시하려면 호출 횟수는 더 늘어난다.
+
+
+
+## GraphQL을 통한 해결
+
+위에서 살펴본 REST API의 문제점을 GraphQL로 다음과 같이 해결할 수 있다.
+
+- 단일 엔드포인트로 모든 요청을 처리할 수 있어 관리와 유지보수가 단순해진다.
+- 필요한 데이터의 구조를 직접 지정할 수 있어, 불필요한 데이터 전송을 줄이고 네트워크 효율성을 높일 수 있다.
+
+
+
+🆚 **`/countries`**
+
+```graphql
+query {
+  countries {
+    name
+    capital
+    emoji
+  }
+}
+```
+
+**응답**
+
+```json
+{
+  "data": {
+    "countries": [
+      {
+        "name": "Andorra",
+        "capital": "Andorra la Vella",
+        "emoji": "🇦🇩"
+      },
+      {
+        "name": "United Arab Emirates",
+        "capital": "Abu Dhabi",
+        "emoji": "🇦🇪"
+      },
+      {
+        "name": "Afghanistan",
+        "capital": "Kabul",
+        "emoji": "🇦🇫"
+      },
+      // ... 더 많은 국가들
+    ]
+  }
+}
+```
+
+
+
+**🆚 `/countries/KR`**
+
+```graphql
+query {
+  country(code: "KR") {
+    name
+    native
+    capital
+    emoji
+    currency
+    languages {
+      name
+      native
+    }
+    continent {
+      name
+    }
+  }
+}
+```
+
+**응답**
+
+```json
+{
+  "data": {
+    "country": {
+      "name": "South Korea",
+      "native": "대한민국",
+      "capital": "Seoul",
+      "emoji": "🇰🇷",
+      "currency": "KRW",
+      "languages": [
+        {
+          "name": "Korean",
+          "native": "한국어"
+        }
+      ],
+      "continent": {
+        "name": "Asia"
+      },
+    }
+  }
+}
+```
+
+딱 한번의 요청으로 필요한 모든 정보를 가져왔다! 🫢
+
+
+
+## GraphQL의 장점
+
+### 단일 엔드포인트
+
+GraphQL의 특징 중 하나는 단 하나의 엔드포인트만 사용한다는 점이다. REST API에서는 `/countries`, `/countries/KR`, `/countries/KR/borders`, `/languages` 등 리소스마다 다른 엔드포인트가 필요했지만, GraphQL은 일반적으로 `/graphql`이라는 단일 URL만 사용한다.
+
+- **프론트엔드 개발 단순화**: 개발자는 여러 엔드포인트를 기억하거나 문서를 찾아볼 필요 없이 하나의 엔드포인트만 알면 된다.
+- **보안 강화**: 하나의 진입점만 보호하면 되므로 인증 및 인가 로직을 중앙화할 수 있다.
+
+### 필요한 데이터만 정확히 요청 가능 (Over fetching 해결)
+
+GraphQL을 사용하면 클라이언트가 정확히 필요한 데이터만 요청할 수 있다. 이는 오버페칭 문제를 해결할 수 있다.
+
+- **네트워크 트래픽 감소**: 불필요한 데이터를 전송하지 않아 대역폭 사용량이 줄어든다.
+- **응답 시간 개선**: 필요한 데이터만 처리하므로 서버 응답 시간이 개선될 수 있다.
+
+### 단일 요청으로 연관 데이터 가져오기 (Under fetching 해결)
+
+GraphQL을 사용하면 여러 리소스의 데이터를 단 한 번의 요청으로 가져올 수 있습다. 이는 언더페칭 문제를 해결할 수 있다.
+
+- **네트워크 요청 감소**: 여러 번의 API 호출 대신 한 번의 요청으로 모든 데이터를 가져온다.
+- **워터폴 방식 요청 제거**: REST에서 흔히 발생하는 순차적 API 호출을 하지 않는다.
+- **프론트엔드 코드 단순화**: 여러 API 호출을 조율하는 복잡한 코드가 필요 없다.
+
+### 강력한 타입 시스템
+
+GraphQL은 엄격한 타입 시스템을 기반으로 한다. 각 필드의 타입이 명확하게 정의되어 있어 API의 안정성과 예측 가능성이 크게 향상된다.
+
+- **컴파일 타임 오류 검출**: 개발 중에 타입 오류를 발견할 수 있다.
+- **자동 코드 생성**: 타입 정의를 기반으로 클라이언트 코드를 자동 생성할 수 있다. (TypeScript 인터페이스 등).
+- **IDE 지원 향상**: 코드 자동 완성, 타입 검사 등 개발 환경 지원이 향상된다.
+- **명확한 계약**: 프론트엔드와 백엔드 간 명확한 데이터 계약이 형성된다.
+
+
+
+## GraphQL의 단점
+
+### 복잡한 쿼리 처리 부담
+
+GraphQL은 클라이언트에게 쿼리 유연성을 제공하지만, 이로 인해 서버 측에 부담이 생길 수 있다.
+
+- **복잡한 쿼리의 성능 영향**: 매우 중첩된 쿼리나 여러 리소스를 요청하는 복잡한 쿼리는 서버에 큰 부하를 줄 수 있다.
+
+```graphql
+query NestedQuery {
+  continents {
+    countries {
+      languages {
+        countries {
+          languages {
+            countries {
+              ...
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+- **리소스 공격 가능성**: 악의적인 사용자가 서버 리소스를 소모하는 매우 복잡한 쿼리를 의도적으로 보낼 수 있다.
+
+
+
+### 캐싱 구현의 복잡성
+
+REST API는 URL 기반으로 간단하게 캐싱할 수 있지만, GraphQL에서는 보다 복잡한 캐싱 전략이 필요하다.
+
+
+
+### 오류 처리의 차이점
+
+- **HTTP 상태 코드 활용 부족**: 오류가 응답 본문에 포함되기 때문에 처리하기 까다로울 수 있다.
+- **부분 실패 처리**: 쿼리의 일부만 실패할 수 있어, 클라이언트는 부분 성공/실패 시나리오를 처리해야 한다.
+- **디버깅 어려움**: 복잡한 쿼리에서 문제가 발생했을 때 원인을 찾기 어려울 수 있다.
+
+
+
+### 과도한 유연성의 위험
+
+GraphQL의 유연성은 오히려 양날의 검이 될 수 있다.
+
+- **API 버전 관리 혼란**: 필드를 쉽게 추가할 수 있어 명시적인 버전 관리가 부족할 수 있다.
+- **쿼리 복잡성 증가**: 시간이 지남에 따라 클라이언트 쿼리가 점점 복잡해질 수 있다.
+- **백엔드 로직 노출**: 유연한 쿼리가 내부 시스템 구조를 의도치 않게 노출할 수 있다.
+- **API 사용 패턴 파악 어려움**: 다양한 클라이언트 쿼리 패턴으로 인해 가장 중요한 데이터와 필드를 파악하기 어려울 수 있다.
+
+## GraphQL 기본타입
+
+GraphQL의 강력한 기능 중 하나는 타입 시스템이다. 어떤 타입들이 있는지 알아보자.
+
+| **타입**  | **설명**                           |
+| ------- | -------------------------------- |
+| String  | UTF-8 문자열                        |
+| ID      | 기본적으로는 String이나, 고유 식별자 역할임을 나타냄 |
+| Int     | 부호가 있는 32비트 정수                   |
+| Float   | 부호가 있는 부동소수점 값                   |
+| Boolean | 참/거짓                             |
+
+### !(Non Null)
+
+특정 필드는 `null`이 들어올 수 없음을 나타낸다.
+
+**예시**
+
+```graphql
+const typeDefs = gql`
+  type Supplies {
+    id: ID!
+    name: String!
+    price: Int
+  }
+`
+```
+
+### enum (열거형 타입)
+
+미리 지정된 값들 중 하나를 반환하는 타입이다.
+
+```graphql
+const typeDefs = gql`
+  enum Role {
+    developer
+    designer
+    planner
+  }
+  enum NewOrUsed {
+    new
+    used
+  }
+`
+```
+
+### [] (배열 타입)
+
+특정 타입이 배열임을 나타낸다.
+
+```graphql
+const typeDefs = gql`
+  type Foods {
+    ingredients: [String]
+  }
+`
+```
+
+또한 `!`의 위치에 따라 다른 의미를 나타낼 수 있다.
+
+| **선언부**    | **users: null** | **users: [ ]** | **users: [..., null]** |
+| ---------- | --------------- | -------------- | ---------------------- |
+| [String]   | ✔               | ✔              | ✔                      |
+| [String!]  | ✔               | ✔              | ❌                      |
+| [String]!  | ❌               | ✔              | ✔                      |
+| [String!]! | ❌               | ✔              | ❌                      |
+
+### union 타입
+
+작성된 타입을 여러 개 묶어서 사용하고 싶을 때 사용한다.
+
+```graphql
+const typeDefs = gql`
+  union Given = Equipment | Supply
+`;
+```
+
+### interface 타입
+
+유사한 객체 타입을 만들기 위한 타입으로, `implements` 키워드로 상속받는다. 인터페이스의 필드를 구현하지 않으면 에러가 발생한다.
+
+```typescript
+interface Produce {
+  id: ID!
+  name: String!
+  quantity: Int!
+  price: Int!
+}
+
+# OK
+type Fruit implements Produce {
+  id: ID!
+  name: String!
+  quantity: Int!
+  price: Int!
+}
+
+# ERROR !!
+type Vegetable implements Produce {
+  id: ID!
+  name: String!
+  quantity: Int!
+}
+```
+
+### input 타입
+
+query나 mutation에 들어가야하는 매개변수의 타입을 지정할 수 있다.
+
+```graphql
+input PostPersonInput {
+  first_name: String!
+  last_name: String!
+}
+
+type Mutation {
+  postPerson(input: PostPersonInput): People!
+}
+```
+
+
+
+## GraphQL 선택 기준
+
+GraphQL은 더 유연하고 효율적인 API를 만들 수 있는 강력한 도구다. REST API가 여전히 많은 상황에서 좋은 선택이지만, 복잡한 데이터 요구사항과 다양한 클라이언트를 지원해야 하는 상황에서 GraphQL은 확실한 장점을 제공할 수 있다.
+
+**그러나, GraphQL은 만능 해결책이 아니라, 상황에 맞는 도구라는 점을 기억하자.** 프로젝트의 요구사항을 잘 분석하고, REST API와 GraphQL 중 적합한 것을 선택하는 것이 중요하다.
+
+다음과 같은 상황에서는 GraphQL이 좋은 선택일 수 있다.
+
+1. **복잡한 데이터 관계가 있는 애플리케이션**
+    - 국가 정보 앱처럼 여러 엔티티 간에 복잡한 관계가 있는 경우
+    - 사용자, 게시물, 댓글, 좋아요 등 다양한 관계를 가진 소셜 네트워크
+2. **다양한 클라이언트 지원 필요**
+    - 웹, 모바일 앱, 데스크톱 등 다양한 플랫폼에서 각기 다른 데이터 요구사항
+    - 각 클라이언트가 동일한 백엔드로부터 맞춤형 데이터를 가져와야 하는 경우
+3. **빠른 제품 반복과 프론트엔드 개발 속도가 중요한 경우**
+    - 백엔드 변경 없이 프론트엔드 요구사항을 쉽게 수용해야 하는 경우
+    - 사용자 인터페이스와 기능이 자주 변경되는 스타트업이나 애자일 환경
+4. **마이크로서비스 통합이 필요한 경우**
+    - 여러 마이크로서비스의 데이터를 하나의 일관된 API로 통합해야 하는 경우
+    - BFF(Backend For Frontend) 패턴을 구현하는 경우
+
+### REST가 여전히 적합한 상황
+
+다음과 같은 상황에서는 REST API가 더 적합할 수 있다.
+
+1. **단순한 CRUD 작업이 주를 이루는 경우**
+    - 관계가 적고 단순한 데이터 구조를 가진 애플리케이션
+    - 데이터 요청 패턴이 일관되고 예측 가능한 경우
+2. **HTTP 캐싱이 중요한 경우**
+    - 공개 API와 같이 효율적인 HTTP 캐싱이 중요한 상황
+    - CDN을 통한 캐싱이 핵심적인 성능 요소인 경우
+3. **파일 업로드가 주요 기능인 경우**
+    - 대용량 파일 처리와 스트리밍이 주요 요구사항인 경우
+4. **팀의 학습 곡선을 최소화해야 하는 경우**
+    - 팀이 REST에 익숙하고 새로운 패러다임을 학습할 시간이 제한적인 경우
+
+## 마무리
+
+모든 기술과 마찬가지로, GraphQL도 특정 트레이드오프를 동반한다. 결국 가장 중요한 것은 사용자와 비즈니스의 요구사항을 충족시키는 것 이다. GraphQL이든 REST든, 또는 두 가지를 결합한 접근법이든, 프로젝트의 구체적인 상황과 목표에 맞는 기술을 잘 선택해보자!
+
+
+---
+**참고**
+- [https://www.yalco.kr/@graphql-apollo/3-2/](https://www.yalco.kr/@graphql-apollo/3-2/)
