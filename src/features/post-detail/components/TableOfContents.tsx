@@ -1,6 +1,6 @@
 import { useLocation } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MarkdownHeading } from "#/features/markdown/utils/render-markdown.ts";
 import { Link } from "#/shared/components/Link.tsx";
 import { cn } from "#/shared/lib/tailwind.ts";
@@ -15,6 +15,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     location.hash.slice(1) || headings[0]?.id || "",
   );
   const [mounted, setMounted] = useState(false);
+  const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
     // 초기 active 설정
@@ -38,7 +39,16 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
         if (visible.length > 0) {
-          setActiveId(visible[0].target.id);
+          const newId = visible[0].target.id;
+          setActiveId(newId);
+          const ul = listRef.current;
+          const li = document.getElementById(`list-${newId}`);
+          if (ul && li) {
+            ul.scrollTo({
+              top: li.offsetTop - ul.clientHeight / 2 + li.clientHeight / 2,
+              behavior: "smooth",
+            });
+          }
         }
       },
       {
@@ -87,9 +97,10 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         <div className="mb-2 border-stone-300 border-b pb-1 font-semibold text-gray-600 text-sm dark:text-gray-400">
           목차
         </div>
-        <ul className="max-h-100 space-y-1 overflow-y-auto">
+        <ul ref={listRef} className="max-h-100 space-y-1 overflow-y-auto">
           {headings.map((heading) => (
             <li
+              id={`list-${heading.id}`}
               key={heading.id}
               style={{ paddingLeft: `${heading.level - 2}rem` }}
             >
