@@ -1,9 +1,11 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { Analytics } from "@vercel/analytics/react";
 import { Footer } from "#/composites/layout/Footer.tsx";
 import { Navbar } from "#/composites/layout/Navbar.tsx";
 import { ThemeProvider } from "#/features/theme/provider/ThemeProvider.tsx";
+import { GoogleAnalyticsScript } from "#/shared/components/GoogleAnalyticsScript.tsx";
 import { BASE_URL } from "#/shared/constant/base.ts";
 import appCss from "../styles.css?url";
 
@@ -29,6 +31,10 @@ export const Route = createRootRoute({
       { property: "og:image", content: `${BASE_URL}/images/main-og.webp` },
       { property: "og:url", content: BASE_URL },
       { property: "og:type", content: "website" },
+      {
+        property: "naver-site-verification",
+        content: "a525afa1b71b59077665f12a8a87b009d8c7b70b",
+      },
     ],
     links: [
       {
@@ -44,6 +50,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko" suppressHydrationWarning>
       <head>
+        {process.env.NODE_ENV === "production" && <GoogleAnalyticsScript />}
         <HeadContent />
       </head>
       <body className="flex min-h-svh flex-col bg-background font-pretendard text-text-default antialiased">
@@ -63,6 +70,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             },
           ]}
         />
+        {process.env.NODE_ENV === "production" && <Analytics />}
         <Scripts />
       </body>
     </html>
