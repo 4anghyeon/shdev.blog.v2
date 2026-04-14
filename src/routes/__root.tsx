@@ -32,7 +32,7 @@ export const Route = createRootRoute({
       { property: "og:url", content: BASE_URL },
       { property: "og:type", content: "website" },
       {
-        property: "naver-site-verification",
+        name: "naver-site-verification",
         content: "a525afa1b71b59077665f12a8a87b009d8c7b70b",
       },
     ],
