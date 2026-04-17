@@ -63,6 +63,16 @@
       }
     }
   },
+  "overrides": [
+    {
+      "includes": ["tsconfig.json", "tsconfig.*.json"],
+      "json": {
+        "parser": {
+          "allowComments": true
+        }
+      }
+    }
+  ],
   "css": {
     "parser": {
       "tailwindDirectives": true
