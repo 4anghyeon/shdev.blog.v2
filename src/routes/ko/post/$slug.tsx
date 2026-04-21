@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
 import { AllListLink } from "#/features/post-detail/components/AllListLink.tsx";
 import { Description } from "#/features/post-detail/components/Description.tsx";
+import { GiscusComment } from "#/features/post-detail/components/GiscusComment.tsx";
 import { PostNavigation } from "#/features/post-detail/components/PostNavigation.tsx";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents.tsx";
 import { Tag } from "#/shared/components/Tag.tsx";
@@ -138,6 +139,7 @@ function BlogPost() {
       <Markdown markup={markup} slug={slug} className="prose" />
       <PostNavigation prev={prev} next={next} />
       <AllListLink className="mt-8" />
+      <GiscusComment />
       <Suspense>
         <TableOfContents headings={post.headings} />
       </Suspense>
