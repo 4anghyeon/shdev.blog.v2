@@ -1,4 +1,4 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { ClientOnly, createFileRoute, notFound } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
 import { AllListLink } from "#/features/post-detail/components/AllListLink.tsx";
@@ -139,7 +139,9 @@ function BlogPost() {
       <Markdown markup={markup} slug={slug} className="prose" />
       <PostNavigation prev={prev} next={next} />
       <AllListLink className="mt-8" />
-      <GiscusComment />
+      <ClientOnly>
+        <GiscusComment />
+      </ClientOnly>
       <Suspense>
         <TableOfContents headings={post.headings} />
       </Suspense>
