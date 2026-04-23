@@ -19,6 +19,7 @@ const posts = defineCollection({
     updated: z.iso.date().optional(),
     description: z.string(),
     tags: z.array(z.string()),
+    content: z.string(),
   }),
   transform: async ({ content, ...post }) => {
     const frontMatter = extractFrontMatter(content);
