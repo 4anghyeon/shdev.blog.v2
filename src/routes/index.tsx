@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { allPosts } from "content-collections";
 import { groupBy } from "es-toolkit/array";
 import { PostListItem } from "#/features/post-list/components/PostListItem.tsx";
 import { BlogMeta } from "#/shared/constant/metadata.ts";
-import { allPosts } from "../../.content-collections/generated";
 
 export const Route = createFileRoute("/")({
   head: () => ({

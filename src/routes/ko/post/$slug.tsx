@@ -1,4 +1,5 @@
 import { ClientOnly, createFileRoute, notFound } from "@tanstack/react-router";
+import { allPosts } from "content-collections";
 import { Suspense } from "react";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
 import { AllListLink } from "#/features/post-detail/components/AllListLink.tsx";
@@ -9,7 +10,6 @@ import { TableOfContents } from "#/features/post-detail/components/TableOfConten
 import { Tag } from "#/shared/components/Tag.tsx";
 import { BlogMeta } from "#/shared/constant/metadata.ts";
 import { dateHelper } from "#/shared/helper/date.ts";
-import { allPosts } from "../../../../.content-collections/generated";
 
 export const Route = createFileRoute("/ko/post/$slug")({
   loader: async ({ params }) => {

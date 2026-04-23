@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { allPosts } from "content-collections";
 import { BlogMeta } from "#/shared/constant/metadata.ts";
-import { allPosts } from "../../.content-collections/generated";
 
 export const Route = createFileRoute("/rss.xml")({
   server: {
