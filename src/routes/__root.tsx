@@ -6,30 +6,27 @@ import { Footer } from "#/composites/layout/Footer.tsx";
 import { Navbar } from "#/composites/layout/Navbar.tsx";
 import { ThemeProvider } from "#/features/theme/provider/ThemeProvider.tsx";
 import { GoogleAnalyticsScript } from "#/shared/components/GoogleAnalyticsScript.tsx";
-import { BASE_URL } from "#/shared/constant/base.ts";
+import { BlogMeta } from "#/shared/constant/metadata.ts";
 import appCss from "../styles.css?url";
-
-const title = "shdev.blog";
-const description =
-  "A personal technology blog where I organize what I've learned and experienced.";
-const ogDescription =
-  "Personal tech blog sharing insights and experiences in technology, programming, and trends to inspire your tech journey.";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { title },
+      { title: BlogMeta.title },
       {
         name: "viewport",
         content: "width=device-width, initial-scale=1",
       },
-      { name: "description", content: description },
-      { property: "og:title", content: title },
-      { property: "og:description", content: ogDescription },
-      { property: "og:site_name", content: "shdev.blog" },
-      { property: "og:image", content: `${BASE_URL}/images/main-og.webp` },
-      { property: "og:url", content: BASE_URL },
+      { name: "description", content: BlogMeta.description },
+      { property: "og:title", content: BlogMeta.title },
+      { property: "og:description", content: BlogMeta.description },
+      { property: "og:site_name", content: BlogMeta.siteName },
+      {
+        property: "og:image",
+        content: `${BlogMeta.baseUrl}/images/main-og.webp`,
+      },
+      { property: "og:url", content: BlogMeta.baseUrl },
       { property: "og:type", content: "website" },
       {
         name: "naver-site-verification",

@@ -7,7 +7,7 @@ import { GiscusComment } from "#/features/post-detail/components/GiscusComment.t
 import { PostNavigation } from "#/features/post-detail/components/PostNavigation.tsx";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents.tsx";
 import { Tag } from "#/shared/components/Tag.tsx";
-import { BASE_URL } from "#/shared/constant/base.ts";
+import { BlogMeta } from "#/shared/constant/metadata.ts";
 import { dateHelper } from "#/shared/helper/date.ts";
 import { allPosts } from "../../../../.content-collections/generated";
 
@@ -53,7 +53,7 @@ export const Route = createFileRoute("/ko/post/$slug")({
 
     const { post } = loaderData;
 
-    const canonicalUrl = `${BASE_URL}ko/post/${post.slug}`;
+    const canonicalUrl = `${BlogMeta.baseUrl}ko/post/${post.slug}`;
 
     const jsonLd = {
       "@context": "https://schema.org",

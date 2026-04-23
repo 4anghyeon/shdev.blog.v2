@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { groupBy } from "es-toolkit/array";
 import { PostListItem } from "#/features/post-list/components/PostListItem.tsx";
-import { BASE_URL } from "#/shared/constant/base.ts";
+import { BlogMeta } from "#/shared/constant/metadata.ts";
 import { allPosts } from "../../.content-collections/generated";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     links: [
-      { rel: "canonical", href: BASE_URL },
-      { rel: "alternate", hrefLang: "x-default", href: BASE_URL },
+      { rel: "canonical", href: BlogMeta.baseUrl },
+      { rel: "alternate", hrefLang: "x-default", href: BlogMeta.baseUrl },
     ],
   }),
   component: App,

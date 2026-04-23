@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { BASE_URL } from "#/shared/constant/base.ts";
+import { BlogMeta } from "#/shared/constant/metadata.ts";
 import { allPosts } from "../../.content-collections/generated";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: () => {
-        const baseUrl = BASE_URL.endsWith("/")
-          ? BASE_URL.slice(0, -1)
-          : BASE_URL;
+        const baseUrl = BlogMeta.baseUrl.endsWith("/")
+          ? BlogMeta.baseUrl.slice(0, -1)
+          : BlogMeta.baseUrl;
 
         const staticUrls = [
           {
