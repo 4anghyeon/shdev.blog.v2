@@ -96,6 +96,24 @@
   }
 }
 
+@keyframes scroll-scale-out {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .scale-out {
+    animation: scroll-scale-out linear forwards;
+    animation-duration: auto;
+    animation-timeline: view();
+    animation-range: exit 0% exit 70%;
+  }
+}
+
 /* 컴포넌트 레이어  */
 @layer components {
   html.dark .shiki,

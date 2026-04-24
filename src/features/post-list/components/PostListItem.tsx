@@ -18,12 +18,12 @@ export function PostListItem({
   tags,
 }: PostListItemProps) {
   return (
-    <li className="group">
+    <li className="group scale-out">
       <Link
         to="/ko/post/$slug"
         params={{ slug }}
         viewTransition
-        className="dark:hover:stone-900 flex flex-col gap-y-2 rounded-lg px-3 py-5 no-underline transition-all duration-100 ease-in-out hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-sm active:translate-y-0 active:scale-[0.97] active:shadow-none dark:border-stone-600 dark:shadow-stone-600 dark:hover:bg-stone-800"
+        className="dark:hover:stone-900 flex flex-col gap-y-2 rounded-lg px-3 py-5 no-underline transition-all duration-100 ease-in-out hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-sm focus-visible:-translate-y-0.5 focus-visible:bg-gray-50 focus-visible:shadow-sm focus-visible:outline-none active:translate-y-0 active:scale-[0.97] active:shadow-none dark:border-stone-600 dark:shadow-stone-600 dark:focus-visible:bg-stone-800 dark:hover:bg-stone-800"
       >
         <h2
           className="font-semibold text-gray-900 text-lg leading-snug dark:text-gray-100"

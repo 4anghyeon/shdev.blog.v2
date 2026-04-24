@@ -156,7 +156,7 @@ export function SearchModal() {
                             setResults([]);
                           }}
                           onKeyDown={(e) => handleResultKeyDown(e, index)}
-                          className="group flex flex-col rounded-xl px-4 py-3 transition-colors hover:bg-gray-200 focus:bg-gray-200 focus:outline-none dark:focus:bg-stone-700 dark:hover:bg-stone-700"
+                          className="dark:hover:stone-900 flex flex-col gap-y-2 rounded-lg px-3 py-5 no-underline transition-all duration-100 ease-in-out hover:bg-gray-50 hover:shadow-sm focus-visible:bg-gray-50 focus-visible:shadow-sm focus-visible:outline-none active:translate-y-0 active:scale-[0.97] active:shadow-none dark:border-stone-600 dark:shadow-stone-600 dark:focus-visible:bg-stone-800 dark:hover:bg-stone-800"
                         >
                           <span className="font-semibold text-stone-900 transition-colors group-hover:text-primary group-focus:text-primary dark:text-stone-100">
                             {result.meta.title}
