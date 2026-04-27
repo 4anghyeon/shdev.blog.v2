@@ -24,7 +24,7 @@ export const Route = createRootRoute({
       { property: "og:site_name", content: BlogMeta.siteName },
       {
         property: "og:image",
-        content: `${BlogMeta.baseUrl}/images/main-og.webp`,
+        content: `${BlogMeta.baseUrl}images/main-og.webp`,
       },
       { property: "og:url", content: BlogMeta.baseUrl },
       { property: "og:type", content: "website" },
