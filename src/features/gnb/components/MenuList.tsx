@@ -12,7 +12,7 @@ export function MenuList() {
       <ul className="relative flex gap-x-1 px-2 py-1.5 font-semibold text-sm">
         {bubbleMotionProps && (
           <motion.div
-            className="pointer-events-none absolute z-0 rounded-xl bg-white/30 shadow-[inset_1px_1px_0_rgba(255,255,255,0.75),inset_0_0_8px_rgba(255,255,255,0.4)]"
+            className="pointer-events-none absolute z-0 rounded-xl bg-gray-400/20 shadow-[inset_1px_1px_0_rgba(255,255,255,0.6),inset_0_0_8px_rgba(156,163,175,0.3)] dark:bg-white/25 dark:shadow-[inset_1px_1px_0_rgba(255,255,255,0.75),inset_0_0_8px_rgba(255,255,255,0.4)]"
             initial={false}
             {...bubbleMotionProps}
           />
