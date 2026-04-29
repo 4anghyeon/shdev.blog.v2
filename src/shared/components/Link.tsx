@@ -24,3 +24,5 @@ export const Link: LinkComponent<typeof BasicLinkComponent> = (props) => {
     />
   );
 };
+
+export type LinkProps = React.ComponentProps<typeof Link>;

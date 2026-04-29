@@ -1,0 +1,105 @@
+@layer components {
+  .glass-container {
+    position: relative;
+    display: flex;
+    font-weight: 600;
+    color: var(--color-sky-400);
+    cursor: pointer;
+    background: transparent;
+    border-radius: 2rem;
+    overflow: hidden;
+    box-shadow:
+      0 2px 1px rgba(0, 0, 0, 0.15),
+      0 0 6px rgba(0, 0, 0, 0.08);
+  }
+
+  .glass-filter {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    backdrop-filter: blur(12px) saturate(160%);
+    filter: url(#lg-dist);
+    isolation: isolate;
+  }
+
+  .glass-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-specular {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    overflow: hidden;
+    box-shadow:
+      inset 1px 1px 0 rgba(255, 255, 255, 0.75),
+      inset 0 0 5px rgba(255, 255, 255, 0.75);
+  }
+
+  .glass-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+  }
+
+  .glass-item {
+    position: relative;
+    border-radius: 0.75rem;
+    overflow: hidden;
+  }
+
+  .glass-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0);
+    pointer-events: none;
+  }
+
+  .glass-item:hover::before {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .glass-item-active::before {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow:
+      inset 1px 1px 0 rgba(255, 255, 255, 0.75),
+      inset 0 0 8px rgba(255, 255, 255, 0.4);
+  }
+
+  .glass-item-active {
+    color: var(--color-sky-600);
+    text-shadow: 0 0 8px var(--color-sky-600);
+  }
+
+  /* ========== DARK MODE ========== */
+  :where(.dark, .dark *) .glass-container {
+    color: var(--color-gray-300);
+    box-shadow:
+      0 2px 1px color-mix(in srgb, var(--color-stone-900) 40%, transparent),
+      0 0 6px color-mix(in srgb, var(--color-stone-800) 30%, transparent);
+  }
+
+  :where(.dark, .dark *) .glass-overlay {
+    background: color-mix(in srgb, var(--color-stone-100) 10%, transparent);
+  }
+
+  :where(.dark, .dark *) .glass-specular {
+    box-shadow:
+      inset 1px 1px 0 color-mix(in srgb, var(--color-stone-300) 40%, transparent),
+      inset 0 0 5px color-mix(in srgb, var(--color-stone-400) 25%, transparent);
+  }
+
+  :where(.dark, .dark *) .glass-item-active {
+    color: var(--color-gray-100);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--color-gray-300) 60%, transparent);
+  }
+}

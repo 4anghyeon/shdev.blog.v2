@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { MenuList } from "#/features/gnb/MenuList.tsx";
 import { SkyHeader } from "#/features/header/SkyHeader.tsx";
 import { SearchButton } from "#/features/search/components/SearchButton.tsx";
 import { ThemeToggleButton } from "#/features/theme/components/ThemeToggleButton.tsx";
@@ -12,6 +14,9 @@ export function Navbar() {
             shdev.blog
           </Link>
         </div>
+        <Suspense>
+          <MenuList />
+        </Suspense>
         <SearchButton />
       </div>
       <ThemeToggleButton />
