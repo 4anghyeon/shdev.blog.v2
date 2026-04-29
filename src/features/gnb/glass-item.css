@@ -15,7 +15,7 @@
     pointer-events: none;
   }
 
-  .glass-item:hover::before {
+  .glass-item:not(.glass-item-active):hover::before {
     background: rgba(255, 255, 255, 0.2);
     box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
   }
@@ -29,12 +29,12 @@
 
   .glass-item-active {
     color: var(--color-sky-600);
-    text-shadow: 0 0 8px var(--color-sky-600);
+    text-shadow: 0 0 24px var(--color-gray-900);
   }
 
   /* ========== DARK MODE ========== */
   :where(.dark, .dark *) .glass-item-active {
     color: var(--color-gray-100);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--color-gray-300) 60%, transparent);
+    text-shadow: 0 0 24px var(--color-gray-300);
   }
 }

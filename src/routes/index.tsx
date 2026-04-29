@@ -28,7 +28,7 @@ function App() {
     .sort((a, b) => b - a);
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-4 pt-4 pb-8 lg:pt-14">
+    <main className="mx-auto w-full max-w-2xl flex-1 px-4 pt-0 pb-8 lg:pt-14">
       <div className="flex flex-col gap-y-12">
         {years.map((year) => (
           <section key={year} className="flex flex-col gap-y-4">

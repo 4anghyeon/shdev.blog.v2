@@ -6,15 +6,16 @@ import { cn } from "#/shared/lib/tailwind.ts";
 
 interface MenuListItemProps extends LinkProps {
   children?: React.ReactNode;
+  subPath?: LinkProps["to"];
 }
 
-export function MenuListItem({ to, children }: MenuListItemProps) {
+export function MenuListItem({ to, children, subPath }: MenuListItemProps) {
   const { pathname } = useLocation();
-  const isActive = to
-    ? to === "/"
-      ? pathname === "/"
-      : pathname.startsWith(String(to))
-    : false;
+  const isActive = (() => {
+    if (subPath && pathname.startsWith(String(subPath))) return true;
+    if (!to) return false;
+    return to === "/" ? pathname === "/" : pathname.startsWith(String(to));
+  })();
 
   return (
     <li

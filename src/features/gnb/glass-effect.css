@@ -3,7 +3,6 @@
     position: relative;
     display: flex;
     font-weight: 600;
-    color: var(--color-sky-400);
     cursor: pointer;
     background: transparent;
     border-radius: 2rem;

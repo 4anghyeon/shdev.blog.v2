@@ -104,7 +104,7 @@ function BlogPost() {
   const { post, markup, slug, prev, next } = Route.useLoaderData();
 
   return (
-    <article className="relative mr-auto ml-auto w-full px-6 py-4 lg:my-5 lg:max-w-185">
+    <article className="relative mr-auto ml-auto w-full px-4 py-4 lg:my-5 lg:max-w-185 lg:px-6">
       <AllListLink className="mb-6" viewTransition />
       <header className="mb-4 flex flex-col gap-y-4 border-gray-200 border-b pb-10 lg:mb-12 dark:border-stone-600">
         <h1
