@@ -1,5 +1,5 @@
-import "./glass-effect.css";
-import { GlassWrapper } from "#/features/gnb/GlassWrapper.tsx";
+import "./glass-effect/glass-effect.css";
+import { GlassWrapper } from "#/features/gnb/glass-effect/GlassWrapper.tsx";
 import { MenuListItem } from "#/features/gnb/MenuListItem.tsx";
 
 export function MenuList() {

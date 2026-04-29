@@ -1,5 +1,5 @@
 import type * as React from "react";
-import { GlassEffect } from "#/features/gnb/GlassEffect.tsx";
+import { GlassEffect } from "#/features/gnb/glass-effect/GlassEffect.tsx";
 import { cn } from "#/shared/lib/tailwind.ts";
 
 interface GlassWrapperProps {
