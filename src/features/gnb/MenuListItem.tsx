@@ -1,3 +1,4 @@
+import "./glass-item.css";
 import { useLocation } from "@tanstack/react-router";
 import type * as React from "react";
 import { Link, type LinkProps } from "#/shared/components/Link.tsx";

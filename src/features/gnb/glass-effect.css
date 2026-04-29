@@ -45,39 +45,8 @@
     z-index: 3;
     display: flex;
     align-items: center;
-  }
-
-  .glass-item {
-    position: relative;
-    border-radius: 0.75rem;
-    overflow: hidden;
-  }
-
-  .glass-item::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: rgba(255, 255, 255, 0);
-    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0);
-    pointer-events: none;
-  }
-
-  .glass-item:hover::before {
-    background: rgba(255, 255, 255, 0.2);
-    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
-  }
-
-  .glass-item-active::before {
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow:
-      inset 1px 1px 0 rgba(255, 255, 255, 0.75),
-      inset 0 0 8px rgba(255, 255, 255, 0.4);
-  }
-
-  .glass-item-active {
-    color: var(--color-sky-600);
-    text-shadow: 0 0 8px var(--color-sky-600);
+    width: 100%; /* ✅ children이 컨테이너 꽉 채우도록 */
+    height: 100%; /* ✅ 세로도 동일하게 */
   }
 
   /* ========== DARK MODE ========== */
@@ -94,12 +63,8 @@
 
   :where(.dark, .dark *) .glass-specular {
     box-shadow:
-      inset 1px 1px 0 color-mix(in srgb, var(--color-stone-300) 40%, transparent),
+      inset 1px 1px 0
+      color-mix(in srgb, var(--color-stone-300) 40%, transparent),
       inset 0 0 5px color-mix(in srgb, var(--color-stone-400) 25%, transparent);
-  }
-
-  :where(.dark, .dark *) .glass-item-active {
-    color: var(--color-gray-100);
-    text-shadow: 0 0 8px color-mix(in srgb, var(--color-gray-300) 60%, transparent);
   }
 }
