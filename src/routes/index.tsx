@@ -36,7 +36,7 @@ function App() {
               <h2 className="font-bold text-4xl text-gray-900 dark:text-gray-100">
                 {year}
               </h2>
-              <span className="rounded-md border border-gray-200 bg-gray-100 px-1 text-[12px] text-text-default dark:border-gray-600 dark:bg-gray-700/50">
+              <span className="rounded-sm border border-blue-200 bg-blue-100 px-1.5 text-[12px] text-text-default dark:border-gray-600 dark:bg-gray-700/50">
                 {postsByYear[year].length}개의 게시글
               </span>
             </div>
