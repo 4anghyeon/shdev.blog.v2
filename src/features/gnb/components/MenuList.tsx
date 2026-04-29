@@ -1,14 +1,23 @@
+import { isNil } from "es-toolkit";
 import { motion } from "motion/react";
 import { GlassWrapper } from "#/features/glass-effect/components/GlassWrapper.tsx";
 import { MenuListItem } from "#/features/gnb/components/MenuListItem.tsx";
 import { MENU_ITEMS } from "#/shared/constant/menu-items.ts";
+import { cn } from "#/shared/lib/tailwind.ts";
 import { useMenuBubble } from "../hooks/use-menu-bubble.ts";
 
 export function MenuList() {
   const { bubbleMotionProps, itemRefs, activeIndex } = useMenuBubble();
 
   return (
-    <GlassWrapper className="max-md:fixed max-md:bottom-6 max-md:left-1/2 max-md:-translate-x-1/2">
+    <GlassWrapper
+      className={cn(
+        "max-md:fixed max-md:bottom-6 max-md:left-1/2 max-md:-translate-x-1/2",
+        {
+          invisible: isNil(bubbleMotionProps),
+        },
+      )}
+    >
       <ul className="relative flex gap-x-1 px-2 py-1.5 font-semibold text-sm">
         {bubbleMotionProps && (
           <motion.div
