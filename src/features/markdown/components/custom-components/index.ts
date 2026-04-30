@@ -1,5 +1,6 @@
 import { BookInfo } from "#/features/markdown/components/custom-components/BookInfo.tsx";
 import { DiffExample } from "#/features/markdown/components/custom-components/css-font-variant-numeric-guide/DiffExample.tsx";
+import { PromiseRaceRenderingQuiz } from "#/features/markdown/components/custom-components/multiparadigm-async-programming-guide/PromiseRaceRenderingQuiz.tsx";
 import { YoutubeIframe } from "#/features/markdown/components/custom-components/YoutubeIframe.tsx";
 import * as CssContainerQueries from "./css-container-queries";
 import * as Tabindex from "./tabindex";
@@ -16,4 +17,5 @@ export const ExampleComponents = {
   BookInfo,
   DiffExample,
   YoutubeIframe,
+  PromiseRaceRenderingQuiz,
 };

@@ -28,7 +28,7 @@ tags: ['HTML']
 <div tabindex="0" role="button">div로 만들어진 버튼!</div>
 ```
 
-<TabindexExample01 />
+<TabindexExample01></TabindexExample01>
 
 ### 2. tabindex="-1"
 
@@ -41,15 +41,16 @@ tags: ['HTML']
 </script>
 ```
 
-<TabindexExample02 />
+<TabindexExample02></TabindexExample02>
 
 ### 3. tabindex="양수"
 
 요소에 **명시적인 탭 순서를 부여한다**. `1`부터 시작하여 숫자가 작은 요소부터 순서대로 포커스를 받게 된다. 같은 숫자를 가진 요소들은 HTML 소스 코드 순서대로 포커스를 받는다.
 
+
 > [!WARNING]
 > **안티패턴 으로 간주됨**
-> ---
+>
 > 양수 `tabindex`는 논리적인 문서 구조와 다르게 포커스 **순서를** 강제하여 사용자(특히 키보드 및 스크린 리더 사용자)에게 혼란을 주고 웹 접근성을 해칠 수 있다.  또한 유지보수도 어려워질 수 있다.
 
 

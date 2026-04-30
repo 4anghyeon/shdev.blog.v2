@@ -25,7 +25,7 @@ const vertices = new Float32Array([
 geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
 ```
 
-<BufferGeometryExample />
+<BufferGeometryExample></BufferGeometryExample>
 
 이런 식으로 Matrix 형태의 데이터를 전달하여 화면에 그릴 수 있다. 이와 관련된 더 많은 옵션은 [공식 문서 링크](https://threejs.org/docs/?q=geometr#api/ko/core/BufferGeometry) 에서 찾을 수 있다.
 
@@ -51,7 +51,7 @@ const coneGeometry = new THREE.ConeGeometry(radius, height);
 // 도넛 모양
 const torusGeometry = new THREE.TorusGeometry(radius, tube, radialSegments);
 ```
-<VariousGeometryExample />
+<VariousGeometryExample></VariousGeometryExample>
 
 ## Materials란?
 
@@ -111,7 +111,7 @@ new THREE.MeshPhongMaterial({
   side: THREE.DoubleSide,
 }),
 ```
-<VariousMaterialExample />
+<VariousMaterialExample></VariousMaterialExample>
 
 ### Map의 기본 개념 및 종류
 
@@ -162,7 +162,7 @@ const material = new THREE.MeshStandardMaterial({
 });
 ```
 
-<MaterialMapExample />
+<MaterialMapExample></MaterialMapExample>
 
 ## Mesh
 
@@ -231,5 +231,5 @@ Three.js의 핵심 구성 요소들에 대해 살펴보았다. Geometry로 3D �
 - 불필요한 객체의 메모리 해제
 
 ---
-**참조**
+**참고**
 - [Three.js Docs](https://threejs.org/docs/)
