@@ -37,7 +37,7 @@ tags: ['OAuth']
 
 이슈가 모바일 환경에서 앱을 통해 로그인할 경우에만 재현되기 때문에, 데스크톱 브라우저의 개발자 도구로는 확인할 수 없었다. 그래서 [Proxyman](https://proxyman.io/)을 사용해 모바일 기기의 네트워크 요청을 가로채서 분석했다.
 
-![카카오톡 로그인 분석](kakao-line-app-login-difference/proxyman-kakao.png)
+![카카오톡 로그인 분석](kakao-line-app-login-difference/proxyman-kakao.webp)
 
 카카오톡으로 로그인 버튼을 누르면, 아래와 같은 동작이 순서대로 일어난다.
 
@@ -47,7 +47,7 @@ tags: ['OAuth']
 4. `/web_talk/poll.json` 응답에 redirect_url 포함되어 도착
 5. account.kakao.com이 redirect_url로 이동
 
-![카카오톡 로그인 분석 2](kakao-line-app-login-difference/kakao-polling.png)
+![카카오톡 로그인 분석 2](kakao-line-app-login-difference/kakao-polling.webp)
 
 
 
@@ -55,7 +55,7 @@ tags: ['OAuth']
 
 이 구조 덕분에 인증의 주도권은 카카오톡 앱이 가져가지만, redirect는 처음부터 끝까지 인앱브라우저 안에서 일어나게 된다.
 
-![카카오 로그인 흐름](kakao-line-app-login-difference/kakao-oauth-flow.png)
+![카카오 로그인 흐름](kakao-line-app-login-difference/kakao-oauth-flow.webp)
 
 
 
@@ -73,7 +73,7 @@ LINE 앱 로그인의 흐름은 훨씬 단순하지만, 인앱브라우저 환�
 
 
 
-![라인 로그인 흐름](kakao-line-app-login-difference/line-oauth-flow.png)
+![라인 로그인 흐름](kakao-line-app-login-difference/line-oauth-flow.webp)
 
 
 
