@@ -2,6 +2,13 @@
 @import "tw-animate-css";
 @import "tailwind-animations";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@view-transition {
+  navigation: auto;
+}
+
+/* Font Faces */
 @font-face {
   font-family: "Pretendard Variable";
   src: url("/fonts/PretendardVariable.woff2") format("woff2");
@@ -18,14 +25,30 @@
   font-display: swap;
 }
 
-@custom-variant dark (&:where(.dark, .dark *));
+@theme inline {
+  /* Fonts */
+  --font-minecraft: var(--font-minecraft);
+  --font-won-title: var(--font-won-title);
+  --font-toss-face: var(--font-toss-face);
+  --font-source-sans: var(--font-source-sans);
+  --font-ubuntu-mono: var(--font-ubuntu-mono);
+  --font-pretendard: var(--font-pretendard);
 
-@view-transition {
-  navigation: auto;
-}
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-text-default: var(--text-default);
 
-@theme {
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Animations */
   --animate-bounce-slow: float 4s linear infinite;
+
+  /* Shadows */
   --shadow-page:
     oklch(0.3 0.01 255) 0px 4px 8px -4px,
     oklch(0.3 0.01 255 / 0.08) 0px 0px 0px 1px;
@@ -34,68 +57,36 @@
     0 10px 15px -5px oklch(0.5 0.27 296.8 / 0.1),
     0 5px 5px -5px oklch(0.5 0.27 296.8 / 0.2);
 
+  /* Keyframes */
   @keyframes float {
-    0% {
+    0%,
+    100% {
       transform: translateY(0px);
     }
     50% {
       transform: translateY(-5px);
     }
-    100% {
-      transform: translateY(0px);
-    }
   }
 }
 
-@theme inline {
-  --font-minecraft: var(--font-minecraft);
-  --font-won-title: var(--font-won-title);
-  --font-toss-face: var(--font-toss-face);
-  --font-source-sans: var(--font-source-sans);
-  --font-ubuntu-mono: var(--font-ubuntu-mono);
-  --font-pretendard: var(--font-pretendard);
-
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-text-default: var(--text-default);
-
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-}
-
-/* 전역 CSS */
 @layer base {
   :root {
     --font-pretendard: "Pretendard Variable", sans-serif;
     --radius: 0.625rem;
+
     --background: oklch(1 0 0);
     --foreground: oklch(0.147 0.004 49.25);
     --text-default: var(--color-gray-900);
-
-    /* Shiki highlighted line */
-    --shiki-highlight-bg: oklch(0.944 0.021 248.047);
-
-    /* Shiki diff add */
-    --shiki-diff-add-bg: oklch(0.954 0.049 123.498);
-    --shiki-diff-add-indicator: oklch(0.45 0.15 145);
   }
 
   .dark {
     --background: var(--color-stone-900);
     --foreground: oklch(0.985 0.001 106.423);
     --text-default: var(--color-gray-100);
-
-    /* Shiki highlighted line */
-    --shiki-highlight-bg: oklch(0.45 0.076 242.019);
-
-    /* Shiki diff add */
-    --shiki-diff-add-bg: oklch(0.35 0.08 145);
-    --shiki-diff-add-indicator: oklch(0.715 0.094 145.82);
   }
 }
 
+/* Scroll Animations */
 @keyframes scroll-scale-out {
   from {
     transform: scale(1);
@@ -111,49 +102,5 @@
     animation-duration: auto;
     animation-timeline: view();
     animation-range: exit 0% exit 70%;
-  }
-}
-
-/* 컴포넌트 레이어  */
-@layer components {
-  html.dark .shiki,
-  html.dark .shiki span {
-    color: var(--shiki-dark) !important;
-    background-color: var(--shiki-dark-bg) !important;
-    font-style: var(--shiki-dark-font-style) !important;
-    font-weight: var(--shiki-dark-font-weight) !important;
-    text-decoration: var(--shiki-dark-text-decoration) !important;
-  }
-
-  /* highlighted */
-  .shiki .line.highlighted {
-    margin-inline: -1rem;
-    padding-inline: 1rem;
-    display: inline-block;
-    width: calc(100% + 2rem);
-    background-color: var(--shiki-highlight-bg) !important;
-  }
-
-  .shiki .line.highlighted span {
-    background-color: var(--shiki-highlight-bg) !important;
-  }
-
-  /* diff add */
-  .shiki .line.diff.add {
-    margin-inline: -1rem;
-    padding-inline: 1rem;
-    display: inline-block;
-    width: calc(100% + 2rem);
-    background-color: var(--shiki-diff-add-bg) !important;
-  }
-
-  .shiki .line.diff.add span {
-    background-color: var(--shiki-diff-add-bg) !important;
-  }
-
-  .shiki .line.diff.add::before {
-    content: "+";
-    color: var(--shiki-diff-add-indicator);
-    margin-right: 0.5rem;
   }
 }

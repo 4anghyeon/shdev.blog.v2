@@ -1,0 +1,62 @@
+@layer base {
+  :root {
+    /* Shiki highlighted line */
+    --shiki-highlight-bg: oklch(0.944 0.021 248.047);
+
+    /* Shiki diff add */
+    --shiki-diff-add-bg: oklch(0.954 0.049 123.498);
+    --shiki-diff-add-indicator: oklch(0.45 0.15 145);
+  }
+
+  .dark {
+    /* Shiki highlighted line */
+    --shiki-highlight-bg: oklch(0.45 0.076 242.019);
+
+    /* Shiki diff add */
+    --shiki-diff-add-bg: oklch(0.35 0.08 145);
+    --shiki-diff-add-indicator: oklch(0.715 0.094 145.82);
+  }
+}
+
+@layer components {
+  html.dark .shiki,
+  html.dark .shiki span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+  }
+
+  /* highlighted */
+  .shiki .line.highlighted {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    display: inline-block;
+    width: calc(100% + 2rem);
+    background-color: var(--shiki-highlight-bg) !important;
+  }
+
+  .shiki .line.highlighted span {
+    background-color: var(--shiki-highlight-bg) !important;
+  }
+
+  /* diff add */
+  .shiki .line.diff.add {
+    margin-inline: -1rem;
+    padding-inline: 1rem;
+    display: inline-block;
+    width: calc(100% + 2rem);
+    background-color: var(--shiki-diff-add-bg) !important;
+  }
+
+  .shiki .line.diff.add span {
+    background-color: var(--shiki-diff-add-bg) !important;
+  }
+
+  .shiki .line.diff.add::before {
+    content: "+";
+    color: var(--shiki-diff-add-indicator);
+    margin-right: 0.5rem;
+  }
+}

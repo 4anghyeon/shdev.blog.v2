@@ -7,6 +7,7 @@ import { Navbar } from "#/composites/layout/Navbar.tsx";
 import { ThemeProvider } from "#/features/theme/provider/ThemeProvider.tsx";
 import { GoogleAnalyticsScript } from "#/shared/components/GoogleAnalyticsScript.tsx";
 import { BlogMeta } from "#/shared/constant/metadata.ts";
+import ShikiCss from "#/styles/shiki.css?url";
 import appCss from "../styles.css?url";
 
 export const Route = createRootRoute({
@@ -37,6 +38,10 @@ export const Route = createRootRoute({
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "stylesheet",
+        href: ShikiCss,
       },
     ],
   }),
