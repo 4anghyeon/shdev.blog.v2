@@ -1,12 +1,13 @@
 import { ClientOnly, createFileRoute, notFound } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
 import { AllListLink } from "#/features/post-detail/components/AllListLink.tsx";
 import { Description } from "#/features/post-detail/components/Description.tsx";
 import { GiscusComment } from "#/features/post-detail/components/GiscusComment.tsx";
 import { PostNavigation } from "#/features/post-detail/components/PostNavigation.tsx";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents.tsx";
+import { usePostStore } from "#/features/post-detail/post-store.ts";
 import { Tag } from "#/shared/components/Tag.tsx";
 import { BlogMeta } from "#/shared/constant/metadata.ts";
 import { dateHelper } from "#/shared/helper/date.ts";
@@ -102,6 +103,15 @@ export const Route = createFileRoute("/ko/post/$slug")({
 
 function BlogPost() {
   const { post, markup, slug, prev, next } = Route.useLoaderData();
+  const setTitle = usePostStore((state) => state.setTitle);
+
+  useEffect(() => {
+    setTitle(post.title);
+
+    return () => {
+      setTitle("");
+    };
+  }, [post.title, setTitle]);
 
   return (
     <article className="relative mr-auto ml-auto w-full px-4 py-4 lg:my-5 lg:max-w-185 lg:px-6">

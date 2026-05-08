@@ -32,6 +32,7 @@ export function MenuList() {
             index={index}
             isActive={activeIndex === index}
             to={item.to}
+            subPath={"subPath" in item ? item.subPath : undefined}
             ref={(el) => {
               itemRefs.current[index] = el;
             }}
