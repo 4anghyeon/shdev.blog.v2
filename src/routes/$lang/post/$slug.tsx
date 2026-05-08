@@ -1,4 +1,9 @@
-import { ClientOnly, createFileRoute, notFound } from "@tanstack/react-router";
+import {
+  ClientOnly,
+  createFileRoute,
+  notFound,
+  redirect,
+} from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { Suspense, useEffect } from "react";
 import { Markdown } from "#/features/markdown/components/Markdown.tsx";
@@ -12,7 +17,15 @@ import { Tag } from "#/shared/components/Tag.tsx";
 import { BlogMeta } from "#/shared/constant/metadata.ts";
 import { dateHelper } from "#/shared/helper/date.ts";
 
-export const Route = createFileRoute("/ko/post/$slug")({
+export const Route = createFileRoute("/$lang/post/$slug")({
+  beforeLoad: ({ params, location }) => {
+    if (params.lang !== "ko") {
+      throw redirect({
+        href: location.pathname.replace(`/${params.lang}/`, "/ko/"),
+        statusCode: 301,
+      });
+    }
+  },
   loader: async ({ params }) => {
     const post = allPosts.find((p) => p.slug === params.slug);
     if (!post) {

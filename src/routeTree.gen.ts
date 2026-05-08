@@ -13,7 +13,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as KoPostSlugRouteImport } from './routes/ko/post/$slug'
+import { Route as LangPostSlugRouteImport } from './routes/$lang/post/$slug'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -35,9 +35,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KoPostSlugRoute = KoPostSlugRouteImport.update({
-  id: '/ko/post/$slug',
-  path: '/ko/post/$slug',
+const LangPostSlugRoute = LangPostSlugRouteImport.update({
+  id: '/$lang/post/$slug',
+  path: '/$lang/post/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -46,14 +46,14 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/ko/post/$slug': typeof KoPostSlugRoute
+  '/$lang/post/$slug': typeof LangPostSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/ko/post/$slug': typeof KoPostSlugRoute
+  '/$lang/post/$slug': typeof LangPostSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,20 +61,20 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/ko/post/$slug': typeof KoPostSlugRoute
+  '/$lang/post/$slug': typeof LangPostSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/rss.xml' | '/sitemap.xml' | '/ko/post/$slug'
+  fullPaths: '/' | '/about' | '/rss.xml' | '/sitemap.xml' | '/$lang/post/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/rss.xml' | '/sitemap.xml' | '/ko/post/$slug'
+  to: '/' | '/about' | '/rss.xml' | '/sitemap.xml' | '/$lang/post/$slug'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/rss.xml'
     | '/sitemap.xml'
-    | '/ko/post/$slug'
+    | '/$lang/post/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -82,7 +82,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  KoPostSlugRoute: typeof KoPostSlugRoute
+  LangPostSlugRoute: typeof LangPostSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -115,11 +115,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ko/post/$slug': {
-      id: '/ko/post/$slug'
-      path: '/ko/post/$slug'
-      fullPath: '/ko/post/$slug'
-      preLoaderRoute: typeof KoPostSlugRouteImport
+    '/$lang/post/$slug': {
+      id: '/$lang/post/$slug'
+      path: '/$lang/post/$slug'
+      fullPath: '/$lang/post/$slug'
+      preLoaderRoute: typeof LangPostSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -130,7 +130,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   RssDotxmlRoute: RssDotxmlRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  KoPostSlugRoute: KoPostSlugRoute,
+  LangPostSlugRoute: LangPostSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
