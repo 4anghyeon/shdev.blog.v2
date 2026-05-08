@@ -10,7 +10,7 @@ interface GlassWrapperProps {
 
 export function GlassWrapper({ children, className }: GlassWrapperProps) {
   return (
-    <div className={cn("glass-container z-10", className)}>
+    <div className={cn("glass-container", className)}>
       <GlassEffect />
       <div className="glass-content">{children}</div>
     </div>

@@ -12,7 +12,7 @@ export function MenuList() {
   return (
     <GlassWrapper
       className={cn(
-        "max-md:fixed max-md:bottom-6 max-md:left-1/2 max-md:-translate-x-1/2",
+        "z-40 max-md:fixed max-md:bottom-6 max-md:left-1/2 max-md:-translate-x-1/2",
         {
           invisible: isNil(bubbleMotionProps),
         },
