@@ -32,7 +32,7 @@ function App() {
       <div className="flex flex-col gap-y-12">
         {years.map((year) => (
           <section key={year} className="flex flex-col gap-y-4">
-            <div className="flex items-center gap-x-2 pb-2">
+            <div className="flex items-center gap-x-2 pb-2 lg:px-3">
               <h2 className="font-bold text-4xl text-gray-900 dark:text-gray-100">
                 {year}
               </h2>
