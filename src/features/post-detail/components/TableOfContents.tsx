@@ -2,8 +2,8 @@ import { useLocation } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { MarkdownHeading } from "#/features/markdown/utils/render-markdown.ts";
-import { Link } from "#/shared/components/Link.tsx";
-import { cn } from "#/shared/lib/tailwind.ts";
+import { Link } from "#/shared/components/Link";
+import { cn } from "#/shared/lib/tailwind";
 
 interface TableOfContentsProps {
   headings: MarkdownHeading[];

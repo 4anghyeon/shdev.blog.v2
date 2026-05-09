@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { useTheme } from "../theme/provider/ThemeProvider";
+import { useTheme } from "#/features/theme/provider/ThemeProvider";
 
 const SPRITE_W = 292;
 const SPRITE_H = 280;

@@ -1,7 +1,7 @@
-import { BookInfo } from "#/features/markdown/components/custom-components/BookInfo.tsx";
-import { DiffExample } from "#/features/markdown/components/custom-components/css-font-variant-numeric-guide/DiffExample.tsx";
-import { PromiseRaceRenderingQuiz } from "#/features/markdown/components/custom-components/multiparadigm-async-programming-guide/PromiseRaceRenderingQuiz.tsx";
-import { YoutubeIframe } from "#/features/markdown/components/custom-components/YoutubeIframe.tsx";
+import { BookInfo } from "#/features/markdown/components/custom-components/BookInfo";
+import { DiffExample } from "#/features/markdown/components/custom-components/css-font-variant-numeric-guide/DiffExample";
+import { PromiseRaceRenderingQuiz } from "#/features/markdown/components/custom-components/multiparadigm-async-programming-guide/PromiseRaceRenderingQuiz";
+import { YoutubeIframe } from "#/features/markdown/components/custom-components/YoutubeIframe";
 import * as CssContainerQueries from "./css-container-queries";
 import * as Tabindex from "./tabindex";
 import * as ThreeJSAboutLights from "./threejs-about-lights";

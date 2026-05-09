@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
-import CodeCopyButton from "#/features/markdown/components/CodeCopyButton.tsx";
-import { getLangExtension } from "#/features/markdown/utils/langauge-extension.ts";
-import { cn } from "#/shared/lib/tailwind.ts";
+import CodeCopyButton from "#/features/markdown/components/CodeCopyButton";
+import { getLangExtension } from "#/features/markdown/utils/langauge-extension";
+import { cn } from "#/shared/lib/tailwind";
 
 interface CodeBlockProps {
   code: string;

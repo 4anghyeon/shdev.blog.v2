@@ -10,9 +10,9 @@ import {
   TextField,
 } from "react-aria-components";
 import { twMerge } from "tailwind-merge";
-import { usePagefind } from "#/features/search/hooks/use-pagefind.ts";
-import { Link } from "#/shared/components/Link.tsx";
-import { cn } from "#/shared/lib/tailwind.ts";
+import { usePagefind } from "#/features/search/hooks/use-pagefind";
+import { Link } from "#/shared/components/Link";
+import { cn } from "#/shared/lib/tailwind";
 
 interface PagefindResult {
   url: string;

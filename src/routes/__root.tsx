@@ -2,11 +2,11 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { Analytics } from "@vercel/analytics/react";
-import { Footer } from "#/composites/layout/Footer.tsx";
-import { Navbar } from "#/composites/layout/Navbar.tsx";
-import { ThemeProvider } from "#/features/theme/provider/ThemeProvider.tsx";
-import { GoogleAnalyticsScript } from "#/shared/components/GoogleAnalyticsScript.tsx";
-import { BlogMeta } from "#/shared/constant/metadata.ts";
+import { Footer } from "#/composites/layout/Footer";
+import { Navbar } from "#/composites/layout/Navbar";
+import { ThemeProvider } from "#/features/theme/provider/ThemeProvider";
+import { GoogleAnalyticsScript } from "#/shared/components/GoogleAnalyticsScript";
+import { BlogMeta } from "#/shared/constant/metadata";
 import ShikiCss from "#/styles/shiki.css?url";
 import appCss from "../styles.css?url";
 

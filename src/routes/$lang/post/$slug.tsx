@@ -6,18 +6,28 @@ import {
 } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { Suspense, useEffect } from "react";
-import { Markdown } from "#/features/markdown/components/Markdown.tsx";
-import { AllListLink } from "#/features/post-detail/components/AllListLink.tsx";
-import { Description } from "#/features/post-detail/components/Description.tsx";
-import { GiscusComment } from "#/features/post-detail/components/GiscusComment.tsx";
-import { PostNavigation } from "#/features/post-detail/components/PostNavigation.tsx";
-import { TableOfContents } from "#/features/post-detail/components/TableOfContents.tsx";
-import { usePostStore } from "#/features/post-detail/post-store.ts";
-import { Tag } from "#/shared/components/Tag.tsx";
-import { BlogMeta } from "#/shared/constant/metadata.ts";
-import { dateHelper } from "#/shared/helper/date.ts";
+import { z } from "zod";
+import { Markdown } from "#/features/markdown/components/Markdown";
+import { AllListLink } from "#/features/post-detail/components/AllListLink";
+import { Description } from "#/features/post-detail/components/Description";
+import { GiscusComment } from "#/features/post-detail/components/GiscusComment";
+import { PostNavigation } from "#/features/post-detail/components/PostNavigation";
+import { TableOfContents } from "#/features/post-detail/components/TableOfContents";
+import { usePostStore } from "#/features/post-detail/post-store";
+import { Tag } from "#/shared/components/Tag";
+import { BlogMeta } from "#/shared/constant/metadata";
+import { dateHelper } from "#/shared/helper/date";
+
+const langSchema = z.enum(["ko"]);
 
 export const Route = createFileRoute("/$lang/post/$slug")({
+  params: {
+    parse: (params) => ({
+      lang: langSchema.parse(params.lang),
+      slug: z.string().parse(params.slug),
+    }),
+    stringify: (params) => params,
+  },
   beforeLoad: ({ params, location }) => {
     if (params.lang !== "ko") {
       throw redirect({

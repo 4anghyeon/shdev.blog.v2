@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useTransition } from "react";
-import { useTheme } from "#/features/theme/provider/ThemeProvider.tsx";
+import { useTheme } from "#/features/theme/provider/ThemeProvider";
 
 const toggleVariants: Variants = {
   initial: { y: -60, x: 20, rotate: 30, opacity: 0 },

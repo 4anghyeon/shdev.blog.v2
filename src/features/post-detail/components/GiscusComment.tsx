@@ -1,5 +1,5 @@
 import Giscus from "@giscus/react";
-import { useTheme } from "#/features/theme/provider/ThemeProvider.tsx";
+import { useTheme } from "#/features/theme/provider/ThemeProvider";
 
 export function GiscusComment() {
   const { isDark } = useTheme();

@@ -1,6 +1,6 @@
 import { Github, Linkedin, Mail } from "iconoir-react";
 import { Rss } from "lucide-react";
-import { Link } from "#/shared/components/Link.tsx";
+import { Link } from "#/shared/components/Link";
 
 export function Footer() {
   return (

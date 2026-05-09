@@ -1,8 +1,8 @@
 import { ChevronUp, Command, Search as SearchIcon } from "lucide-react";
 import { Suspense, useEffect, useState } from "react";
 import { Button, DialogTrigger } from "react-aria-components";
-import { SearchModal } from "#/features/search/components/SearchModal.tsx";
-import { useUserAgent } from "#/shared/hooks/use-user-agent.ts";
+import { SearchModal } from "#/features/search/components/SearchModal";
+import { useUserAgent } from "#/shared/hooks/use-user-agent";
 
 export function SearchButton() {
   const [isOpen, setIsOpen] = useState(false);

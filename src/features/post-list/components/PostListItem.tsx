@@ -1,6 +1,6 @@
-import { Link } from "#/shared/components/Link.tsx";
-import { Tag } from "#/shared/components/Tag.tsx";
-import { dateHelper } from "#/shared/helper/date.ts";
+import { Link } from "#/shared/components/Link";
+import { Tag } from "#/shared/components/Tag";
+import { dateHelper } from "#/shared/helper/date";
 
 interface PostListItemProps {
   slug: string;
@@ -20,8 +20,8 @@ export function PostListItem({
   return (
     <li className="group scale-out">
       <Link
-        to="/ko/post/$slug"
-        params={{ slug }}
+        to="/$lang/post/$slug"
+        params={{ lang: "ko", slug }}
         viewTransition
         className="dark:hover:stone-900 flex flex-col gap-y-2 rounded-lg py-5 no-underline transition-all duration-100 ease-in-out hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-sm focus-visible:-translate-y-0.5 focus-visible:bg-gray-50 focus-visible:shadow-sm focus-visible:outline-none active:translate-y-0 active:scale-[0.97] active:shadow-none lg:px-3 dark:border-stone-600 dark:shadow-stone-600 dark:focus-visible:bg-stone-800 dark:hover:bg-stone-800"
       >

@@ -1,4 +1,4 @@
-import { useUserAgent } from "#/shared/hooks/use-user-agent.ts";
+import { useUserAgent } from "#/shared/hooks/use-user-agent";
 
 export function MediaQueryProblem() {
   const { isMobileDevice } = useUserAgent();

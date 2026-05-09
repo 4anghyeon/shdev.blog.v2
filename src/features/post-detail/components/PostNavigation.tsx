@@ -1,6 +1,6 @@
 import { NavArrowLeft, NavArrowRight } from "iconoir-react";
-import { Link } from "#/shared/components/Link.tsx";
-import { cn } from "#/shared/lib/tailwind.ts";
+import { Link } from "#/shared/components/Link";
+import { cn } from "#/shared/lib/tailwind";
 
 interface PostNavigationItem {
   slug: string;
@@ -26,8 +26,8 @@ export function PostNavigation({ prev, next, className }: PostNavigationProps) {
     >
       {prev ? (
         <Link
-          to="/ko/post/$slug"
-          params={{ slug: prev.slug }}
+          to="/$lang/post/$slug"
+          params={{ lang: "ko", slug: prev.slug }}
           viewTransition
           className="group flex flex-col gap-1 rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:border-gray-400 lg:w-1/2 dark:border-stone-700 dark:hover:border-stone-500"
         >
@@ -45,8 +45,8 @@ export function PostNavigation({ prev, next, className }: PostNavigationProps) {
 
       {next ? (
         <Link
-          to="/ko/post/$slug"
-          params={{ slug: next.slug }}
+          to="/$lang/post/$slug"
+          params={{ lang: "ko", slug: next.slug }}
           viewTransition
           className="group flex flex-col items-end gap-1 rounded-lg border border-gray-200 p-4 text-sm transition-colors hover:border-stone-400 lg:ml-auto lg:w-1/2 dark:border-stone-700 dark:hover:border-stone-500"
         >

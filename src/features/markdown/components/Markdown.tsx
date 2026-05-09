@@ -5,11 +5,11 @@ import parse, {
   type HTMLReactParserOptions,
 } from "html-react-parser";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
-import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButton.tsx";
-import { CodeBlock } from "#/features/markdown/components/CodeBlock.tsx";
-import { ExampleComponents } from "#/features/markdown/components/custom-components/index.ts";
-import { Link } from "#/shared/components/Link.tsx";
-import { cn } from "#/shared/lib/tailwind.ts";
+import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButton";
+import { CodeBlock } from "#/features/markdown/components/CodeBlock";
+import { ExampleComponents } from "#/features/markdown/components/custom-components";
+import { Link } from "#/shared/components/Link";
+import { cn } from "#/shared/lib/tailwind";
 
 type MarkdownProps = {
   markup: string;

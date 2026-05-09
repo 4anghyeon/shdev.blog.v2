@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { cn } from "#/shared/lib/tailwind.ts";
+import { cn } from "#/shared/lib/tailwind";
 
 interface DiffExampleProps extends PropsWithChildren {
   className?: string;
@@ -10,7 +10,10 @@ const sourceSans3Style = { fontFamily: '"Source Sans 3", sans-serif' };
 
 export function DiffExample({ className, children, font }: DiffExampleProps) {
   return (
-    <div className={cn("mb-6 grid grid-cols-1 gap-4 text-lg sm:grid-cols-2")} style={sourceSans3Style}>
+    <div
+      className={cn("mb-6 grid grid-cols-1 gap-4 text-lg sm:grid-cols-2")}
+      style={sourceSans3Style}
+    >
       <div className="rounded-sm border border-zinc-200 bg-zinc-100 p-2">
         <span className="rounded-sm bg-zinc-300 p-1 text-xs">before</span>
         <div className={cn(font)}>{children}</div>

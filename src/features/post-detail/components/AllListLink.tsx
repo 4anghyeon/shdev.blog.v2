@@ -1,6 +1,6 @@
 import { List } from "iconoir-react";
-import { Link } from "#/shared/components/Link.tsx";
-import { cn } from "#/shared/lib/tailwind.ts";
+import { Link } from "#/shared/components/Link";
+import { cn } from "#/shared/lib/tailwind";
 
 interface AllListLinkProps {
   className?: string;

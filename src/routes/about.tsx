@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { WorkInProgress } from "#/features/wip-404/WorkInProgress.tsx";
+import { WorkInProgress } from "#/features/wip-404/WorkInProgress";
 
 export const Route = createFileRoute("/about")({
   component: RouteComponent,

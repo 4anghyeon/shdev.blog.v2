@@ -1,2 +1,2 @@
-export * from "./ContainerQuerySolution.tsx";
-export * from "./MediaQueryProblem.tsx";
+export * from "./ContainerQuerySolution";
+export * from "./MediaQueryProblem";

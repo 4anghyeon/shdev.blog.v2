@@ -1,7 +1,7 @@
 import { useLocation } from "@tanstack/react-router";
 import { LinkIcon } from "lucide-react";
-import { useCopy } from "#/shared/hooks/use-copy.ts";
-import { cn } from "#/shared/lib/tailwind.ts";
+import { useCopy } from "#/shared/hooks/use-copy";
+import { cn } from "#/shared/lib/tailwind";
 
 type HeadingLinkProps = {
   anchor: string;
