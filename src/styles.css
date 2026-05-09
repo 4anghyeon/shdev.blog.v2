@@ -25,14 +25,38 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "NanumDaeGwangYuRi";
+  src: url("/fonts/NanumDaeGwangYuRi.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --font-pretendard: "Pretendard Variable", sans-serif;
+    --font-daegwangyuri: "NanumDaeGwangYuRi", cursive;
+    --font-source-sans: "Source Sans 3", sans-serif;
+    --radius: 0.625rem;
+
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.147 0.004 49.25);
+    --text-default: var(--color-gray-900);
+  }
+
+  .dark {
+    --background: var(--color-stone-900);
+    --foreground: oklch(0.985 0.001 106.423);
+    --text-default: var(--color-gray-100);
+  }
+}
+
 @theme inline {
   /* Fonts */
   --font-minecraft: var(--font-minecraft);
-  --font-won-title: var(--font-won-title);
-  --font-toss-face: var(--font-toss-face);
   --font-source-sans: var(--font-source-sans);
-  --font-ubuntu-mono: var(--font-ubuntu-mono);
   --font-pretendard: var(--font-pretendard);
+  --font-daegwangyuri: var(--font-daegwangyuri);
 
   /* Colors */
   --color-background: var(--background);
@@ -66,23 +90,6 @@
     50% {
       transform: translateY(-5px);
     }
-  }
-}
-
-@layer base {
-  :root {
-    --font-pretendard: "Pretendard Variable", sans-serif;
-    --radius: 0.625rem;
-
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.147 0.004 49.25);
-    --text-default: var(--color-gray-900);
-  }
-
-  .dark {
-    --background: var(--color-stone-900);
-    --foreground: oklch(0.985 0.001 106.423);
-    --text-default: var(--color-gray-100);
   }
 }
 
