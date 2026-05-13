@@ -1,10 +1,10 @@
-import type * as React from "react";
 import { GlassEffect } from "#/features/glass-effect/components/GlassEffect";
 import { cn } from "#/shared/lib/tailwind";
 import "#/features/glass-effect/styles/glass-item.css";
+import type { ReactNode } from "react";
 
 interface GlassWrapperProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
 

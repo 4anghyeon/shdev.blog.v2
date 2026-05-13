@@ -1,7 +1,7 @@
 import { useRouterState } from "@tanstack/react-router";
 import { isEmpty } from "es-toolkit/compat";
 import { AnimatePresence, motion } from "motion/react";
-import type * as React from "react";
+import type { ReactNode, Ref } from "react";
 import { usePostStore } from "#/features/post-detail/post-store";
 import { Link, type LinkProps } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
@@ -11,8 +11,8 @@ interface MenuListItemProps extends Omit<LinkProps, "ref"> {
   index: number;
   isActive: boolean;
   subPath?: string;
-  ref?: React.Ref<HTMLLIElement>;
-  children?: React.ReactNode;
+  ref?: Ref<HTMLLIElement>;
+  children?: ReactNode;
 }
 
 export function MenuListItem({
