@@ -2,4 +2,8 @@
   :root {
     --background: oklch(97.93% 0.003 84.56);
   }
+
+  .dark {
+    --background: var(--color-stone-800);
+  }
 }

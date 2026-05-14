@@ -1,14 +1,10 @@
-interface DrawingArrowProps {
-  width?: number;
-  height?: number;
-  className?: string;
-}
+import type { SvgProps } from "#/shared/types/svg.ts";
 
 export function DrawingArrow({
   width = 180,
   height = 90,
   className,
-}: DrawingArrowProps) {
+}: SvgProps) {
   return (
     <svg
       width={width}
