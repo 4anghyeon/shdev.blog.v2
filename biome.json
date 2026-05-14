@@ -14,7 +14,8 @@
       "!dist",
       "!build",
       "!routeTree.gen.ts",
-      "!*.mdx"
+      "!*.mdx",
+      "!**/routeTree.gen.ts"
     ]
   },
   "formatter": {

@@ -1,1 +1,2 @@
 pnpm typecheck
+npx @biomejs/biome check --staged --diagnostic-level=error
