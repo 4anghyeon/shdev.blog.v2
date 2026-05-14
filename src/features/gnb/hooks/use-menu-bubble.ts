@@ -2,7 +2,7 @@ import { useLocation } from "@tanstack/react-router";
 import type { Transition } from "motion";
 import { useAnimate } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { MENU_ITEMS } from "#/shared/constant/menu-items.ts";
+import { MENU_ITEMS } from "#/shared/constant/menu-items";
 
 type BubbleRect = { x: number; y: number; width: number; height: number };
 
