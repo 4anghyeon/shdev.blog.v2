@@ -1,33 +1,48 @@
-import type { Transition } from "motion";
+import { isEmpty } from "es-toolkit/compat";
 import { useAnimate } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  BUBBLE_SQUISH_KEYFRAMES,
+  BUBBLE_SQUISH_OPTIONS,
+  bubblePositionTransition,
+  TICKER_EXIT_DELAY_MS,
+} from "#/features/gnb/gnb-animation";
 import { useActiveNavigation } from "#/features/gnb/hooks/use-active-navigation";
+import { usePostStore } from "#/features/post-detail/post-store";
 
 type BubbleRect = { x: number; y: number; width: number; height: number };
 
-const positionTransition: Transition = {
-  x: { type: "spring", stiffness: 380, damping: 30, mass: 0.7 },
-  y: { duration: 0 },
-  width: { duration: 0 },
-  height: { duration: 0 },
-};
-
 export function useMenuBubble() {
   const { activeIndex } = useActiveNavigation();
+  const title = usePostStore((state) => state.title);
+  const titleRef = useRef(title);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [bubble, setBubble] = useState<BubbleRect | null>(null);
   const [bubbleRef, animateBubble] = useAnimate<HTMLDivElement>();
   const isMountedRef = useRef(false);
 
   useLayoutEffect(() => {
-    const el = itemRefs.current[activeIndex];
-    if (!el) return;
-    setBubble({
-      x: el.offsetLeft,
-      y: el.offsetTop,
-      width: el.offsetWidth,
-      height: el.offsetHeight,
-    });
+    titleRef.current = title;
+  }, [title]);
+
+  useLayoutEffect(() => {
+    const recalculate = () => {
+      const el = itemRefs.current[activeIndex];
+      if (!el) return;
+      setBubble({
+        x: el.offsetLeft,
+        y: el.offsetTop,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
+      });
+    };
+
+    if (!isEmpty(titleRef.current)) {
+      const id = setTimeout(recalculate, TICKER_EXIT_DELAY_MS);
+      return () => clearTimeout(id);
+    }
+
+    recalculate();
   }, [activeIndex]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <bubble only>
@@ -39,12 +54,8 @@ export function useMenuBubble() {
     if (!bubbleRef.current) return;
     animateBubble(
       bubbleRef.current,
-      { scaleX: [1, 0.55, 1], scaleY: [1, 0.7, 1] },
-      {
-        duration: 0.35,
-        times: [0, 0.45, 1],
-        ease: "easeInOut",
-      },
+      BUBBLE_SQUISH_KEYFRAMES,
+      BUBBLE_SQUISH_OPTIONS,
     );
   }, [bubble]);
 
@@ -61,7 +72,7 @@ export function useMenuBubble() {
             width: bubble.width,
             height: bubble.height,
           },
-          transition: positionTransition,
+          transition: bubblePositionTransition,
         }
       : null,
   };

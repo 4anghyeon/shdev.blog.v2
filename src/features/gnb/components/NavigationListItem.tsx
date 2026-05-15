@@ -1,6 +1,7 @@
 import { isEmpty } from "es-toolkit/compat";
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode, Ref } from "react";
+import { tickerTransition } from "#/features/gnb/gnb-animation";
 import { useActiveNavigation } from "#/features/gnb/hooks/use-active-navigation";
 import { usePostStore } from "#/features/post-detail/post-store";
 import { Link, type LinkProps } from "#/shared/components/Link";
@@ -14,7 +15,7 @@ interface MenuListItemProps extends Omit<LinkProps, "ref"> {
   children?: ReactNode;
 }
 
-export function MenuListItem({
+export function NavigationListItem({
   to,
   children,
   index,
@@ -45,7 +46,7 @@ export function MenuListItem({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={tickerTransition}
           >
             ›
           </motion.li>

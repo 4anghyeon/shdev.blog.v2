@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { MenuList } from "#/features/gnb/components/MenuList";
+import { NavigationList } from "#/features/gnb/components/NavigationList";
 import { SkyHeader } from "#/features/header/SkyHeader";
 import { SearchButton } from "#/features/search/components/SearchButton";
 import { ThemeToggleButton } from "#/features/theme/components/ThemeToggleButton";
@@ -15,7 +15,7 @@ export function Navbar() {
           </Link>
         </div>
         <Suspense>
-          <MenuList />
+          <NavigationList />
         </Suspense>
         <SearchButton />
       </div>

@@ -1,7 +1,10 @@
 import { motion, useAnimationFrame, useMotionValue } from "motion/react";
 import { useRef, useState } from "react";
-
-const TICKER_SPEED = 20; // px/s
+import {
+  TICKER_MAX_WIDTH_PX,
+  TICKER_SPEED_PX_PER_S,
+  tickerTransition,
+} from "#/features/gnb/gnb-animation";
 
 export function TitleTicker({ title }: { title: string }) {
   const xValue = useMotionValue(0);
@@ -13,7 +16,7 @@ export function TitleTicker({ title }: { title: string }) {
     if (!innerRef.current || !isScrolling) return;
     const halfWidth = innerRef.current.scrollWidth / 2;
     if (halfWidth === 0) return;
-    const next = xValue.get() - (delta / 1000) * TICKER_SPEED;
+    const next = xValue.get() - (delta / 1000) * TICKER_SPEED_PX_PER_S;
     xValue.set(next % -halfWidth);
   });
 
@@ -28,9 +31,9 @@ export function TitleTicker({ title }: { title: string }) {
     <motion.li
       className="glass-item glass-item-active relative flex max-w-25 overflow-hidden px-2 py-1 font-normal text-sky-600 hover:cursor-default md:max-w-50 dark:text-gray-300"
       initial={{ width: 0, opacity: 0 }}
-      animate={{ width: 200, opacity: 1 }}
+      animate={{ width: TICKER_MAX_WIDTH_PX, opacity: 1 }}
       exit={{ width: 0, opacity: 0, paddingLeft: 0, paddingRight: 0 }}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
+      transition={tickerTransition}
       onAnimationComplete={handleAnimationComplete}
     >
       <motion.div
