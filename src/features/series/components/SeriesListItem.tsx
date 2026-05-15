@@ -36,27 +36,32 @@ export function SeriesListItem({
         </div>
       </div>
       <div className="flex h-30 flex-col gap-y-4 overflow-y-auto max-md:pt-5 md:pl-5">
-        {posts.map((post, index) => (
-          <Link
-            to="/$lang/post/$slug"
-            params={{ lang: "ko", slug: post.slug }}
-            search={{
-              from: "series",
-            }}
-            key={post.title}
-            className="flex items-center justify-between text-sm hover:text-sky-400"
-          >
-            <div className="flex min-w-0 items-center gap-x-3 pr-4">
-              <span className="font-semibold tabular-nums">
-                {(index + 1).toString().padStart(2, "0")}
+        {posts
+          .sort(
+            (a, b) =>
+              new Date(a.published).getTime() - new Date(b.published).getTime(),
+          )
+          .map((post, index) => (
+            <Link
+              to="/$lang/post/$slug"
+              params={{ lang: "ko", slug: post.slug }}
+              search={{
+                from: "series",
+              }}
+              key={post.title}
+              className="flex items-center justify-between text-sm hover:font-bold hover:text-sky-400"
+            >
+              <div className="flex min-w-0 items-center gap-x-3 pr-4">
+                <span className="font-semibold tabular-nums">
+                  {(index + 1).toString().padStart(2, "0")}
+                </span>
+                <span className="truncate">{post.title}</span>
+              </div>
+              <span className="w-20 shrink-0 text-gray-400 text-xs tabular-nums">
+                {post.published}
               </span>
-              <span className="truncate">{post.title}</span>
-            </div>
-            <span className="w-20 shrink-0 text-gray-400 text-xs tabular-nums">
-              {post.published}
-            </span>
-          </Link>
-        ))}
+            </Link>
+          ))}
       </div>
     </div>
   );
