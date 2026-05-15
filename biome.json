@@ -15,7 +15,8 @@
       "!build",
       "!routeTree.gen.ts",
       "!*.mdx",
-      "!**/routeTree.gen.ts"
+      "!**/routeTree.gen.ts",
+      "!*.webp"
     ]
   },
   "formatter": {
