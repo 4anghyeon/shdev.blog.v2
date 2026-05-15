@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
 
 export const blogPostSchema = z.object({
   title: z.string(),
@@ -7,7 +8,7 @@ export const blogPostSchema = z.object({
   description: z.string(),
   tags: z.array(z.string()),
   content: z.string(),
-  series: z.enum(["multiparadigm-programming"]).optional(),
+  series: z.enum(SERIES_ITEMS.map((item) => item.id)).optional(),
 });
 
 export type BlogPost = z.infer<typeof blogPostSchema> & {

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { groupBy } from "es-toolkit/array";
 import { SeriesListItem } from "#/features/series/components/SeriesListItem";
+import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
 
 export const Route = createFileRoute("/series")({
   component: RouteComponent,
@@ -10,16 +11,6 @@ export const Route = createFileRoute("/series")({
 function RouteComponent() {
   const allPostWithSeries = allPosts.filter((post) => post.series);
   const postsBySeries = groupBy(allPostWithSeries, (post) => post.series ?? "");
-
-  const series = [
-    {
-      id: "multiparadigm-programming",
-      title: "멀티패러다임 프로그래밍",
-      desc: "멀티패러다임 프로그래밍 (유인동 저)을 읽고 개인적으로 정리한 글들을 묶은 시리즈입니다.",
-      image: "/images/series/multiparadigm-programming.webp",
-      posts: postsBySeries["multiparadigm-programming"] ?? [],
-    },
-  ];
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 pt-0 pb-8 lg:pt-14">
@@ -32,15 +23,17 @@ function RouteComponent() {
           기록 모음입니다.
         </p>
       </div>
-      {series.map((item) => (
-        <SeriesListItem
-          key={item.id}
-          title={item.title}
-          description={item.desc}
-          imageUrl={item.image}
-          posts={item.posts}
-        />
-      ))}
+      <div className="flex flex-col gap-y-8">
+        {SERIES_ITEMS.map((item) => (
+          <SeriesListItem
+            key={item.id}
+            title={item.title}
+            description={item.desc}
+            imageUrl={item.image}
+            posts={postsBySeries[item.id] ?? []}
+          />
+        ))}
+      </div>
     </main>
   );
 }

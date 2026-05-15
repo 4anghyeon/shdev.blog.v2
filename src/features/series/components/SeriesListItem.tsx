@@ -20,7 +20,7 @@ export function SeriesListItem({
     <div className="grid divide-gray-300 rounded-lg border border-gray-300 p-4 max-md:divide-y md:grid-cols-2 md:divide-x dark:divide-stone-500 dark:border-stone-500">
       <div className="flex items-center gap-x-5 max-md:pb-5 md:pr-5">
         <img
-          className="size-20 shrink-0 rounded-full border border-gray-300 object-cover"
+          className="size-24 shrink-0 rounded-full border border-gray-300 object-cover dark:border-stone-500"
           src={imageUrl}
           alt={`${title} cover`}
         />

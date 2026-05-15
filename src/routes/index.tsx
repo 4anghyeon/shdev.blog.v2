@@ -49,6 +49,7 @@ function App() {
                   description={post.description}
                   published={post.published}
                   tags={post.tags}
+                  series={post.series}
                 />
               ))}
             </ul>

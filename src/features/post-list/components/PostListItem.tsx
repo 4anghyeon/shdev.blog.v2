@@ -1,5 +1,7 @@
 import { Link } from "#/shared/components/Link";
+import { SeriesLabel } from "#/shared/components/SeriesLabel";
 import { Tag } from "#/shared/components/Tag";
+import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
 import { dateHelper } from "#/shared/helper/date";
 import type { BlogPost } from "#/shared/schema/blog-post";
 
@@ -9,7 +11,12 @@ export function PostListItem({
   description,
   published,
   tags,
-}: Pick<BlogPost, "slug" | "title" | "description" | "published" | "tags">) {
+  series,
+}: Pick<
+  BlogPost,
+  "slug" | "title" | "description" | "published" | "tags" | "series"
+>) {
+  const seriesTitle = SERIES_ITEMS.find((item) => item.id === series)?.title;
   return (
     <li className="group scale-out">
       <Link
@@ -29,9 +36,13 @@ export function PostListItem({
         </p>
         <div className="flex items-center justify-between">
           <div className="flex flex-wrap gap-1.5">
-            {tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
-            ))}
+            {/* 시리즈 이름과 같은 태그가 있는 경우 표시 X */}
+            {tags
+              .filter((tag) => tag !== seriesTitle)
+              .map((tag) => (
+                <Tag key={tag}>{tag}</Tag>
+              ))}
+            {series && <SeriesLabel series={series} />}
           </div>
           <time
             dateTime={published}
