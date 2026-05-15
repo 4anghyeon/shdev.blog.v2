@@ -6,6 +6,7 @@ import parse, {
 } from "html-react-parser";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButton";
+import { Blockquote } from "#/features/markdown/components/BlockQuote";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock";
 import { ExampleComponents } from "#/features/markdown/components/custom-components";
 import { Link } from "#/shared/components/Link";
@@ -303,10 +304,11 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         }
 
         if (domName === "blockquote") {
+          const attribs = domNode.attribs;
           return (
-            <blockquote className="my-4 border-gray-300 border-l-4 pl-4 dark:border-stone-700">
+            <Blockquote attribs={attribs}>
               {domToReact(domNode.children as DOMNode[], options)}
-            </blockquote>
+            </Blockquote>
           );
         }
 

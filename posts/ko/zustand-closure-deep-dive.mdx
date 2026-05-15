@@ -67,8 +67,8 @@ export const createStore = (createState) =>
 
 
 
-> - **캡슐화 :** `state` 변수는 `createStoreImpl` 함수 스코프 안에 '갇혀' 있다. 외부에서는 오직 `getState`나 `setState` 같은 api 메서드를 통해서만 이 `state`에 접근할 수 있다.
-> - **상태 유지:** `createStoreImpl` 함수 호출은 단 한 번이지만, 그 결과로 생긴 `state`와 `listeners`는 애플리케이션이 실행되는 내내 유지된다. `api` 메서드들이 이들을 계속 참조하고 있기 때문이다.
+- **캡슐화 :** `state` 변수는 `createStoreImpl` 함수 스코프 안에 '갇혀' 있다. 외부에서는 오직 `getState`나 `setState` 같은 api 메서드를 통해서만 이 `state`에 접근할 수 있다.
+- **상태 유지:** `createStoreImpl` 함수 호출은 단 한 번이지만, 그 결과로 생긴 `state`와 `listeners`는 애플리케이션이 실행되는 내내 유지된다. `api` 메서드들이 이들을 계속 참조하고 있기 때문이다.
 
 
 ## React 통합 - react.ts
