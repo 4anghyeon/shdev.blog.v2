@@ -17,7 +17,7 @@ export function SeriesListItem({
 }: SeriesListItemProps) {
   const postCount = posts.length;
   return (
-    <div className="grid divide-gray-300 rounded-lg border border-gray-300 p-4 max-md:divide-y md:grid-cols-2 md:divide-x">
+    <div className="grid divide-gray-300 rounded-lg border border-gray-300 p-4 max-md:divide-y md:grid-cols-2 md:divide-x dark:divide-stone-500 dark:border-stone-500">
       <div className="flex items-center gap-x-5 max-md:pb-5 md:pr-5">
         <img
           className="size-20 shrink-0 rounded-full border border-gray-300 object-cover"
@@ -26,8 +26,10 @@ export function SeriesListItem({
         />
         <div className="flex flex-col gap-y-2">
           <h2 className="font-semibold text-lg">{title}</h2>
-          <p className="text-gray-600 text-sm">{description}</p>
-          <p className="mt-1 flex items-center gap-x-1 text-gray-600 text-sm">
+          <p className="text-gray-600 text-sm dark:text-gray-300">
+            {description}
+          </p>
+          <p className="mt-1 flex items-center gap-x-1 text-gray-600 text-sm dark:text-gray-300">
             <Journal className="size-4" />
             <span>{postCount}개의 글</span>
           </p>
