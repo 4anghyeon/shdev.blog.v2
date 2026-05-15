@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const blogPostSchema = z.object({
   title: z.string(),
-  slug: z.string(),
   published: z.iso.date(),
   updated: z.iso.date().optional(),
   description: z.string(),
@@ -11,4 +10,6 @@ export const blogPostSchema = z.object({
   series: z.enum(["multiparadigm-programming"]).optional(),
 });
 
-export type BlogPost = z.infer<typeof blogPostSchema>;
+export type BlogPost = z.infer<typeof blogPostSchema> & {
+  slug: string;
+};

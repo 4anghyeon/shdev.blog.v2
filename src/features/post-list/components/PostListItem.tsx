@@ -1,7 +1,7 @@
 import { Link } from "#/shared/components/Link";
 import { Tag } from "#/shared/components/Tag";
 import { dateHelper } from "#/shared/helper/date";
-import type { BlogPost } from "#/shared/schema/blogPost";
+import type { BlogPost } from "#/shared/schema/blog-post";
 
 export function PostListItem({
   slug,

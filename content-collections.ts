@@ -2,7 +2,7 @@ import { defineCollection, defineConfig } from "@content-collections/core";
 import matter from "gray-matter";
 import { renderMarkdown } from "#/features/markdown/utils/render-markdown";
 import { localeHelper } from "#/shared/helper/locale";
-import { blogPostSchema } from "#/shared/schema/blogPost";
+import { blogPostSchema } from "#/shared/schema/blog-post";
 
 function extractFrontMatter(content: string) {
   const { data, content: body, excerpt } = matter(content, { excerpt: true });

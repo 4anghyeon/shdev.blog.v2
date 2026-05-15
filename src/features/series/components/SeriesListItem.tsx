@@ -1,6 +1,6 @@
 import { Journal } from "iconoir-react/regular";
 import { Link } from "#/shared/components/Link";
-import type { BlogPost } from "#/shared/schema/blogPost";
+import type { BlogPost } from "#/shared/schema/blog-post";
 
 interface SeriesListItemProps {
   title: string;
