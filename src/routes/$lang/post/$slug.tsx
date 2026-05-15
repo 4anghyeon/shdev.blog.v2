@@ -28,6 +28,9 @@ export const Route = createFileRoute("/$lang/post/$slug")({
     }),
     stringify: (params) => params,
   },
+  validateSearch: z.object({
+    from: z.string().optional(),
+  }),
   beforeLoad: ({ params, location }) => {
     if (params.lang !== "ko") {
       throw redirect({

@@ -1,8 +1,8 @@
 import { defineCollection, defineConfig } from "@content-collections/core";
 import matter from "gray-matter";
-import { z } from "zod";
 import { renderMarkdown } from "#/features/markdown/utils/render-markdown";
 import { localeHelper } from "#/shared/helper/locale";
+import { blogPostSchema } from "#/shared/schema/blogPost";
 
 function extractFrontMatter(content: string) {
   const { data, content: body, excerpt } = matter(content, { excerpt: true });
@@ -13,14 +13,7 @@ const posts = defineCollection({
   name: "posts",
   directory: "./posts",
   include: "**/*.mdx",
-  schema: z.object({
-    title: z.string(),
-    published: z.iso.date(),
-    updated: z.iso.date().optional(),
-    description: z.string(),
-    tags: z.array(z.string()),
-    content: z.string(),
-  }),
+  schema: blogPostSchema,
   transform: async ({ content, ...post }) => {
     const frontMatter = extractFrontMatter(content);
     const headerImageMatch = content.match(/!\[([^\]]*)\]\(([^)]+)\)/);

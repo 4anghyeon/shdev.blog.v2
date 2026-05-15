@@ -3,6 +3,7 @@ title: '함수형 프로그래밍과 타입 시스템 그리고 LISP'
 description: '멀티패러다임 프로그래밍을 읽고 함수형 프로그래밍, 타입 시스템, LISP 등 여러 철학이 어떻게 상호작용하며 현대 언어에서 융합되는지 알아보고, 타입스크립트 에제를 통해 고차 함수와 제네릭 타입이 결합된 안전하고 표현력 있는 코드 작성법을 살펴봅니다.'
 published: '2025-05-18'
 tags: ['멀티패러다임 프로그래밍']
+series: 'multiparadigm-programming'
 ---
 
 <BookInfo imageUrl="https://github.com/marpple/multi-paradigm-programming/blob/main/img/book.jpg?raw=true" bookName="멀티패러다임 프로그래밍">
@@ -111,16 +112,16 @@ function double(a: number | string): number | string {
 > declare function fn(x: HTMLDivElement): string;
 > var myElem: HTMLDivElement;
 > var x = fn(myElem); // x: unknown, wat?
-> 
+>
 > /* OK */
 > declare function fn(x: HTMLDivElement): string;
 > declare function fn(x: HTMLElement): number;
 > declare function fn(x: unknown): unknown;
 > var myElem: HTMLDivElement;
 > var x = fn(myElem); // x: string, :)
-> 
+>
 > ```
-> 
+>
 > 참고: [Function Overloads](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html#function-overloads)
 
 
@@ -205,8 +206,8 @@ function reduce<A, Acc>(
   f: (a: A, b: A) => Acc, iterable: Iterable<A>
 ): Acc;
 function reduce<A, Acc>(
-  f: (a: Acc | A, b: A) => Acc, 
-  accOrIterable: Acc | Iterable<A>, 
+  f: (a: Acc | A, b: A) => Acc,
+  accOrIterable: Acc | Iterable<A>,
   iterable?: Iterable<A>
 ): Acc {
   if (iterable === undefined) { // (3)
@@ -305,9 +306,9 @@ class FxIterable<A> {
   }
 }
 
-const mapped = new FxIterable(['a', 'b']) 
-  .map(a => a.toUpperCase())             
-  .map(b => b + b);                     
+const mapped = new FxIterable(['a', 'b'])
+  .map(a => a.toUpperCase())
+  .map(b => b + b);
 ```
 
 `map` 메서드는 `this.iterable` 에 `map(f)` 를 적용한 이터러블 이터레이터를 만든 후 `FxIterable<B>` 를 생성하여 반환한다. `FxIterable` 클래스의 인스턴스는 체이닝 방식으로 `map` 을 연속적으로 실행할 수 있다.
@@ -336,7 +337,7 @@ reduce는 앞서 구현하 것처럼 메서드 오버로드를 통해 두 가지
 class FxIterable<A> {
   constructor(private iterable: Iterable<A>) {}
 
-  // ... 
+  // ...
 
   reduce<Acc>(f: (acc: Acc, a: A) => Acc, acc: Acc): Acc;
   reduce<Acc>(f: (a: A, b: A) => Acc): Acc;
@@ -429,11 +430,11 @@ LISP 계열 언어에서는 코드가 리스트 형태로 표현되며 리스트
 ```typescript
 class FxIterable<A> {
   constructor(private iterable: Iterable<A>) {}
-  
+
   [Symbol.iterator]() {
     return this.iterable[Symbol.iterator]();
   }
-  
+
   // ...
 }
 

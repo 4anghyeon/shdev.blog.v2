@@ -1,14 +1,7 @@
 import { Link } from "#/shared/components/Link";
 import { Tag } from "#/shared/components/Tag";
 import { dateHelper } from "#/shared/helper/date";
-
-interface PostListItemProps {
-  slug: string;
-  title: string;
-  description: string;
-  published: string;
-  tags: string[];
-}
+import type { BlogPost } from "#/shared/schema/blogPost";
 
 export function PostListItem({
   slug,
@@ -16,7 +9,7 @@ export function PostListItem({
   description,
   published,
   tags,
-}: PostListItemProps) {
+}: Pick<BlogPost, "slug" | "title" | "description" | "published" | "tags">) {
   return (
     <li className="group scale-out">
       <Link
