@@ -31,7 +31,7 @@ export function SeriesListItem({
           </p>
           <p className="mt-1 flex items-center gap-x-1 text-gray-600 text-sm dark:text-gray-300">
             <Journal className="size-4" />
-            <span>{postCount}개의 글</span>
+            <span className="text-xs">{postCount}개의 글</span>
           </p>
         </div>
       </div>
