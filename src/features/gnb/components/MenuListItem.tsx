@@ -1,7 +1,7 @@
-import { useRouterState } from "@tanstack/react-router";
 import { isEmpty } from "es-toolkit/compat";
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode, Ref } from "react";
+import { useActiveNavigation } from "#/features/gnb/hooks/use-active-navigation";
 import { usePostStore } from "#/features/post-detail/post-store";
 import { Link, type LinkProps } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
@@ -10,7 +10,6 @@ import { TitleTicker } from "./TitleTicker";
 interface MenuListItemProps extends Omit<LinkProps, "ref"> {
   index: number;
   isActive: boolean;
-  subPath?: string;
   ref?: Ref<HTMLLIElement>;
   children?: ReactNode;
 }
@@ -20,13 +19,11 @@ export function MenuListItem({
   children,
   index,
   isActive,
-  subPath,
   ref,
 }: MenuListItemProps) {
   const title = usePostStore((state) => state.title);
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const showTicker =
-    !!subPath && pathname.startsWith(subPath) && !isEmpty(title);
+  const { activeIndex } = useActiveNavigation();
+  const showTicker = activeIndex === index && !isEmpty(title);
 
   return (
     <>
