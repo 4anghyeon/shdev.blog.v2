@@ -1,2 +1,2 @@
 pnpm typecheck
-npx @biomejs/biome check --staged --diagnostic-level=error
+npx @biomejs/biome check --staged --diagnostic-level=error --files-ignore-unknown=true --no-errors-on-unmatched
