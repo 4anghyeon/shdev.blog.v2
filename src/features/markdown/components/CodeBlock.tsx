@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import CodeCopyButton from "#/features/markdown/components/CodeCopyButton";
+import { CodeCopyButton } from "#/features/markdown/components/CodeCopyButton";
 import { getLangExtension } from "#/features/markdown/utils/langauge-extension";
 import { cn } from "#/shared/lib/tailwind";
 

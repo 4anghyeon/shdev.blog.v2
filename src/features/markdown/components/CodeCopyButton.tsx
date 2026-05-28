@@ -1,7 +1,7 @@
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import { useCopy } from "#/shared/hooks/use-copy";
 
-const CodeCopyButton = ({ code }: { code: string }) => {
+export function CodeCopyButton({ code }: { code: string }) {
   const { copied, copy, resetOnTransitionEnd } = useCopy();
 
   return (
@@ -23,6 +23,4 @@ const CodeCopyButton = ({ code }: { code: string }) => {
       )}
     </button>
   );
-};
-
-export default CodeCopyButton;
+}
