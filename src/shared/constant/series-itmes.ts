@@ -12,3 +12,5 @@ export const SERIES_ITEMS = [
     image: "/images/series/multiparadigm-programming.webp",
   },
 ] as const;
+
+export type SeriesKey = (typeof SERIES_ITEMS)[number]["id"];

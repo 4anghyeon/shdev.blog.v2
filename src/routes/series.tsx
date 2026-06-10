@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { allPosts } from "content-collections";
-import { groupBy } from "es-toolkit/array";
 import { SeriesListItem } from "#/features/series/components/SeriesListItem";
+import { getPostsBySeries } from "#/features/series/helper";
 import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
 
 export const Route = createFileRoute("/series")({
@@ -9,8 +8,7 @@ export const Route = createFileRoute("/series")({
 });
 
 function RouteComponent() {
-  const allPostWithSeries = allPosts.filter((post) => post.series);
-  const postsBySeries = groupBy(allPostWithSeries, (post) => post.series ?? "");
+  const postsBySeries = getPostsBySeries();
 
   return (
     <main className="mx-auto w-full max-w-4xl flex-1 px-4 pt-0 pb-8 lg:pt-14">
