@@ -1,60 +1,58 @@
-@layer components {
-  .glass-container {
-    position: relative;
-    display: flex;
-    font-weight: 600;
-    cursor: pointer;
-    background: transparent;
-    border-radius: 2rem;
-    overflow: hidden;
-    box-shadow:
-      0 2px 1px rgba(0, 0, 0, 0.15),
-      0 0 6px rgba(0, 0, 0, 0.08);
-  }
+@utility glass-container {
+  position: relative;
+  display: flex;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow:
+    0 2px 1px rgba(0, 0, 0, 0.15),
+    0 0 6px rgba(0, 0, 0, 0.08);
+}
 
-  .glass-filter {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    backdrop-filter: blur(12px) saturate(160%);
-    filter: url(#lg-dist);
-    isolation: isolate;
-  }
+@utility glass-filter {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  backdrop-filter: blur(12px) saturate(160%);
+  filter: url(#lg-dist);
+  isolation: isolate;
+}
 
-  .glass-overlay {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: rgba(255, 255, 255, 0.2);
-  }
+@utility glass-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.2);
+}
 
-  .glass-specular {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    border-radius: inherit;
-    overflow: hidden;
-    box-shadow:
-      inset 1px 1px 0 rgba(255, 255, 255, 0.75),
-      inset 0 0 5px rgba(255, 255, 255, 0.75);
-  }
+@utility glass-specular {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  overflow: hidden;
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 0 5px rgba(255, 255, 255, 0.75);
+}
 
-  .glass-content {
-    position: relative;
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-  }
+@utility glass-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
 
-  .glass-item {
-    position: relative;
-    border-radius: 0.75rem;
-    z-index: 1;
-  }
+@utility glass-item {
+  position: relative;
+  border-radius: 0.75rem;
+  z-index: 1;
 
-  .glass-item::before {
+  &::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -64,17 +62,26 @@
     pointer-events: none;
   }
 
-  .glass-item:not(.glass-item-active):hover::before {
+  &:not(.glass-item-active):hover::before {
     background: rgba(255, 255, 255, 0.2);
     box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
   }
+}
 
+@utility glass-item-active {
+  color: inherit;
+}
+
+@utility glass-hover-disabled {
+  color: inherit;
+}
+
+@layer base {
   .glass-hover-disabled .glass-item:hover::before {
     background: rgba(255, 255, 255, 0);
     box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0);
   }
 
-  /* ========== DARK MODE ========== */
   :where(.dark, .dark *) .glass-container {
     color: var(--color-gray-300);
     box-shadow:
