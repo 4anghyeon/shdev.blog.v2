@@ -44,8 +44,34 @@
     z-index: 3;
     display: flex;
     align-items: center;
-    width: 100%; /* ✅ children이 컨테이너 꽉 채우도록 */
-    height: 100%; /* ✅ 세로도 동일하게 */
+    width: 100%;
+    height: 100%;
+  }
+
+  .glass-item {
+    position: relative;
+    border-radius: 0.75rem;
+    z-index: 1;
+  }
+
+  .glass-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(255, 255, 255, 0);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0);
+    pointer-events: none;
+  }
+
+  .glass-item:not(.glass-item-active):hover::before {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .glass-hover-disabled .glass-item:hover::before {
+    background: rgba(255, 255, 255, 0);
+    box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0);
   }
 
   /* ========== DARK MODE ========== */

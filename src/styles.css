@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "tailwind-animations";
+@import "#/features/glass-effect/styles.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

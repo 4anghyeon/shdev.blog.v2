@@ -1,5 +1,3 @@
-import "#/features/glass-effect/styles/glass-effect.css";
-
 export function GlassEffect() {
   return (
     <>

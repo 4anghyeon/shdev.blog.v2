@@ -18,6 +18,7 @@ export function useMenuBubble() {
   const titleRef = useRef(title);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [bubble, setBubble] = useState<BubbleRect | null>(null);
+  const [isBubbleMoving, setIsBubbleMoving] = useState(false);
   const [bubbleRef, animateBubble] = useAnimate<HTMLDivElement>();
   const isMountedRef = useRef(false);
 
@@ -62,6 +63,7 @@ export function useMenuBubble() {
   return {
     itemRefs,
     activeIndex,
+    isBubbleMoving,
     bubbleMotionProps: bubble
       ? {
           ref: bubbleRef,
@@ -73,6 +75,8 @@ export function useMenuBubble() {
             height: bubble.height,
           },
           transition: bubblePositionTransition,
+          onAnimationStart: () => setIsBubbleMoving(true),
+          onAnimationComplete: () => setIsBubbleMoving(false),
         }
       : null,
   };
