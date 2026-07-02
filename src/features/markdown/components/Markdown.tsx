@@ -9,6 +9,7 @@ import { AnchorCopyButton } from "#/features/markdown/components/AnchorCopyButto
 import { Blockquote } from "#/features/markdown/components/BlockQuote";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock";
 import { ExampleComponents } from "#/features/markdown/components/custom-components";
+import { ZoomableImage } from "#/features/markdown/components/ZoomableImage";
 import { Link } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
 
@@ -170,7 +171,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
             <div className="my-3 flex w-full items-center justify-center rounded-lg bg-gray-50/80 p-2 lg:p-5 dark:bg-stone-700/30">
-              <img
+              <ZoomableImage
                 {...domNode.attribs}
                 loading="lazy"
                 className="max-h-100 rounded-md bg-gray-50 shadow-gray-400/50 shadow-lg dark:bg-stone-100 dark:shadow-gray-900/50"
