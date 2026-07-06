@@ -1,5 +1,6 @@
-import { X } from "lucide-react";
+import { RotateCw, X } from "lucide-react";
 import type { ImgHTMLAttributes } from "react";
+import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -14,13 +15,13 @@ export function ZoomableImage({
   alt,
   ...attribs
 }: ImgHTMLAttributes<HTMLImageElement>) {
-  // const [rotation, setRotation] = useState(0);
-  // const isRotated = rotation === 90;
+  const [rotation, setRotation] = useState(0);
+  const isRotated = rotation === 90;
 
   return (
     <DialogTrigger
-      onOpenChange={(_isOpen) => {
-        // if (!isOpen) setRotation(0);
+      onOpenChange={(isOpen) => {
+        if (!isOpen) setRotation(0);
       }}
     >
       <Button className="cursor-zoom-in outline-hidden">
@@ -57,18 +58,12 @@ export function ZoomableImage({
                     {...attribs}
                     alt={alt}
                     className={cn(
-                      "max-h-[90vh] max-w-[90vw] rounded-md object-contain transition-transform duration-300",
+                      "max-h-[90vh] max-w-[90vw] rounded-md object-contain transition-all duration-500",
+                      isRotated && "max-h-[90vw] max-w-[90vh] rotate-90",
                     )}
                   />
                 </Button>
-                <div className="absolute -top-4 -right-4 z-1 flex gap-2">
-                  {/*<Button*/}
-                  {/*  onPress={() => setRotation((prev) => (prev === 0 ? 90 : 0))}*/}
-                  {/*  aria-label="회전"*/}
-                  {/*  className="cursor-pointer rounded-full bg-black/80 p-2 text-white transition-colors hover:bg-black/60"*/}
-                  {/*>*/}
-                  {/*  <RotateCw className="size-4" />*/}
-                  {/*</Button>*/}
+                <div className="fixed top-4 right-4 z-1 flex gap-2 sm:absolute sm:-top-4 sm:-right-4">
                   <Button
                     onPress={close}
                     aria-label="닫기"
@@ -77,6 +72,13 @@ export function ZoomableImage({
                     <X className="size-4" />
                   </Button>
                 </div>
+                <Button
+                  onPress={() => setRotation((prev) => (prev === 0 ? 90 : 0))}
+                  aria-label="회전"
+                  className="fixed bottom-4 left-1/2 z-1 -translate-x-1/2 cursor-pointer rounded-full bg-black/80 p-2 text-white transition-colors hover:bg-black/60 sm:hidden"
+                >
+                  <RotateCw className="size-4" />
+                </Button>
               </>
             )}
           </Dialog>
