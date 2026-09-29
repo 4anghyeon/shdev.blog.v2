@@ -6,17 +6,26 @@ import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
 import { dateHelper } from "#/shared/helper/date";
 import type { BlogPost } from "#/shared/schema/blog-post";
 
+// brush.css의 --ink-blot-0 ~ 5와 개수를 맞춘다
+const INK_BLOT_VARIANT_COUNT = 6;
+
+interface PostListItemProps
+  extends Pick<
+    BlogPost,
+    "slug" | "title" | "description" | "published" | "tags" | "series"
+  > {
+  index: number;
+}
+
 export function PostListItem({
+  index,
   slug,
   title,
   description,
   published,
   tags,
   series,
-}: Pick<
-  BlogPost,
-  "slug" | "title" | "description" | "published" | "tags" | "series"
->) {
+}: PostListItemProps) {
   const seriesTitle = SERIES_ITEMS.find((item) => item.id === series)?.title;
   return (
     <li className="group scale-out">
@@ -24,7 +33,8 @@ export function PostListItem({
         to="/$lang/post/$slug"
         params={{ lang: "ko", slug }}
         viewTransition
-        className="flex flex-col gap-y-2 rounded-xs border border-transparent px-[calc(--spacing(3)-1px)] py-5 transition-[translate,scale,background-color,border-color] duration-100 ease-in-out focus-visible:-translate-y-0.5 focus-visible:border-line focus-visible:bg-paper focus-visible:outline-none active:translate-y-0 active:scale-[0.97] group-hover:-translate-y-0.5 group-hover:border-line-subtle group-hover:bg-paper"
+        data-ink-blot={index % INK_BLOT_VARIANT_COUNT}
+        className="before:mask-ink-blot relative isolate flex flex-col gap-y-2 px-3 py-5 transition-transform duration-100 ease-in-out before:absolute before:-inset-x-4 before:-inset-y-4 before:-z-1 before:scale-[0.97] before:bg-paper-hover before:opacity-0 before:transition-[opacity,scale] before:duration-300 before:ease-out focus-visible:outline-none focus-visible:before:scale-100 focus-visible:before:opacity-70 active:scale-[0.97] group-hover:before:scale-100 group-hover:before:opacity-70 lg:before:-inset-x-8"
       >
         <h2
           className="font-semibold text-ink-strong text-lg leading-6"

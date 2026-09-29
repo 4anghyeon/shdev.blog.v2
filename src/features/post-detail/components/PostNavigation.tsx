@@ -1,4 +1,5 @@
 import { NavArrowLeft, NavArrowRight } from "iconoir-react";
+import { BrushDivider } from "#/shared/components/BrushDivider";
 import { Link } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
 
@@ -17,16 +18,13 @@ export function PostNavigation({ prev, next, className }: PostNavigationProps) {
   if (!prev && !next) return null;
 
   return (
-    <nav
-      data-pagefind-ignore="all"
-      className={cn(
-        "mt-16 flex flex-col gap-4 border-line-subtle border-t pt-8 lg:flex-row",
-        className,
-      )}
-    >
-      {prev && <PostNavigationLink direction="prev" post={prev} />}
-      {next && <PostNavigationLink direction="next" post={next} />}
-    </nav>
+    <div data-pagefind-ignore="all" className={cn("mt-16", className)}>
+      <BrushDivider className="mb-8" />
+      <nav className="flex flex-col gap-4 lg:flex-row">
+        {prev && <PostNavigationLink direction="prev" post={prev} />}
+        {next && <PostNavigationLink direction="next" post={next} />}
+      </nav>
+    </div>
   );
 }
 

@@ -1,0 +1,41 @@
+@layer base {
+  :root {
+    --brush-stroke: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 12' preserveAspectRatio='none'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.9' numOctaves='3' seed='11'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='4'/%3E%3C/filter%3E%3Cpath filter='url(%23r)' d='M2 6.5 C 20 3.5 70 3 160 3.6 C 250 4.2 340 4.4 398 5.6 C 399 6.4 396 7 390 7.2 C 300 8 200 9.2 110 9 C 60 8.9 20 8.6 4 8 C 1.5 7.6 1.4 7 2 6.5 Z'/%3E%3C/svg%3E");
+    --ink-blot-0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cfilter id='b' x='-10%25' y='-10%25' width='120%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.08' numOctaves='4' seed='3' result='t'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='t' scale='16' result='d'/%3E%3CfeGaussianBlur in='d' stdDeviation='2' result='s'/%3E%3CfeMorphology in='d' operator='erode' radius='2' result='e'/%3E%3CfeGaussianBlur in='e' stdDeviation='3' result='eb'/%3E%3CfeComposite in='s' in2='eb' operator='arithmetic' k2='1' k3='-0.6' result='rim'/%3E%3CfeComponentTransfer in='s' result='fill'%3E%3CfeFuncA type='linear' slope='0.7'/%3E%3C/feComponentTransfer%3E%3CfeMerge%3E%3CfeMergeNode in='fill'/%3E%3CfeMergeNode in='rim'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect x='14' y='14' width='372' height='72' rx='10' filter='url(%23b)'/%3E%3C/svg%3E");
+    --ink-blot-1: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cfilter id='b' x='-10%25' y='-10%25' width='120%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.08' numOctaves='4' seed='17' result='t'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='t' scale='16' result='d'/%3E%3CfeGaussianBlur in='d' stdDeviation='2' result='s'/%3E%3CfeMorphology in='d' operator='erode' radius='2' result='e'/%3E%3CfeGaussianBlur in='e' stdDeviation='3' result='eb'/%3E%3CfeComposite in='s' in2='eb' operator='arithmetic' k2='1' k3='-0.6' result='rim'/%3E%3CfeComponentTransfer in='s' result='fill'%3E%3CfeFuncA type='linear' slope='0.7'/%3E%3C/feComponentTransfer%3E%3CfeMerge%3E%3CfeMergeNode in='fill'/%3E%3CfeMergeNode in='rim'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect x='14' y='14' width='372' height='72' rx='10' filter='url(%23b)'/%3E%3C/svg%3E");
+    --ink-blot-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cfilter id='b' x='-10%25' y='-10%25' width='120%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.08' numOctaves='4' seed='42' result='t'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='t' scale='16' result='d'/%3E%3CfeGaussianBlur in='d' stdDeviation='2' result='s'/%3E%3CfeMorphology in='d' operator='erode' radius='2' result='e'/%3E%3CfeGaussianBlur in='e' stdDeviation='3' result='eb'/%3E%3CfeComposite in='s' in2='eb' operator='arithmetic' k2='1' k3='-0.6' result='rim'/%3E%3CfeComponentTransfer in='s' result='fill'%3E%3CfeFuncA type='linear' slope='0.7'/%3E%3C/feComponentTransfer%3E%3CfeMerge%3E%3CfeMergeNode in='fill'/%3E%3CfeMergeNode in='rim'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect x='14' y='14' width='372' height='72' rx='10' filter='url(%23b)'/%3E%3C/svg%3E");
+    --ink-blot-3: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cfilter id='b' x='-10%25' y='-10%25' width='120%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.08' numOctaves='4' seed='88' result='t'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='t' scale='16' result='d'/%3E%3CfeGaussianBlur in='d' stdDeviation='2' result='s'/%3E%3CfeMorphology in='d' operator='erode' radius='2' result='e'/%3E%3CfeGaussianBlur in='e' stdDeviation='3' result='eb'/%3E%3CfeComposite in='s' in2='eb' operator='arithmetic' k2='1' k3='-0.6' result='rim'/%3E%3CfeComponentTransfer in='s' result='fill'%3E%3CfeFuncA type='linear' slope='0.7'/%3E%3C/feComponentTransfer%3E%3CfeMerge%3E%3CfeMergeNode in='fill'/%3E%3CfeMergeNode in='rim'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect x='14' y='14' width='372' height='72' rx='10' filter='url(%23b)'/%3E%3C/svg%3E");
+    --ink-blot-4: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cfilter id='b' x='-10%25' y='-10%25' width='120%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.08' numOctaves='4' seed='121' result='t'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='t' scale='16' result='d'/%3E%3CfeGaussianBlur in='d' stdDeviation='2' result='s'/%3E%3CfeMorphology in='d' operator='erode' radius='2' result='e'/%3E%3CfeGaussianBlur in='e' stdDeviation='3' result='eb'/%3E%3CfeComposite in='s' in2='eb' operator='arithmetic' k2='1' k3='-0.6' result='rim'/%3E%3CfeComponentTransfer in='s' result='fill'%3E%3CfeFuncA type='linear' slope='0.7'/%3E%3C/feComponentTransfer%3E%3CfeMerge%3E%3CfeMergeNode in='fill'/%3E%3CfeMergeNode in='rim'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect x='14' y='14' width='372' height='72' rx='10' filter='url(%23b)'/%3E%3C/svg%3E");
+    --ink-blot-5: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 100' preserveAspectRatio='none'%3E%3Cfilter id='b' x='-10%25' y='-10%25' width='120%25' height='120%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03 0.08' numOctaves='4' seed='256' result='t'/%3E%3CfeDisplacementMap in='SourceGraphic' in2='t' scale='16' result='d'/%3E%3CfeGaussianBlur in='d' stdDeviation='2' result='s'/%3E%3CfeMorphology in='d' operator='erode' radius='2' result='e'/%3E%3CfeGaussianBlur in='e' stdDeviation='3' result='eb'/%3E%3CfeComposite in='s' in2='eb' operator='arithmetic' k2='1' k3='-0.6' result='rim'/%3E%3CfeComponentTransfer in='s' result='fill'%3E%3CfeFuncA type='linear' slope='0.7'/%3E%3C/feComponentTransfer%3E%3CfeMerge%3E%3CfeMergeNode in='fill'/%3E%3CfeMergeNode in='rim'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect x='14' y='14' width='372' height='72' rx='10' filter='url(%23b)'/%3E%3C/svg%3E");
+    --ink-blot: var(--ink-blot-0);
+    --seal-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 12' preserveAspectRatio='none'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.9' numOctaves='3' seed='11'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='4'/%3E%3C/filter%3E%3Cpath fill='%239f0712' fill-opacity='.55' filter='url(%23r)' d='M2 6.5 C 20 3.5 70 3 160 3.6 C 250 4.2 340 4.4 398 5.6 C 399 6.4 396 7 390 7.2 C 300 8 200 9.2 110 9 C 60 8.9 20 8.6 4 8 C 1.5 7.6 1.4 7 2 6.5 Z'/%3E%3C/svg%3E");
+  }
+
+  [data-ink-blot="1"] {
+    --ink-blot: var(--ink-blot-1);
+  }
+  [data-ink-blot="2"] {
+    --ink-blot: var(--ink-blot-2);
+  }
+  [data-ink-blot="3"] {
+    --ink-blot: var(--ink-blot-3);
+  }
+  [data-ink-blot="4"] {
+    --ink-blot: var(--ink-blot-4);
+  }
+  [data-ink-blot="5"] {
+    --ink-blot: var(--ink-blot-5);
+  }
+
+  .dark {
+    --seal-brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 12' preserveAspectRatio='none'%3E%3Cfilter id='r'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02 0.9' numOctaves='3' seed='11'/%3E%3CfeDisplacementMap in='SourceGraphic' scale='4'/%3E%3C/filter%3E%3Cpath fill='%23ffa2a2' fill-opacity='.55' filter='url(%23r)' d='M2 6.5 C 20 3.5 70 3 160 3.6 C 250 4.2 340 4.4 398 5.6 C 399 6.4 396 7 390 7.2 C 300 8 200 9.2 110 9 C 60 8.9 20 8.6 4 8 C 1.5 7.6 1.4 7 2 6.5 Z'/%3E%3C/svg%3E");
+  }
+}
+
+@utility mask-brush-stroke {
+  mask: var(--brush-stroke) center / 100% 100% no-repeat;
+}
+
+@utility mask-ink-blot {
+  mask: var(--ink-blot) center / 100% 100% no-repeat;
+}

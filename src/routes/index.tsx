@@ -41,9 +41,10 @@ function App() {
               <Badge>{postsByYear[year].length}개의 게시글</Badge>
             </div>
             <ul className="flex flex-col gap-y-4">
-              {postsByYear[year].map((post) => (
+              {postsByYear[year].map((post, index) => (
                 <PostListItem
                   key={post.slug}
+                  index={index}
                   slug={post.slug}
                   title={post.title}
                   description={post.description}

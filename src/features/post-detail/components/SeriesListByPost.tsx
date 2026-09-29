@@ -1,6 +1,7 @@
 import { isNil } from "es-toolkit";
 import { SeriesPostList } from "#/features/series/components/SeriesPostList";
 import { getPostsBySeries } from "#/features/series/helper";
+import { BrushDivider } from "#/shared/components/BrushDivider";
 import { SERIES_ITEMS, type SeriesKey } from "#/shared/constant/series-itmes";
 
 interface SeriesListProps {
@@ -27,7 +28,7 @@ export function SeriesListByPost({ slug, series }: SeriesListProps) {
 
   return (
     <div className="hanji mb-14 grid gap-y-4 rounded-xs border border-line bg-paper p-4">
-      <div className="flex items-center gap-x-4 border-line-subtle border-b pb-4">
+      <div className="flex items-center gap-x-4">
         <img
           className="size-16 shrink-0 rounded-full border border-line object-cover"
           src={imageUrl}
@@ -38,6 +39,7 @@ export function SeriesListByPost({ slug, series }: SeriesListProps) {
           <p className="text-ink-muted text-sm">{description}</p>
         </div>
       </div>
+      <BrushDivider />
       <SeriesPostList posts={seriesPosts} currentSlug={slug} />
     </div>
   );

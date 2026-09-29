@@ -3,6 +3,7 @@
 @import "tailwind-animations";
 @import "#/features/glass-effect/styles.css";
 @import "./color.css";
+@import "./brush.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
