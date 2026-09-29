@@ -48,7 +48,6 @@
 
   /* Animations */
   --animate-bounce-slow: float 4s linear infinite;
-  --animate-reveal-ltr: reveal-ltr 1.2s ease-out both;
   --animate-stamp: stamp 0.5s ease-out both;
 
   /* Shadows */
@@ -61,21 +60,6 @@
     0 5px 5px -5px oklch(0.5 0.27 296.8 / 0.2);
 
   /* Keyframes */
-  @keyframes reveal-ltr {
-    from {
-      opacity: 1;
-      mask-image: linear-gradient(to right, black 40%, transparent 60%);
-      mask-size: 250% 100%;
-      mask-position: 100% 0;
-    }
-    to {
-      opacity: 1;
-      mask-image: linear-gradient(to right, black 40%, transparent 60%);
-      mask-size: 250% 100%;
-      mask-position: 0% 0;
-    }
-  }
-
   @keyframes stamp {
     from {
       opacity: 0;
