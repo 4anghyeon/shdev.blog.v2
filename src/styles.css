@@ -47,6 +47,7 @@
   --font-source-sans: var(--font-source-sans);
   --font-ubuntu-mono: var(--font-ubuntu-mono);
   --font-pretendard: var(--font-pretendard);
+  --font-dokdo: var(--font-dokdo);
 
   /* Colors */
   --color-background: var(--background);
@@ -113,6 +114,7 @@
 @layer base {
   :root {
     --font-pretendard: "Pretendard Variable", sans-serif;
+    --font-dokdo: "East Sea Dokdo", var(--font-pretendard);
     --radius: 0.625rem;
 
     --background: oklch(1 0 0);
