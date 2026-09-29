@@ -16,7 +16,8 @@
       "!routeTree.gen.ts",
       "!*.mdx",
       "!**/routeTree.gen.ts",
-      "!*.webp"
+      "!*.webp",
+      "!**/fonts/**/glyphData.json"
     ]
   },
   "formatter": {
