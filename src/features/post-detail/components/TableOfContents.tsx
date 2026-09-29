@@ -2,6 +2,7 @@ import { useLocation } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import type { MarkdownHeading } from "#/features/markdown/utils/render-markdown.ts";
+import { BrushBorder } from "#/shared/components/BrushBorder";
 import { Link } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
 
@@ -95,9 +96,12 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
           ease: "easeOut",
         }}
       >
-        <div className="mb-2 border-line-subtle border-b pb-1 font-semibold text-ink-muted text-sm">
+        <BrushBorder
+          side="bottom"
+          className="mb-3 pb-2 font-semibold text-ink-muted text-sm"
+        >
           목차
-        </div>
+        </BrushBorder>
         <ul ref={listRef} className="max-h-100 space-y-1 overflow-y-auto">
           {headings.map((heading) => (
             <li

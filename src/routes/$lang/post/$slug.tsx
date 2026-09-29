@@ -17,6 +17,7 @@ import { PostNavigation } from "#/features/post-detail/components/PostNavigation
 import { SeriesListByPost } from "#/features/post-detail/components/SeriesListByPost";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents";
 import { usePostStore } from "#/features/post-detail/post-store";
+import { BrushBorder } from "#/shared/components/BrushBorder";
 import { Tag } from "#/shared/components/Tag";
 import { BlogMeta } from "#/shared/constant/metadata";
 import { dateHelper } from "#/shared/helper/date";
@@ -146,7 +147,11 @@ function BlogPost() {
     <PageContainer width="article" className="lg:px-6">
       <article className="relative">
         <AllListLink className="mb-6" viewTransition />
-        <header className="mb-4 flex flex-col gap-y-4 border-gray-200 border-b pb-10 lg:mb-12 dark:border-stone-600">
+        <BrushBorder
+          as="header"
+          side="bottom"
+          className="mb-4 flex flex-col gap-y-4 pb-10 lg:mb-12"
+        >
           <h1
             className="scroll-m-20 font-bold text-3xl leading-tight tracking-tight lg:text-4xl"
             style={{ viewTransitionName: `post-title-${slug}` }}
@@ -165,7 +170,7 @@ function BlogPost() {
                 <Tag key={tag}>{tag}</Tag>
               ))}
             </div>
-            <div className="flex items-center gap-x-1 text-gray-600 text-sm dark:text-gray-400">
+            <div className="flex items-center gap-x-1 text-ink-muted text-sm">
               <span>마지막 수정일:</span>
               <time dateTime={post.updated ? post.updated : post.published}>
                 {dateHelper.format(
@@ -175,7 +180,7 @@ function BlogPost() {
               </time>
             </div>
           </div>
-        </header>
+        </BrushBorder>
         <SeriesListByPost series={post.series} slug={post.slug} />
         <Markdown markup={markup} slug={slug} className="prose" />
         <PostEndSeal key={slug} />

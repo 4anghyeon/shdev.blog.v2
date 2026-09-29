@@ -27,7 +27,7 @@ export function SeriesListByPost({ slug, series }: SeriesListProps) {
   const description = seriesMeta?.desc;
 
   return (
-    <div className="hanji mb-14 grid gap-y-4 rounded-xs border border-line bg-paper p-4">
+    <div className="hanji mb-14 grid grid-cols-1 gap-y-4 rounded-xs border border-line bg-paper p-4">
       <div className="flex items-center gap-x-4">
         <img
           className="size-16 shrink-0 rounded-full border border-line object-cover"
