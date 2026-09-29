@@ -7,7 +7,7 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "border-line bg-paper text-ink",
+        default: "hanji border-line bg-paper text-ink",
         series: "border-seal-line bg-seal-surface text-seal",
       },
     },

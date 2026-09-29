@@ -32,7 +32,7 @@ const overlayStyles = cva(
 );
 
 const modalStyles = cva(
-  "max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[min(90vw,650px)] overflow-hidden rounded-xs border border-line bg-paper-raised bg-clip-padding text-left align-middle font-sans text-ink shadow-2xl backdrop-blur-xl dark:backdrop-blur-2xl",
+  "hanji max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[min(90vw,650px)] overflow-hidden rounded-xs border border-line bg-paper-raised bg-clip-padding text-left align-middle font-sans text-ink shadow-2xl backdrop-blur-xl dark:backdrop-blur-2xl",
   {
     variants: {
       isEntering: { true: "zoom-in-105 animate-in duration-200 ease-out" },

@@ -25,7 +25,7 @@ export function SearchButton() {
     <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
       <Button
         type="button"
-        className="flex cursor-pointer items-center gap-x-3 rounded-xs border border-line bg-paper px-2 py-1 text-ink-muted text-xs tracking-wide backdrop-blur-sm transition-colors hover:border-ink-faint hover:bg-paper-hover hover:text-ink-strong"
+        className="hanji flex cursor-pointer items-center gap-x-3 rounded-xs border border-line bg-paper px-2 py-1 text-ink-muted text-xs tracking-wide backdrop-blur-sm transition-colors hover:border-ink-faint hover:bg-paper-hover hover:text-ink-strong"
         aria-label="Search"
       >
         <SearchIcon size={12} />

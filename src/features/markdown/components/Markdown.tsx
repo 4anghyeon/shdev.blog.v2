@@ -22,14 +22,14 @@ const alertVariants = cva(
   {
     variants: {
       type: {
-        note: "border-ink-faint border-l-2 bg-paper [&>p>svg]:fill-ink-strong [&>p]:first:text-ink-strong",
-        tip: "border-pigment-celadon border-l-2 bg-paper [&>p>svg]:fill-pigment-celadon [&>p]:first:text-pigment-celadon",
+        note: "hanji border-ink-faint border-l-2 bg-paper [&>p>svg]:fill-ink-strong [&>p]:first:text-ink-strong",
+        tip: "hanji border-pigment-celadon border-l-2 bg-paper [&>p>svg]:fill-pigment-celadon [&>p]:first:text-pigment-celadon",
         important:
-          "border-pigment-indigo border-l-2 bg-paper [&>p>svg]:fill-pigment-indigo [&>p]:first:text-pigment-indigo",
+          "hanji border-pigment-indigo border-l-2 bg-paper [&>p>svg]:fill-pigment-indigo [&>p]:first:text-pigment-indigo",
         warning:
-          "border-pigment-ochre border-l-2 bg-paper [&>p>svg]:fill-pigment-ochre [&>p]:first:text-pigment-ochre",
+          "hanji border-pigment-ochre border-l-2 bg-paper [&>p>svg]:fill-pigment-ochre [&>p]:first:text-pigment-ochre",
         caution:
-          "border-seal border-l-2 bg-paper [&>p>svg]:fill-seal [&>p]:first:text-seal",
+          "hanji border-seal border-l-2 bg-paper [&>p>svg]:fill-seal [&>p]:first:text-seal",
       },
     },
   },
@@ -190,7 +190,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         if (domName === "img") {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
-            <div className="my-3 flex w-full items-center justify-center rounded-xs bg-paper p-2 lg:p-5">
+            <div className="hanji my-3 flex w-full items-center justify-center rounded-xs bg-paper p-2 lg:p-5">
               <ZoomableImage
                 {...domNode.attribs}
                 loading="lazy"
@@ -290,7 +290,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "th") {
           return (
-            <th className="border-line-subtle border-b bg-paper px-3 py-2 text-left font-semibold text-ink-strong text-sm">
+            <th className="hanji border-line-subtle border-b bg-paper px-3 py-2 text-left font-semibold text-ink-strong text-sm">
               {domToReact(domNode.children as DOMNode[], options)}
             </th>
           );

@@ -60,6 +60,8 @@
     --pigment-celadon: var(--color-teal-700);
     --pigment-indigo: var(--color-indigo-800);
     --pigment-ochre: var(--color-amber-700);
+
+    --hanji-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.25 0 0 0 0 0.25 0.1 0 0 0 -0.035'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.25 0 0 0 0 0.25 0.22 0 0 0 -0.11'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.035' numOctaves='4' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.25 0 0 0 0 0.25 -1.44 0 0 0 0.132'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3Cfilter id='f2' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.05' numOctaves='3' seed='21' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.25 0 0 0 0 0.25 -1.44 0 0 0 0.108'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f2)'/%3E%3C/svg%3E");
   }
 
   .dark {
@@ -98,5 +100,16 @@
     --pigment-celadon: var(--color-teal-300);
     --pigment-indigo: var(--color-indigo-300);
     --pigment-ochre: var(--color-amber-300);
+
+    --hanji-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' seed='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.06 0 0 0 -0.021'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3Cfilter id='g' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.13 0 0 0 -0.065'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.035' numOctaves='4' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 -0.9 0 0 0 0.0825'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3Cfilter id='f2' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.05' numOctaves='3' seed='21' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 -0.9 0 0 0 0.0675'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f2)'/%3E%3C/svg%3E");
   }
+
+  ::selection {
+    background-color: var(--seal-highlight);
+    color: var(--seal-highlight-foreground);
+  }
+}
+
+@utility hanji {
+  background-image: var(--hanji-grain);
 }

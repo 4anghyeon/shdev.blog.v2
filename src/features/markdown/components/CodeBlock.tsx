@@ -29,7 +29,7 @@ export function CodeBlock({
       )}
     >
       {filename ? (
-        <div className="cursor-default border-line-subtle border-b bg-paper px-4 py-1.5 font-mono text-ink-muted text-xs">
+        <div className="hanji cursor-default border-line-subtle border-b bg-paper px-4 py-1.5 font-mono text-ink-muted text-xs">
           {filename}
         </div>
       ) : (

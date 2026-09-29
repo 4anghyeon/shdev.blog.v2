@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TegakiRenderer } from "tegaki/react";
 import { ABOUT_BODY, ABOUT_GREETING } from "#/features/about/constant";
 import eastSeaDokdo from "#/features/about/fonts/east-sea-dokdo/bundle";
+import { Seal } from "#/shared/components/Seal";
 
 const WRITING_DELAY = 0.4;
 const brushEffects = {
@@ -40,18 +41,5 @@ export function AboutIntro() {
         <Seal visible={isBodyDone} />
       </div>
     </div>
-  );
-}
-
-function Seal({ visible }: { visible: boolean }) {
-  return (
-    <img
-      src="/images/seal.webp"
-      alt="seal"
-      width={32}
-      height={32}
-      className="size-8 shrink-0 opacity-0 data-[visible=true]:animate-stamp motion-reduce:animate-none motion-reduce:opacity-100"
-      data-visible={visible}
-    />
   );
 }

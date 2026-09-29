@@ -12,6 +12,7 @@ import { Markdown } from "#/features/markdown/components/Markdown";
 import { AllListLink } from "#/features/post-detail/components/AllListLink";
 import { Description } from "#/features/post-detail/components/Description";
 import { GiscusComment } from "#/features/post-detail/components/GiscusComment";
+import { PostEndSeal } from "#/features/post-detail/components/PostEndSeal";
 import { PostNavigation } from "#/features/post-detail/components/PostNavigation";
 import { SeriesListByPost } from "#/features/post-detail/components/SeriesListByPost";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents";
@@ -177,6 +178,7 @@ function BlogPost() {
         </header>
         <SeriesListByPost series={post.series} slug={post.slug} />
         <Markdown markup={markup} slug={slug} className="prose" />
+        <PostEndSeal key={slug} />
         <PostNavigation prev={prev} next={next} />
         <AllListLink className="mt-8" />
         <ClientOnly>

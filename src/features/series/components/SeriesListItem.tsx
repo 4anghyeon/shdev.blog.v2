@@ -17,7 +17,7 @@ export function SeriesListItem({
   posts,
 }: SeriesListItemProps) {
   return (
-    <div className="grid divide-line-subtle rounded-xs border border-line bg-paper p-4 max-md:divide-y md:grid-cols-2 md:divide-x">
+    <div className="hanji grid divide-line-subtle rounded-xs border border-line bg-paper p-4 max-md:divide-y md:grid-cols-2 md:divide-x">
       <div className="flex items-center gap-x-5 max-md:pb-5 md:pr-5">
         <img
           className="size-24 shrink-0 rounded-full border border-line object-cover"
