@@ -3,6 +3,7 @@ import { allPosts } from "content-collections";
 import { groupBy } from "es-toolkit/array";
 import { PageContainer } from "#/composites/layout/PageContainer";
 import { PostListItem } from "#/features/post-list/components/PostListItem";
+import { Badge } from "#/shared/components/Badge";
 import { BlogMeta } from "#/shared/constant/metadata";
 
 export const Route = createFileRoute("/")({
@@ -33,13 +34,11 @@ function App() {
       <div className="flex flex-col gap-y-12">
         {years.map((year) => (
           <section key={year} className="flex flex-col gap-y-4">
-            <div className="flex items-center gap-x-2 pb-2 lg:px-3">
-              <h2 className="font-bold text-4xl text-gray-900 dark:text-gray-100">
+            <div className="flex items-center gap-x-2 px-3 pb-2">
+              <h2 className="font-bold font-dokdo text-5xl text-ink-strong">
                 {year}
               </h2>
-              <span className="rounded-sm border border-blue-200 bg-blue-100 px-1.5 text-[12px] text-text-default dark:border-gray-600 dark:bg-gray-700/50">
-                {postsByYear[year].length}개의 게시글
-              </span>
+              <Badge>{postsByYear[year].length}개의 게시글</Badge>
             </div>
             <ul className="flex flex-col gap-y-4">
               {postsByYear[year].map((post) => (

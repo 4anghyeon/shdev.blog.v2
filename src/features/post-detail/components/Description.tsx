@@ -23,19 +23,19 @@ export function Description({ children }: DescriptionProps) {
   }, [children?.toString]);
 
   return (
-    <div className="flex items-center gap-x-2">
+    <div className="flex items-center gap-x-4">
       <img
-        className="mr-2 aspect-square size-14 shrink-0 rounded-full border border-gray-300"
+        className="aspect-square size-14 shrink-0 rounded-full border border-line"
         alt="profile icon"
         src="/images/profile.webp"
         width={120}
         height={120}
       />
-      <div className="relative min-h-fit w-full rounded-lg border border-gray-200 bg-white text-sm before:absolute before:top-1/2 before:-left-4 before:z-0 before:block before:-translate-y-1/2 before:border-8 before:border-t-transparent before:border-r-gray-200 before:border-b-transparent before:border-l-transparent before:border-solid before:content-[''] after:absolute after:top-1/2 after:left-[-13.5px] after:z-0 after:block after:-translate-y-1/2 after:border-[7px] after:border-t-transparent after:border-r-white after:border-b-transparent after:border-l-transparent after:border-solid after:content-[''] dark:border-stone-600 dark:bg-stone-800 dark:after:border-r-stone-800 dark:before:border-r-stone-600">
-        <p className="absolute top-0 left-0 flex h-full items-center p-2">
+      <div className="relative w-full rounded-xs border border-line bg-paper-solid bg-clip-padding text-ink text-sm leading-relaxed before:absolute before:top-1/2 before:-left-4 before:-translate-y-1/2 before:border-8 before:border-transparent before:border-r-line before:content-[''] after:absolute after:top-1/2 after:left-[-13.5px] after:-translate-y-1/2 after:border-[7px] after:border-transparent after:border-r-paper-solid after:content-['']">
+        <p className="absolute inset-0 flex items-center px-3 py-2">
           {description}
         </p>
-        <p className="h-full p-2 opacity-0">{children}</p>
+        <p className="px-3 py-2 opacity-0">{children}</p>
       </div>
     </div>
   );

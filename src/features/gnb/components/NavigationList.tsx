@@ -20,13 +20,16 @@ export function NavigationList() {
       )}
     >
       <ul
-        className={cn("relative flex gap-x-1 px-2 py-1.5 font-dokdo text-xl", {
-          "glass-hover-disabled": isBubbleMoving,
-        })}
+        className={cn(
+          "relative flex gap-x-1 px-2 py-1.5 font-dokdo text-ink text-xl leading-5",
+          {
+            "glass-hover-disabled": isBubbleMoving,
+          },
+        )}
       >
         {bubbleMotionProps && (
           <motion.div
-            className="pointer-events-none absolute z-0 rounded-xl bg-gray-100/20 shadow-[inset_1px_1px_0_rgba(255,255,255,0.6),inset_0_0_8px_rgba(156,163,175,0.3)] dark:bg-white/25 dark:shadow-[inset_1px_1px_0_rgba(255,255,255,0.75),inset_0_0_8px_rgba(255,255,255,0.4)]"
+            className="pointer-events-none absolute z-0 rounded-xl bg-wash shadow-[inset_0_0_8px_var(--color-wash-edge)]"
             initial={false}
             {...bubbleMotionProps}
           />

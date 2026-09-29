@@ -31,8 +31,7 @@ export function NavigationListItem({
       <li
         ref={ref}
         className={cn("glass-item px-2 py-1", {
-          "text-shadow-sm text-sky-600 dark:text-gray-300 dark:shadow-gray-100":
-            isActive,
+          "text-seal": isActive,
         })}
         data-index={index}
       >
@@ -42,7 +41,7 @@ export function NavigationListItem({
         {showTicker && (
           <motion.li
             key="title-sep"
-            className="flex items-center text-gray-400 dark:text-gray-500"
+            className="flex items-center text-ink-faint"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

@@ -1,5 +1,6 @@
+import { BookStack } from "iconoir-react/regular";
+import { Badge } from "#/shared/components/Badge";
 import { Link } from "#/shared/components/Link";
-import { SeriesLabel } from "#/shared/components/SeriesLabel";
 import { Tag } from "#/shared/components/Tag";
 import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
 import { dateHelper } from "#/shared/helper/date";
@@ -23,18 +24,16 @@ export function PostListItem({
         to="/$lang/post/$slug"
         params={{ lang: "ko", slug }}
         viewTransition
-        className="dark:hover:stone-900 flex flex-col gap-y-2 rounded-lg py-5 no-underline transition-all duration-100 ease-in-out hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-sm focus-visible:-translate-y-0.5 focus-visible:bg-gray-50 focus-visible:shadow-sm focus-visible:outline-none active:translate-y-0 active:scale-[0.97] active:shadow-none lg:px-3 dark:border-stone-600 dark:shadow-stone-600 dark:focus-visible:bg-stone-800 dark:hover:bg-stone-800"
+        className="flex flex-col gap-y-2 rounded-xs border border-transparent px-[calc(--spacing(3)-1px)] py-5 transition-[translate,scale,background-color,border-color] duration-100 ease-in-out focus-visible:-translate-y-0.5 focus-visible:border-line focus-visible:bg-paper focus-visible:outline-none active:translate-y-0 active:scale-[0.97] group-hover:-translate-y-0.5 group-hover:border-line-subtle group-hover:bg-paper"
       >
         <h2
-          className="font-semibold text-gray-900 text-lg leading-snug dark:text-gray-100"
+          className="font-semibold text-ink-strong text-lg leading-6"
           style={{ viewTransitionName: `post-title-${slug}` }}
         >
           {title}
         </h2>
-        <p className="line-clamp-2 text-gray-500 text-sm dark:text-gray-200">
-          {description}
-        </p>
-        <div className="flex items-center justify-between">
+        <p className="line-clamp-2 text-ink-muted text-sm">{description}</p>
+        <div className="flex items-center justify-between gap-x-4">
           <div className="flex flex-wrap gap-1.5">
             {/* 시리즈 이름과 같은 태그가 있는 경우 표시 X */}
             {tags
@@ -42,11 +41,16 @@ export function PostListItem({
               .map((tag) => (
                 <Tag key={tag}>{tag}</Tag>
               ))}
-            {series && <SeriesLabel series={series} />}
+            {seriesTitle && (
+              <Badge variant="series">
+                <BookStack />
+                {seriesTitle}
+              </Badge>
+            )}
           </div>
           <time
             dateTime={published}
-            className="shrink-0 text-gray-400 text-xs dark:text-gray-400"
+            className="shrink-0 text-ink-faint text-xs tabular-nums"
           >
             {dateHelper.format(published, "LOCAL")}
           </time>

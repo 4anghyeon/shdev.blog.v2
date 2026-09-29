@@ -22,7 +22,7 @@ interface PagefindResult {
 }
 
 const overlayStyles = cva(
-  "fixed top-0 left-0 isolate z-50 h-[100dvh] w-full bg-black/50 text-center backdrop-blur-xs",
+  "fixed top-0 left-0 isolate z-50 h-[100dvh] w-full bg-scrim text-center backdrop-blur-xs",
   {
     variants: {
       isEntering: { true: "fade-in animate-in duration-200 ease-out" },
@@ -32,7 +32,7 @@ const overlayStyles = cva(
 );
 
 const modalStyles = cva(
-  "max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[min(90vw,650px)] overflow-hidden rounded-2xl border border-black/10 bg-white bg-clip-padding text-left align-middle font-sans text-neutral-700 shadow-2xl dark:border-white/10 dark:bg-neutral-800/70 dark:text-neutral-300 dark:backdrop-blur-2xl dark:backdrop-saturate-200",
+  "max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[min(90vw,650px)] overflow-hidden rounded-xs border border-line bg-paper-raised bg-clip-padding text-left align-middle font-sans text-ink shadow-2xl backdrop-blur-xl dark:backdrop-blur-2xl",
   {
     variants: {
       isEntering: { true: "zoom-in-105 animate-in duration-200 ease-out" },
@@ -118,8 +118,8 @@ export function SearchModal() {
           <Dialog role="dialog" className="outline-hidden">
             {({ close }) => (
               <div className="flex flex-col">
-                <div className="flex items-center border-stone-200 border-b px-4 py-3 dark:border-stone-800">
-                  <SearchIcon className="mr-3 h-5 w-5 text-stone-400" />
+                <div className="flex items-center border-line-subtle border-b px-4 py-3">
+                  <SearchIcon className="mr-3 h-5 w-5 text-ink-faint" />
                   <TextField
                     autoFocus
                     aria-label="게시글 검색"
@@ -130,15 +130,15 @@ export function SearchModal() {
                     <Input
                       ref={inputRef}
                       placeholder="게시글 검색..."
-                      className="w-full border-none bg-transparent text-lg text-stone-900 outline-hidden placeholder:text-stone-400 dark:text-stone-100"
+                      className="w-full border-none bg-transparent text-ink-strong text-lg outline-hidden placeholder:text-ink-faint"
                       onKeyDown={handleInputKeyDown}
                     />
                   </TextField>
                   <Button
                     onPress={close}
-                    className="ml-3 rounded-md p-1 transition-colors hover:bg-stone-100 dark:hover:bg-stone-800"
+                    className="ml-3 rounded-xs p-1 transition-colors hover:bg-paper-hover"
                   >
-                    <X className="h-5 w-5 text-stone-400" />
+                    <X className="h-5 w-5 text-ink-faint" />
                   </Button>
                 </div>
 
@@ -155,13 +155,13 @@ export function SearchModal() {
                             setResults([]);
                           }}
                           onKeyDown={(e) => handleResultKeyDown(e, index)}
-                          className="dark:hover:stone-900 flex flex-col gap-y-2 rounded-lg px-3 py-5 no-underline transition-all duration-100 ease-in-out hover:bg-gray-50 hover:shadow-sm focus-visible:bg-gray-50 focus-visible:shadow-sm focus-visible:outline-none active:translate-y-0 active:scale-[0.97] active:shadow-none dark:border-stone-600 dark:shadow-stone-600 dark:focus-visible:bg-stone-800 dark:hover:bg-stone-800"
+                          className="group flex flex-col gap-y-2 rounded-xs border-transparent border-l-2 px-3 py-5 no-underline transition-all duration-100 ease-in-out hover:border-seal/60 hover:bg-paper-hover focus-visible:border-seal/60 focus-visible:bg-paper-hover focus-visible:outline-none active:scale-[0.97]"
                         >
-                          <span className="font-semibold text-stone-900 transition-colors group-hover:text-primary group-focus:text-primary dark:text-stone-100">
+                          <span className="font-semibold text-ink-strong transition-colors group-hover:text-seal group-focus-visible:text-seal">
                             {result.meta.title}
                           </span>
                           <p
-                            className="mt-1 line-clamp-2 text-sm text-stone-500 dark:text-stone-400 [&_mark]:rounded-md [&_mark]:bg-amber-200 [&_mark]:px-1"
+                            className="mt-1 line-clamp-2 text-ink-muted text-sm [&_mark]:rounded-xs [&_mark]:bg-seal-highlight [&_mark]:px-0.5 [&_mark]:text-seal-highlight-foreground"
                             // biome-ignore lint/security/noDangerouslySetInnerHtml: <>
                             dangerouslySetInnerHTML={{ __html: result.excerpt }}
                           />
@@ -169,11 +169,11 @@ export function SearchModal() {
                       ))}
                     </div>
                   ) : search !== "" ? (
-                    <div className="py-12 text-center text-stone-500 dark:text-stone-400">
+                    <div className="py-12 text-center text-ink-muted">
                       "{search}"에 대한 결과가 없습니다
                     </div>
                   ) : (
-                    <div className="py-12 text-center text-stone-500 dark:text-stone-400">
+                    <div className="py-12 text-center text-ink-muted">
                       검색어를 입력하세요...
                     </div>
                   )}

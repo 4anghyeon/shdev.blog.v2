@@ -1,0 +1,102 @@
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-text-default: var(--text-default);
+
+  --color-ink-strong: var(--ink-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+
+  --color-paper: var(--paper);
+  --color-paper-hover: var(--paper-hover);
+  --color-paper-raised: var(--paper-raised);
+  --color-paper-solid: var(--paper-solid);
+  --color-line: var(--line);
+  --color-line-subtle: var(--line-subtle);
+  --color-wash: var(--wash);
+  --color-wash-edge: var(--wash-edge);
+  --color-scrim: var(--scrim);
+
+  --color-seal: var(--seal);
+  --color-seal-line: var(--seal-line);
+  --color-seal-surface: var(--seal-surface);
+  --color-seal-highlight: var(--seal-highlight);
+  --color-seal-highlight-foreground: var(--seal-highlight-foreground);
+
+  /* 안료 */
+  --color-pigment-celadon: var(--pigment-celadon);
+  --color-pigment-indigo: var(--pigment-indigo);
+  --color-pigment-ochre: var(--pigment-ochre);
+}
+
+@layer base {
+  :root {
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.147 0.004 49.25);
+    --text-default: var(--color-gray-900);
+
+    --ink-strong: var(--color-stone-900);
+    --ink: var(--color-stone-700);
+    --ink-muted: var(--color-stone-500);
+    --ink-faint: var(--color-stone-400);
+
+    --paper: color-mix(in oklab, var(--color-stone-100) 60%, transparent);
+    --paper-hover: color-mix(in oklab, var(--color-stone-200) 70%, transparent);
+    --paper-raised: color-mix(in oklab, var(--color-stone-50) 90%, transparent);
+    --paper-solid: var(--color-stone-50);
+    --line: color-mix(in oklab, var(--color-stone-400) 60%, transparent);
+    --line-subtle: color-mix(in oklab, var(--color-stone-300) 70%, transparent);
+    --wash: color-mix(in oklab, var(--color-stone-200) 30%, transparent);
+    --wash-edge: color-mix(in oklab, var(--color-stone-400) 35%, transparent);
+    --scrim: color-mix(in oklab, var(--color-stone-900) 40%, transparent);
+
+    --seal: var(--color-red-800);
+    --seal-line: color-mix(in oklab, var(--color-red-700) 40%, transparent);
+    --seal-surface: color-mix(in oklab, var(--color-red-50) 60%, transparent);
+    --seal-highlight: var(--color-red-100);
+    --seal-highlight-foreground: var(--color-red-900);
+
+    --pigment-celadon: var(--color-teal-700);
+    --pigment-indigo: var(--color-indigo-800);
+    --pigment-ochre: var(--color-amber-700);
+  }
+
+  .dark {
+    --background: var(--color-stone-900);
+    --foreground: oklch(0.985 0.001 106.423);
+    --text-default: var(--color-gray-100);
+
+    --ink-strong: var(--color-stone-100);
+    --ink: var(--color-stone-300);
+    --ink-muted: var(--color-stone-400);
+    --ink-faint: var(--color-stone-500);
+
+    --paper: color-mix(in oklab, var(--color-stone-800) 60%, transparent);
+    --paper-hover: color-mix(in oklab, var(--color-stone-700) 70%, transparent);
+    --paper-raised: color-mix(
+      in oklab,
+      var(--color-stone-900) 85%,
+      transparent
+    );
+    --paper-solid: var(--color-stone-800);
+    --line: color-mix(in oklab, var(--color-stone-500) 60%, transparent);
+    --line-subtle: color-mix(in oklab, var(--color-stone-600) 70%, transparent);
+    --wash: color-mix(in oklab, var(--color-stone-100) 15%, transparent);
+    --wash-edge: color-mix(in oklab, var(--color-stone-300) 30%, transparent);
+
+    --seal: var(--color-red-300);
+    --seal-line: color-mix(in oklab, var(--color-red-400) 40%, transparent);
+    --seal-surface: color-mix(in oklab, var(--color-red-950) 40%, transparent);
+    --seal-highlight: color-mix(
+      in oklab,
+      var(--color-red-950) 60%,
+      transparent
+    );
+    --seal-highlight-foreground: var(--color-red-200);
+
+    --pigment-celadon: var(--color-teal-300);
+    --pigment-indigo: var(--color-indigo-300);
+    --pigment-ochre: var(--color-amber-300);
+  }
+}

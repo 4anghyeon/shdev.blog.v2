@@ -29,7 +29,7 @@ export function TitleTicker({ title }: { title: string }) {
 
   return (
     <motion.li
-      className="glass-item glass-item-active relative flex max-w-25 overflow-hidden px-2 py-1 font-normal text-sky-600 hover:cursor-default md:max-w-50 dark:text-gray-300"
+      className="glass-item glass-item-active relative flex max-w-25 overflow-hidden px-2 py-1 font-normal hover:cursor-default md:max-w-50 dark:text-seal"
       initial={{ width: 0, opacity: 0 }}
       animate={{ width: TICKER_MAX_WIDTH_PX, opacity: 1 }}
       exit={{ width: 0, opacity: 0, paddingLeft: 0, paddingRight: 0 }}

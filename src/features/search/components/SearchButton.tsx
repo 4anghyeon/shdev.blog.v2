@@ -25,10 +25,10 @@ export function SearchButton() {
     <DialogTrigger isOpen={isOpen} onOpenChange={setIsOpen}>
       <Button
         type="button"
-        className="flex cursor-pointer items-center gap-x-3 rounded-2xl border border-neutral-300 bg-neutral-100 p-1 px-2 text-neutral-500 text-xs hover:bg-neutral-300 hover:text-black dark:border-stone-200 dark:bg-stone-300 dark:hover:bg-stone-200"
+        className="flex cursor-pointer items-center gap-x-3 rounded-xs border border-line bg-paper px-2 py-1 text-ink-muted text-xs tracking-wide backdrop-blur-sm transition-colors hover:border-ink-faint hover:bg-paper-hover hover:text-ink-strong"
         aria-label="Search"
       >
-        <SearchIcon size={12} className="text-stone-700" />
+        <SearchIcon size={12} />
         <span className="flex items-center gap-x-0.5">
           <ShortcutIcon size={12} /> K
         </span>

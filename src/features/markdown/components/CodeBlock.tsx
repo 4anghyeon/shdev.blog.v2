@@ -24,33 +24,21 @@ export function CodeBlock({
   return (
     <div
       className={cn(
-        "group relative rounded-md border border-gray-200 bg-background p-1 dark:border-stone-700",
+        "group relative rounded-xs border border-line-subtle bg-background",
         className,
       )}
     >
-      {!filename && (
-        <span className="absolute -top-2 right-4 cursor-default rounded-md bg-background px-2 text-gray-400 text-xs transition-none group-hover:opacity-0">
+      {filename ? (
+        <div className="cursor-default border-line-subtle border-b bg-paper px-4 py-1.5 font-mono text-ink-muted text-xs">
+          {filename}
+        </div>
+      ) : (
+        <span className="absolute -top-2 right-4 z-1 cursor-default bg-background px-2 font-mono text-ink-faint text-xs group-hover:opacity-0">
           {getLangExtension(language)}
         </span>
       )}
-
-      {filename && (
-        <div className="flex cursor-default items-center justify-between px-1 pb-1">
-          <span className="rounded-sm border border-blue-200 bg-blue-100/50 px-1 py-0.5 font-mono text-[10px] text-gray-700 dark:border-stone-900/80 dark:bg-stone-900 dark:text-gray-200">
-            {filename}
-          </span>
-        </div>
-      )}
-      <CodeCopyButton code={code} />
-      <div
-        className={cn(
-          "text-sm [&>pre]:m-0 [&>pre]:max-h-120 [&>pre]:overflow-x-auto [&>pre]:rounded-sm [&>pre]:bg-transparent [&>pre]:p-4",
-          {
-            "[&>pre]:border [&>pre]:border-gray-100 dark:[&>pre]:border-stone-800":
-              filename,
-          },
-        )}
-      >
+      <div className="relative text-sm [&>pre]:m-0 [&>pre]:max-h-120 [&>pre]:overflow-x-auto [&>pre]:p-4">
+        <CodeCopyButton code={code} />
         {children}
       </div>
     </div>

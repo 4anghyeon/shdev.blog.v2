@@ -18,18 +18,18 @@ import { cn } from "#/shared/lib/tailwind";
 const ALERT_TYPES = ["note", "tip", "important", "warning", "caution"] as const;
 
 const alertVariants = cva(
-  "my-4 rounded-md px-4 py-3 [&>p]:first:mt-0 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
+  "my-4 rounded-xs px-4 py-3 [&>p]:first:mt-0 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
   {
     variants: {
       type: {
-        note: "border border-blue-200 bg-blue-100/20 dark:border-blue-900 dark:bg-blue-900/20 [&>p>svg]:fill-blue-400 [&>p]:first:text-blue-400",
-        tip: "border border-green-200 bg-green-100/20 [&>p>svg]:fill-green-400 [&>p]:first:text-green-400",
+        note: "border-ink-faint border-l-2 bg-paper [&>p>svg]:fill-ink-strong [&>p]:first:text-ink-strong",
+        tip: "border-pigment-celadon border-l-2 bg-paper [&>p>svg]:fill-pigment-celadon [&>p]:first:text-pigment-celadon",
         important:
-          "border border-purple-200 bg-purple-100/20 [&>p>svg]:fill-purple-400 [&>p]:first:text-purple-400",
+          "border-pigment-indigo border-l-2 bg-paper [&>p>svg]:fill-pigment-indigo [&>p]:first:text-pigment-indigo",
         warning:
-          "border border-amber-200 bg-amber-400/10 dark:border-amber-500 dark:bg-amber-500/10 [&>p>svg]:fill-amber-500 [&>p]:first:text-amber-500",
+          "border-pigment-ochre border-l-2 bg-paper [&>p>svg]:fill-pigment-ochre [&>p]:first:text-pigment-ochre",
         caution:
-          "border border-red-200 bg-red-100/20 [&>p>svg]:fill-red-400 [&>p]:first:text-red-400",
+          "border-seal border-l-2 bg-paper [&>p>svg]:fill-seal [&>p]:first:text-seal",
       },
     },
   },
@@ -60,7 +60,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             <div className="mt-14 mb-3">
               <h2
                 id={domNode.attribs.id}
-                className="group flex scroll-m-20 items-center gap-1.5 font-bold text-2xl tracking-tight first:mt-0"
+                className="group flex scroll-m-20 items-center gap-1.5 font-bold text-2xl tracking-tight"
               >
                 {domToReact(domNode.children as DOMNode[])}
                 <AnchorCopyButton anchor={`#${domNode.attribs.id}`} />
@@ -108,14 +108,14 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
           if (hasImage || hasTag) {
             return (
-              <div className="my-3 text-md leading-[1.6]">
+              <div className="my-3 leading-[1.6]">
                 {domToReact(domNode.children as DOMNode[], options)}
               </div>
             );
           }
 
           return (
-            <p className="mt-5 mb-3 text-md leading-[1.6]">
+            <p className="mt-5 mb-3 leading-[1.6]">
               {domToReact(domNode.children as DOMNode[], options)}
             </p>
           );
@@ -126,7 +126,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const isInternal = href?.startsWith("/") || href?.startsWith("#");
           return (
             <Link
-              className="text-blue-500 text-md hover:underline dark:text-blue-400"
+              className="text-ink-strong underline decoration-seal/40 underline-offset-4 transition-colors hover:text-seal hover:decoration-seal"
               to={href}
             >
               {domToReact(domNode.children as DOMNode[], options)}
@@ -141,7 +141,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "strong") {
           return (
-            <strong className="break-keep font-bold text-md">
+            <strong className="break-keep font-bold">
               {domToReact(domNode.children as DOMNode[], options)}
             </strong>
           );
@@ -152,7 +152,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const isParentNull = !parent;
           return (
             <ul
-              className={cn("mt-2 block list-disc break-all ps-5 text-md", {
+              className={cn("wrap-break-word mt-2 list-disc ps-5", {
                 "[&>li]:mb-2": isParentNull,
               })}
             >
@@ -166,7 +166,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const isParentNull = !parent;
           return (
             <ol
-              className={cn("mt-2 block list-decimal break-all ps-5 text-md", {
+              className={cn("wrap-break-word mt-2 list-decimal ps-5", {
                 "[&>li]:mb-2": isParentNull,
               })}
             >
@@ -177,26 +177,24 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "li") {
           return (
-            <li className="list-item text-md leading-relaxed">
+            <li className="leading-relaxed">
               {domToReact(domNode.children as DOMNode[], options)}
             </li>
           );
         }
 
         if (domName === "hr") {
-          return (
-            <hr className="my-15 border-gray-300/50 dark:border-stone-600" />
-          );
+          return <hr className="my-15 border-line-subtle" />;
         }
 
         if (domName === "img") {
           const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
           return (
-            <div className="my-3 flex w-full items-center justify-center rounded-lg bg-gray-50/80 p-2 lg:p-5 dark:bg-stone-700/30">
+            <div className="my-3 flex w-full items-center justify-center rounded-xs bg-paper p-2 lg:p-5">
               <ZoomableImage
                 {...domNode.attribs}
                 loading="lazy"
-                className="max-h-100 rounded-md bg-gray-50 shadow-gray-400/50 shadow-lg dark:bg-stone-100 dark:shadow-gray-900/50"
+                className="max-h-100 rounded-xs bg-stone-50 shadow-lg shadow-stone-400/50 dark:bg-stone-100 dark:shadow-stone-950/50"
                 alt={domNode.attribs.alt}
                 src={resolvedSrc}
               />
@@ -245,7 +243,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "code") {
           return (
-            <code className="rounded-sm bg-gray-100 px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-orange-600 text-sm dark:bg-stone-700 dark:text-orange-400">
+            <code className="rounded-xs bg-paper-hover px-[0.3rem] py-[0.2rem] font-ubuntu-mono text-seal text-sm">
               {domToReact(domNode.children as DOMNode[])}
             </code>
           );
@@ -260,7 +258,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
             (child) => !(child instanceof Element && child.name === "summary"),
           );
           return (
-            <details className="group my-5 rounded-md border border-gray-200 open:border-gray-300 dark:border-gray-700 dark:open:border-gray-600">
+            <details className="group my-5 rounded-xs border border-line-subtle open:border-line">
               {summaryNode && domToReact([summaryNode] as DOMNode[], options)}
               <div className="px-4 pb-2">
                 {domToReact(contentNodes as DOMNode[], options)}
@@ -271,7 +269,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "summary") {
           return (
-            <summary className="flex cursor-pointer select-none list-none items-center gap-2 rounded-md px-4 py-3 font-semibold text-gray-700 text-md hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800/50 [&::-webkit-details-marker]:hidden">
+            <summary className="flex cursor-pointer select-none list-none items-center gap-2 rounded-xs px-4 py-3 font-semibold text-ink-strong hover:bg-paper-hover [&::-webkit-details-marker]:hidden">
               <span className="transition-transform duration-200 group-open:rotate-90">
                 <ChevronRight className="size-4" />
               </span>
@@ -282,7 +280,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "table") {
           return (
-            <div className="my-5 overflow-x-auto rounded-md border border-gray-200 dark:border-gray-700">
+            <div className="my-5 overflow-x-auto rounded-xs border border-line-subtle">
               <table className="w-full border-separate border-spacing-0">
                 {domToReact(domNode.children as DOMNode[], options)}
               </table>
@@ -292,7 +290,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "th") {
           return (
-            <th className="border-gray-200 border-b bg-gray-100 px-3 py-2 text-left font-semibold text-gray-700 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+            <th className="border-line-subtle border-b bg-paper px-3 py-2 text-left font-semibold text-ink-strong text-sm">
               {domToReact(domNode.children as DOMNode[], options)}
             </th>
           );
@@ -300,7 +298,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
 
         if (domName === "td") {
           return (
-            <td className="text-nowrap border-gray-100 border-b px-3 py-2 text-gray-700 text-sm dark:border-gray-700/60 dark:text-gray-300">
+            <td className="text-nowrap border-line-subtle border-b px-3 py-2 text-ink text-sm">
               {domToReact(domNode.children as DOMNode[], options)}
             </td>
           );

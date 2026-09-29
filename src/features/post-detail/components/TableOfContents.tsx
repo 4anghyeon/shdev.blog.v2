@@ -87,7 +87,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <nav className="absolute top-21 -right-64 hidden w-56 max-w-56 xl:block">
       <motion.div
-        className="fixed w-56 rounded-lg"
+        className="fixed w-56"
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{
@@ -95,7 +95,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
           ease: "easeOut",
         }}
       >
-        <div className="mb-2 border-stone-300 border-b pb-1 font-semibold text-gray-600 text-sm dark:text-gray-400">
+        <div className="mb-2 border-line-subtle border-b pb-1 font-semibold text-ink-muted text-sm">
           목차
         </div>
         <ul ref={listRef} className="max-h-100 space-y-1 overflow-y-auto">
@@ -109,9 +109,9 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                 to="."
                 hash={heading.id}
                 className={cn(
-                  `block py-1 text-gray-600 text-xs transition-colors hover:text-primary dark:text-gray-400`,
+                  "block border-transparent border-l-2 py-1 pl-2 text-ink-muted text-xs transition-colors hover:text-ink-strong",
                   {
-                    "font-bold text-sky-600 dark:text-sky-400":
+                    "border-seal text-seal hover:text-seal":
                       mounted && activeId === heading.id,
                   },
                 )}
