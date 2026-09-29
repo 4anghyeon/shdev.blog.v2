@@ -1,3 +1,4 @@
+import { cva } from "class-variance-authority";
 import parse, {
   type DOMNode,
   domToReact,
@@ -12,6 +13,27 @@ import { ExampleComponents } from "#/features/markdown/components/custom-compone
 import { ZoomableImage } from "#/features/markdown/components/ZoomableImage";
 import { Link } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
+
+// GitHub 스타일 알림(> [!NOTE] 등). rehype-github-alerts가 붙인 클래스로 종류를 판별한다
+const ALERT_TYPES = ["note", "tip", "important", "warning", "caution"] as const;
+
+const alertVariants = cva(
+  "my-4 rounded-md px-4 py-3 [&>p]:first:mt-0 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
+  {
+    variants: {
+      type: {
+        note: "border border-blue-200 bg-blue-100/20 dark:border-blue-900 dark:bg-blue-900/20 [&>p>svg]:fill-blue-400 [&>p]:first:text-blue-400",
+        tip: "border border-green-200 bg-green-100/20 [&>p>svg]:fill-green-400 [&>p]:first:text-green-400",
+        important:
+          "border border-purple-200 bg-purple-100/20 [&>p>svg]:fill-purple-400 [&>p]:first:text-purple-400",
+        warning:
+          "border border-amber-200 bg-amber-400/10 dark:border-amber-500 dark:bg-amber-500/10 [&>p>svg]:fill-amber-500 [&>p]:first:text-amber-500",
+        caution:
+          "border border-red-200 bg-red-100/20 [&>p>svg]:fill-red-400 [&>p]:first:text-red-400",
+      },
+    },
+  },
+);
 
 type MarkdownProps = {
   markup: string;
@@ -186,29 +208,9 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const domClass = domNode.attribs.class;
           return (
             <div
-              className={cn(
-                "my-4 rounded-md px-4 py-3 [&>p]:first:mt-0 [&>p]:first:flex [&>p]:first:items-center [&>p]:first:gap-1.5 [&>p]:first:font-bold",
-                {
-                  "border border-blue-200 bg-blue-100/20 dark:border-blue-900 dark:bg-blue-900/20 [&>p>svg]:fill-blue-400 [&>p]:first:text-blue-400":
-                    domClass?.includes("note"),
-                },
-                {
-                  "border border-green-200 bg-green-100/20 [&>p>svg]:fill-green-400 [&>p]:first:text-green-400":
-                    domClass?.includes("tip"),
-                },
-                {
-                  "border border-purple-200 bg-purple-100/20 [&>p>svg]:fill-purple-400 [&>p]:first:text-purple-400":
-                    domClass?.includes("important"),
-                },
-                {
-                  "border border-amber-200 bg-amber-400/10 dark:border-amber-500 dark:bg-amber-500/10 [&>p>svg]:fill-amber-500 [&>p]:first:text-amber-500":
-                    domClass?.includes("warning"),
-                },
-                {
-                  "border border-red-200 bg-red-100/20 [&>p>svg]:fill-red-400 [&>p]:first:text-red-400":
-                    domClass?.includes("caution"),
-                },
-              )}
+              className={alertVariants({
+                type: ALERT_TYPES.find((type) => domClass?.includes(type)),
+              })}
             >
               {domToReact(domNode.children as DOMNode[], options)}
             </div>

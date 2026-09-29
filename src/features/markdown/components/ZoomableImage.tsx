@@ -1,3 +1,4 @@
+import { cva } from "class-variance-authority";
 import { RotateCw, X } from "lucide-react";
 import type { ImgHTMLAttributes } from "react";
 import { useState } from "react";
@@ -9,6 +10,26 @@ import {
   ModalOverlay,
 } from "react-aria-components";
 import { cn } from "#/shared/lib/tailwind";
+
+const overlayStyles = cva(
+  "fixed inset-0 isolate z-50 flex h-dvh w-full items-center justify-center bg-black/80 p-4 backdrop-blur-xs",
+  {
+    variants: {
+      isEntering: { true: "fade-in animate-in duration-200 ease-out" },
+      isExiting: { true: "fade-out animate-out duration-200 ease-in" },
+    },
+  },
+);
+
+const modalStyles = cva(
+  "flex max-h-[90vh] max-w-[90vw] items-center justify-center outline-hidden",
+  {
+    variants: {
+      isEntering: { true: "zoom-in-95 animate-in duration-200 ease-out" },
+      isExiting: { true: "zoom-out-95 animate-out duration-200 ease-in" },
+    },
+  },
+);
 
 export function ZoomableImage({
   className,
@@ -33,21 +54,13 @@ export function ZoomableImage({
       </Button>
       <ModalOverlay
         className={({ isEntering, isExiting }) =>
-          cn(
-            "fixed inset-0 isolate z-50 flex h-dvh w-full items-center justify-center bg-black/80 p-4 backdrop-blur-xs",
-            isEntering && "fade-in animate-in duration-200 ease-out",
-            isExiting && "fade-out animate-out duration-200 ease-in",
-          )
+          overlayStyles({ isEntering, isExiting })
         }
         isDismissable
       >
         <Modal
           className={({ isEntering, isExiting }) =>
-            cn(
-              "flex max-h-[90vh] max-w-[90vw] items-center justify-center outline-hidden",
-              isEntering && "zoom-in-95 animate-in duration-200 ease-out",
-              isExiting && "zoom-out-95 animate-out duration-200 ease-in",
-            )
+            modalStyles({ isEntering, isExiting })
           }
         >
           <Dialog role="dialog" className="relative outline-hidden">

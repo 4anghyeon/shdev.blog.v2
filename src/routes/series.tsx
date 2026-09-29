@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { PageContainer } from "#/composites/layout/PageContainer";
 import { SeriesListItem } from "#/features/series/components/SeriesListItem";
 import { getPostsBySeries } from "#/features/series/helper";
 import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
@@ -11,7 +12,7 @@ function RouteComponent() {
   const postsBySeries = getPostsBySeries();
 
   return (
-    <main className="mx-auto w-full max-w-4xl flex-1 px-4 pt-0 pb-8 lg:pt-14">
+    <PageContainer width="wide">
       <div className="mb-10 flex flex-col gap-y-4 border-gray-200 border-b pb-5 dark:border-stone-500">
         <h1 className="font-bold text-4xl text-gray-900 dark:text-gray-100">
           시리즈
@@ -32,6 +33,6 @@ function RouteComponent() {
           />
         ))}
       </div>
-    </main>
+    </PageContainer>
   );
 }

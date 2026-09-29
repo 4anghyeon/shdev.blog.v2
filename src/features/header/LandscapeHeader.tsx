@@ -1,30 +1,53 @@
 import { useLocation } from "@tanstack/react-router";
+import { cva } from "class-variance-authority";
 import { LandscapeFrame } from "#/features/header/LandscapeFrame";
 import { LandscapeImages } from "#/features/header/LandscapeImages";
 import { ThemeToggleButton } from "#/features/theme/components/ThemeToggleButton";
-import { cn } from "#/shared/lib/tailwind";
+
+const landscapeRevealVariants = cva("", {
+  variants: {
+    reveal: {
+      // 글이 있는 페이지: 가독성을 위해 이미지 아래를 배경색으로 흐리게 덮는다
+      partial: "mask-[linear-gradient(to_bottom,black_25%,transparent_70%)]",
+      // about: 이미지를 온전히 보여준다
+      full: "mask-[linear-gradient(to_bottom,black_70%,transparent)]",
+    },
+  },
+});
 
 /**
  * 화면 뒤에 고정되는 풍경 배경과 해/달 테마 버튼.
- * 본문은 이 배경 위로 스크롤되며, 이미지가 고정되어 있으므로 해/달 버튼도 항상 같은 자리에 있다.
+ *
+ * - 배경: 본문 뒤에 고정되어, 본문이 그 위로 스크롤된다.
+ * - 헤더 띠: 헤더 높이만큼 같은 풍경을 잘라 본문 위에 고정한다. 스크롤한 본문이 헤더 뒤로 가려진다.
+ *   배경과 띠를 모두 fixed로 두어야 오버스크롤(당김) 때도 둘이 함께 움직여 어긋나지 않는다.
+ * - 이미지가 고정되어 있으므로 해/달 버튼도 항상 같은 자리에 있다.
  */
 export function LandscapeHeader() {
   const isAbout = useLocation({ select: (loc) => loc.pathname === "/about" });
+  const reveal = isAbout ? "full" : "partial";
 
   return (
     <>
       <LandscapeFrame
         aria-hidden
-        className={cn(
-          "pointer-events-none fixed inset-x-0 top-0 -z-10",
-          // about에서는 이미지를 온전히 보여주고, 그 외 페이지는 글의 가독성을 위해 아래를 배경색으로 흐리게 덮는다
-          isAbout
-            ? "mask-[linear-gradient(to_bottom,black_70%,transparent)]"
-            : "mask-[linear-gradient(to_bottom,black_25%,transparent_70%)]",
-        )}
+        className={landscapeRevealVariants({
+          reveal,
+          className: "pointer-events-none fixed inset-x-0 top-0 -z-10",
+        })}
       >
         <LandscapeImages />
       </LandscapeFrame>
+      {/* 높이는 Navbar와 같다 (모바일 64px / 데스크톱 120px). 아래 16px는 본문이 부드럽게 사라지도록 흐리게 둔다.
+          가려진 본문의 링크가 눌리지 않도록 클릭을 막는다 */}
+      <div
+        aria-hidden
+        className="mask-[linear-gradient(to_bottom,black_calc(100%-16px),transparent)] fixed inset-x-0 top-0 z-4 h-16 overflow-hidden bg-background lg:h-30"
+      >
+        <LandscapeFrame className={landscapeRevealVariants({ reveal })}>
+          <LandscapeImages />
+        </LandscapeFrame>
+      </div>
       <LandscapeFrame className="pointer-events-none fixed inset-x-0 top-0 z-30">
         {/* 이미지 속 해/달 중심 좌표 (라이트/다크 이미지 모두 71.5%, 20.83%) */}
         <ThemeToggleButton className="pointer-events-auto absolute top-[20.83%] left-[71.5%]" />

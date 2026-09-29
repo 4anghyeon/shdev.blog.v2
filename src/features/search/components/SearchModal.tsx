@@ -1,4 +1,4 @@
-import { clsx } from "clsx";
+import { cva } from "class-variance-authority";
 import { Search as SearchIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
 import {
@@ -9,10 +9,8 @@ import {
   Modal as RACModal,
   TextField,
 } from "react-aria-components";
-import { twMerge } from "tailwind-merge";
 import { usePagefind } from "#/features/search/hooks/use-pagefind";
 import { Link } from "#/shared/components/Link";
-import { cn } from "#/shared/lib/tailwind";
 
 interface PagefindResult {
   url: string;
@@ -23,33 +21,25 @@ interface PagefindResult {
   };
 }
 
-const overlayStyles = ({
-  isEntering,
-  isExiting,
-}: {
-  isEntering: boolean;
-  isExiting: boolean;
-}) =>
-  cn(
-    "fixed top-0 left-0 isolate z-50 h-[100dvh] w-full bg-black/50 text-center backdrop-blur-xs",
-    isEntering && "fade-in animate-in duration-200 ease-out",
-    isExiting && "fade-out animate-out duration-200 ease-in",
-  );
+const overlayStyles = cva(
+  "fixed top-0 left-0 isolate z-50 h-[100dvh] w-full bg-black/50 text-center backdrop-blur-xs",
+  {
+    variants: {
+      isEntering: { true: "fade-in animate-in duration-200 ease-out" },
+      isExiting: { true: "fade-out animate-out duration-200 ease-in" },
+    },
+  },
+);
 
-const modalStyles = ({
-  isEntering,
-  isExiting,
-}: {
-  isEntering: boolean;
-  isExiting: boolean;
-}) =>
-  twMerge(
-    clsx(
-      "max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[min(90vw,650px)] overflow-hidden rounded-2xl border border-black/10 bg-white bg-clip-padding text-left align-middle font-sans text-neutral-700 shadow-2xl dark:border-white/10 dark:bg-neutral-800/70 dark:text-neutral-300 dark:backdrop-blur-2xl dark:backdrop-saturate-200",
-      isEntering && "zoom-in-105 animate-in duration-200 ease-out",
-      isExiting && "zoom-out-95 animate-out duration-200 ease-in",
-    ),
-  );
+const modalStyles = cva(
+  "max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[min(90vw,650px)] overflow-hidden rounded-2xl border border-black/10 bg-white bg-clip-padding text-left align-middle font-sans text-neutral-700 shadow-2xl dark:border-white/10 dark:bg-neutral-800/70 dark:text-neutral-300 dark:backdrop-blur-2xl dark:backdrop-saturate-200",
+  {
+    variants: {
+      isEntering: { true: "zoom-in-105 animate-in duration-200 ease-out" },
+      isExiting: { true: "zoom-out-95 animate-out duration-200 ease-in" },
+    },
+  },
+);
 
 export function SearchModal() {
   const [search, setSearch] = useState("");
@@ -113,9 +103,18 @@ export function SearchModal() {
   };
 
   return (
-    <ModalOverlay className={overlayStyles} isDismissable>
+    <ModalOverlay
+      className={({ isEntering, isExiting }) =>
+        overlayStyles({ isEntering, isExiting })
+      }
+      isDismissable
+    >
       <div className="sticky top-0 left-0 box-border flex h-dvh w-full items-start justify-center p-4 pt-16">
-        <RACModal className={modalStyles}>
+        <RACModal
+          className={({ isEntering, isExiting }) =>
+            modalStyles({ isEntering, isExiting })
+          }
+        >
           <Dialog role="dialog" className="outline-hidden">
             {({ close }) => (
               <div className="flex flex-col">
