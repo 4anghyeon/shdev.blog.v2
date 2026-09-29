@@ -52,7 +52,8 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         }
       },
       {
-        rootMargin: "-64px 0px -80% 0px",
+        // 목차는 xl 이상에서만 보이므로 데스크톱 헤더 높이(120px) 아래부터 판단한다
+        rootMargin: "-120px 0px -80% 0px",
         threshold: 0,
       },
     );

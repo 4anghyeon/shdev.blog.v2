@@ -20,12 +20,9 @@ export function NavigationList() {
       )}
     >
       <ul
-        className={cn(
-          "relative flex gap-x-1 px-2 py-1.5 font-semibold text-sm",
-          {
-            "glass-hover-disabled": isBubbleMoving,
-          },
-        )}
+        className={cn("relative flex gap-x-1 px-2 py-1.5 font-dokdo text-xl", {
+          "glass-hover-disabled": isBubbleMoving,
+        })}
       >
         {bubbleMotionProps && (
           <motion.div

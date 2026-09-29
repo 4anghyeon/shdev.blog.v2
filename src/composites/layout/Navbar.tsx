@@ -1,26 +1,33 @@
 import { Suspense } from "react";
 import { NavigationList } from "#/features/gnb/components/NavigationList";
-import { SkyHeader } from "#/features/header/SkyHeader";
+import { LandscapeHeader } from "#/features/header/LandscapeHeader";
 import { SearchButton } from "#/features/search/components/SearchButton";
-import { ThemeToggleButton } from "#/features/theme/components/ThemeToggleButton";
 import { Link } from "#/shared/components/Link";
 
 export function Navbar() {
   return (
-    <nav id="nav" className="sticky top-0 z-5 w-full">
-      <div className="z-10 mr-auto ml-auto flex h-16 w-full items-center justify-between bg-linear-to-b from-cyan-200/80 via-cyan-200/60 to-cyan-100/60 px-4 lg:px-20 dark:from-stone-950 dark:via-stone-950/60 dark:to-stone-950/40">
-        <div className="relative font-minecraft">
-          <Link className="inline-block font-bold text-primary" to="/">
-            shdev.blog
-          </Link>
+    <>
+      <LandscapeHeader />
+      <nav
+        id="nav"
+        className="pointer-events-none sticky top-0 z-5 h-16 w-full lg:h-30"
+      >
+        <div className="pointer-events-auto z-10 mr-auto ml-auto flex h-16 w-full items-center justify-between px-4 lg:px-20">
+          <div className="relative font-dokdo">
+            {/* 풍경(소나무 가지) 위에서도 읽히도록 배경색으로 은은한 번짐을 준다 */}
+            <Link
+              className="inline-block text-3xl text-primary [text-shadow:0_0_4px_var(--background),0_0_10px_var(--background),0_0_18px_var(--background)]"
+              to="/"
+            >
+              shdev.blog
+            </Link>
+          </div>
+          <Suspense>
+            <NavigationList />
+          </Suspense>
+          <SearchButton />
         </div>
-        <Suspense>
-          <NavigationList />
-        </Suspense>
-        <SearchButton />
-      </div>
-      <ThemeToggleButton />
-      <SkyHeader />
-    </nav>
+      </nav>
+    </>
   );
 }

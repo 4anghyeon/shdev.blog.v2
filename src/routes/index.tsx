@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { groupBy } from "es-toolkit/array";
+import { PageContainer } from "#/composites/layout/PageContainer";
 import { PostListItem } from "#/features/post-list/components/PostListItem";
 import { BlogMeta } from "#/shared/constant/metadata";
 
@@ -28,7 +29,7 @@ function App() {
     .sort((a, b) => b - a);
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-4 pt-0 pb-8 lg:pt-14">
+    <PageContainer width="list">
       <div className="flex flex-col gap-y-12">
         {years.map((year) => (
           <section key={year} className="flex flex-col gap-y-4">
@@ -56,6 +57,6 @@ function App() {
           </section>
         ))}
       </div>
-    </main>
+    </PageContainer>
   );
 }

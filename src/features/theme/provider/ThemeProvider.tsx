@@ -63,7 +63,8 @@ export function ThemeProvider({ children }: PropsWithChildren) {
 
   const toggleTheme = () => {
     setTheme((prevTheme) => {
-      const newTheme = prevTheme === "light" ? "dark" : "light";
+      // system일 때도 현재 보이는 테마의 반대로 전환되도록 실제 적용 값을 기준으로 판단
+      const newTheme = calcIsDark(prevTheme) ? "light" : "dark";
       Cookies.set(THEME_COOKIE_KEY, newTheme, THEME_COOKIE_OPTIONS);
       applyTheme(newTheme);
       return newTheme;

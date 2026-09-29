@@ -7,6 +7,7 @@ import {
 import { allPosts } from "content-collections";
 import { Suspense, useEffect } from "react";
 import { z } from "zod";
+import { PageContainer } from "#/composites/layout/PageContainer";
 import { Markdown } from "#/features/markdown/components/Markdown";
 import { AllListLink } from "#/features/post-detail/components/AllListLink";
 import { Description } from "#/features/post-detail/components/Description";
@@ -141,48 +142,50 @@ function BlogPost() {
   }, [post.title, setTitle]);
 
   return (
-    <article className="relative mr-auto ml-auto w-full px-4 py-4 lg:my-5 lg:max-w-185 lg:px-6">
-      <AllListLink className="mb-6" viewTransition />
-      <header className="mb-4 flex flex-col gap-y-4 border-gray-200 border-b pb-10 lg:mb-12 dark:border-stone-600">
-        <h1
-          className="scroll-m-20 font-bold text-3xl leading-tight tracking-tight lg:text-4xl"
-          style={{ viewTransitionName: `post-title-${slug}` }}
-          data-pagefind-filter="lang[data-lang]"
-          data-lang="ko"
-        >
-          {post.title}
-        </h1>
-        <Description>{post.description}</Description>
-        <div
-          className="flex flex-wrap items-center justify-between gap-2"
-          data-pagefind-ignore="all"
-        >
-          <div className="flex gap-2">
-            {post.tags.map((tag) => (
-              <Tag key={tag}>{tag}</Tag>
-            ))}
+    <PageContainer width="article" className="lg:px-6">
+      <article className="relative">
+        <AllListLink className="mb-6" viewTransition />
+        <header className="mb-4 flex flex-col gap-y-4 border-gray-200 border-b pb-10 lg:mb-12 dark:border-stone-600">
+          <h1
+            className="scroll-m-20 font-bold text-3xl leading-tight tracking-tight lg:text-4xl"
+            style={{ viewTransitionName: `post-title-${slug}` }}
+            data-pagefind-filter="lang[data-lang]"
+            data-lang="ko"
+          >
+            {post.title}
+          </h1>
+          <Description>{post.description}</Description>
+          <div
+            className="flex flex-wrap items-center justify-between gap-2"
+            data-pagefind-ignore="all"
+          >
+            <div className="flex gap-2">
+              {post.tags.map((tag) => (
+                <Tag key={tag}>{tag}</Tag>
+              ))}
+            </div>
+            <div className="flex items-center gap-x-1 text-gray-600 text-sm dark:text-gray-400">
+              <span>마지막 수정일:</span>
+              <time dateTime={post.updated ? post.updated : post.published}>
+                {dateHelper.format(
+                  post.updated ? post.updated : post.published,
+                  "LOCAL",
+                )}
+              </time>
+            </div>
           </div>
-          <div className="flex items-center gap-x-1 text-gray-600 text-sm dark:text-gray-400">
-            <span>마지막 수정일:</span>
-            <time dateTime={post.updated ? post.updated : post.published}>
-              {dateHelper.format(
-                post.updated ? post.updated : post.published,
-                "LOCAL",
-              )}
-            </time>
-          </div>
-        </div>
-      </header>
-      <SeriesListByPost series={post.series} slug={post.slug} />
-      <Markdown markup={markup} slug={slug} className="prose" />
-      <PostNavigation prev={prev} next={next} />
-      <AllListLink className="mt-8" />
-      <ClientOnly>
-        <GiscusComment />
-      </ClientOnly>
-      <Suspense>
-        <TableOfContents headings={post.headings} />
-      </Suspense>
-    </article>
+        </header>
+        <SeriesListByPost series={post.series} slug={post.slug} />
+        <Markdown markup={markup} slug={slug} className="prose" />
+        <PostNavigation prev={prev} next={next} />
+        <AllListLink className="mt-8" />
+        <ClientOnly>
+          <GiscusComment />
+        </ClientOnly>
+        <Suspense>
+          <TableOfContents headings={post.headings} />
+        </Suspense>
+      </article>
+    </PageContainer>
   );
 }

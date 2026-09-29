@@ -1,34 +1,12 @@
-import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useTransition } from "react";
 import { useTheme } from "#/features/theme/provider/ThemeProvider";
+import { cn } from "#/shared/lib/tailwind";
 
-const toggleVariants: Variants = {
-  initial: { y: -60, x: 20, rotate: 30, opacity: 0 },
-  animate: {
-    y: 0,
-    x: 0,
-    rotate: 0,
-    opacity: 1,
-    transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
-  },
-  exit: {
-    y: 60,
-    x: -20,
-    rotate: -30,
-    opacity: 0,
-    transition: { duration: 0.8, ease: [0.4, 0, 0.2, 1] },
-  },
-};
-
-const THEMES = {
-  light: { src: "/images/sun.png", alt: "sun", label: "Switch to dark mode" },
-  dark: { src: "/images/moon.png", alt: "moon", label: "Switch to light mode" },
-} as const;
-
-export function ThemeToggleButton() {
+// 헤더 풍경 속 해(라이트)/달(다크) 위에 겹쳐 놓는 투명 버튼
+export function ThemeToggleButton({ className }: { className?: string }) {
   const { isDark, toggleTheme } = useTheme();
   const [isChanging, startThemeChange] = useTransition();
-  const current = isDark ? THEMES.dark : THEMES.light;
+  const label = isDark ? "Switch to light mode" : "Switch to dark mode";
 
   const handleClick = () => {
     toggleTheme();
@@ -41,29 +19,14 @@ export function ThemeToggleButton() {
   return (
     <button
       type="button"
-      className="absolute top-4 left-44 z-30 h-10 w-10 shrink-0 cursor-pointer sm:left-64"
+      className={cn(
+        "-translate-1/2 aspect-square w-[4.5%] min-w-10 cursor-pointer rounded-full transition-shadow duration-300 hover:shadow-[0_0_24px_10px_rgb(253_224_171/0.7)] focus-visible:outline-2 focus-visible:outline-amber-400 focus-visible:outline-offset-2 dark:hover:shadow-[0_0_24px_10px_rgb(226_232_240/0.35)]",
+        className,
+      )}
       onClick={handleClick}
       disabled={isChanging}
-      aria-label={current.label}
-    >
-      <AnimatePresence>
-        <motion.div
-          key={current.alt}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          variants={toggleVariants}
-          className="absolute inset-0"
-        >
-          <img
-            src={current.src}
-            alt={current.alt}
-            width={40}
-            height={40}
-            className="h-full w-full animate-bounce-slow object-contain"
-          />
-        </motion.div>
-      </AnimatePresence>
-    </button>
+      aria-label={label}
+      title={label}
+    />
   );
 }
