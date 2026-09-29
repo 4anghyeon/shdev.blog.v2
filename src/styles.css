@@ -61,7 +61,7 @@
 
   /* Animations */
   --animate-bounce-slow: float 4s linear infinite;
-  --animate-stamp: stamp 0.5s ease-out both;
+  --animate-stamp: stamp 0.7s linear both;
 
   /* Shadows */
   --shadow-page:
@@ -74,13 +74,28 @@
 
   /* Keyframes */
   @keyframes stamp {
-    from {
+    0% {
       opacity: 0;
-      transform: scale(1.25);
+      transform: scale(2.6) rotate(-14deg);
+      filter: blur(3px);
+      animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
     }
-    to {
+    45% {
       opacity: 1;
-      transform: scale(1);
+      transform: scale(0.86) rotate(-2deg);
+      filter: blur(0) drop-shadow(0 0 8px rgb(220 38 38 / 0.7));
+      animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    65% {
+      transform: scale(1.08) rotate(-4deg);
+    }
+    82% {
+      transform: scale(0.97) rotate(-3deg);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) rotate(-3deg);
+      filter: blur(0) drop-shadow(0 0 0 rgb(220 38 38 / 0));
     }
   }
 

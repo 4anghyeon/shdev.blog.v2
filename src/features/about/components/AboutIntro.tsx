@@ -45,12 +45,13 @@ export function AboutIntro() {
 
 function Seal({ visible }: { visible: boolean }) {
   return (
-    <span
-      aria-hidden
-      className="flex size-9 shrink-0 items-center justify-center rounded-[3px] border-2 border-red-700/80 font-bold font-pretendard text-[11px] text-red-700/80 leading-none tracking-tighter opacity-0 [writing-mode:vertical-rl] data-[visible=true]:animate-stamp motion-reduce:animate-none motion-reduce:opacity-100 dark:border-red-500/70 dark:text-red-500/70"
+    <img
+      src="/images/seal.webp"
+      alt="seal"
+      width={32}
+      height={32}
+      className="size-8 shrink-0 opacity-0 data-[visible=true]:animate-stamp motion-reduce:animate-none motion-reduce:opacity-100"
       data-visible={visible}
-    >
-      相賢
-    </span>
+    />
   );
 }
