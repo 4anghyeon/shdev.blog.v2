@@ -26,6 +26,19 @@
   font-display: swap;
 }
 
+/* 헤더 풍경 그라데이션의 시작·끝 지점. 타입을 등록해야 값이 전환(transition)된다 (LandscapeHeader) */
+@property --landscape-solid {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 25%;
+}
+
+@property --landscape-fade {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 70%;
+}
+
 @theme inline {
   /* Fonts */
   --font-minecraft: var(--font-minecraft);
