@@ -12,7 +12,7 @@ export function Navbar() {
         id="nav"
         className="pointer-events-none sticky top-0 z-5 h-16 w-full lg:h-30"
       >
-        <div className="pointer-events-auto z-10 mr-auto ml-auto flex h-16 w-full items-center justify-between px-6 lg:px-20">
+        <div className="pointer-events-auto z-10 mr-auto ml-auto flex h-16 w-full items-center justify-between px-5 lg:px-20">
           <div className="relative font-dokdo">
             {/* 풍경(소나무 가지) 위에서도 읽히도록 배경색으로 은은한 번짐을 준다 */}
             <Link
