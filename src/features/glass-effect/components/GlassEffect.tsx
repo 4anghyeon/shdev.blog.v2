@@ -1,4 +1,10 @@
-export function GlassEffect() {
+import { NacreLayer } from "#/features/glass-effect/components/NacreLayer";
+
+interface GlassEffectProps {
+  variant?: "plain" | "nacre";
+}
+
+export function GlassEffect({ variant = "plain" }: GlassEffectProps) {
   return (
     <>
       <svg style={{ display: "none" }}>
@@ -22,6 +28,7 @@ export function GlassEffect() {
         </filter>
       </svg>
       <div className="glass-filter" />
+      {variant === "nacre" && <NacreLayer />}
       <div className="glass-overlay" />
       <div className="glass-specular" />
     </>

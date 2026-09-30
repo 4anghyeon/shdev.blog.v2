@@ -12,6 +12,7 @@ export function NavigationList() {
 
   return (
     <GlassWrapper
+      variant="nacre"
       className={cn(
         "z-40 max-md:fixed max-md:bottom-6 max-md:left-1/2 max-md:-translate-x-1/2",
         {
