@@ -54,6 +54,9 @@ export function SearchModal() {
   };
 
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
+    // 한글 조합 중에 포커스를 옮기면 조합 중이던 글자가 한 번 더 입력된다
+    if (e.nativeEvent.isComposing) return;
+
     if (e.key === "ArrowDown" && results.length > 0) {
       e.preventDefault();
       focusResult(0);

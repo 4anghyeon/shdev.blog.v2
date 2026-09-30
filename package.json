@@ -7,10 +7,11 @@
   },
   "scripts": {
     "dev": "vite dev --port 30005",
-    "build": "vite build && npm run postbuild",
+    "build": "vite build && npm run postbuild && npm run pagefind:dev",
     "start": "node .output/server/index.mjs",
     "preview": "vite preview",
     "postbuild": "npx pagefind --site .output/public --output-path .output/public/pagefind",
+    "pagefind:dev": "npx pagefind --site .output/public --output-path public/pagefind",
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
