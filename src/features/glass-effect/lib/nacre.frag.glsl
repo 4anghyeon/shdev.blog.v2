@@ -191,7 +191,9 @@ void main() {
   float glint = pow(max(dot(pieceNormal, halfVector), 0.0), 60.0);
   vec3 color = pearlTint(thickness, 0.55)
     + (twinkle * 0.25 + glint * 0.5) * (1.0 + highlight * 0.5);
-  float alpha = isShell * shard * 0.85;
+  // 버블 안쪽(활성 메뉴 글자 뒤)은 조각을 걷어내 가장자리에만 남긴다
+  float textClearance = smoothstep(-3.0, -6.0, bubble) * hasBubble;
+  float alpha = isShell * shard * 0.85 * (1.0 - textClearance * 0.9);
   color = mix(vec3(1.0), color, step(0.001, alpha));
   alpha = max(alpha, specular * mix(0.4, 0.25, uDark));
 

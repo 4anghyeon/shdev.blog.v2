@@ -27,7 +27,7 @@ export function NavigationList() {
     >
       <ul
         className={cn(
-          "relative flex gap-x-1 px-2 py-1.5 font-dokdo text-ink text-xl leading-5",
+          "relative flex gap-x-1 px-2 py-1.5 font-dokdo text-ink-strong text-xl leading-5 [text-shadow:0_0_3px_var(--background),0_0_8px_var(--background)]",
           {
             "glass-hover-disabled": isBubbleMoving,
           },
