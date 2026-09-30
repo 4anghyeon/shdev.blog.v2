@@ -7,8 +7,13 @@ import { MENU_ITEMS } from "#/shared/constant/menu-items";
 import { cn } from "#/shared/lib/tailwind";
 
 export function NavigationList() {
-  const { bubbleMotionProps, itemRefs, activeIndex, isBubbleMoving } =
-    useMenuBubble();
+  const {
+    bubbleMotionProps,
+    bubbleTailMotionProps,
+    itemRefs,
+    activeIndex,
+    isBubbleMoving,
+  } = useMenuBubble();
 
   return (
     <GlassWrapper
@@ -30,9 +35,18 @@ export function NavigationList() {
       >
         {bubbleMotionProps && (
           <motion.div
-            className="pointer-events-none absolute z-0 rounded-xl bg-wash shadow-[inset_0_0_8px_var(--color-wash-edge)]"
+            className="pointer-events-none absolute z-0 rounded-xl bg-wash in-data-nacre-active:opacity-0 shadow-[inset_0_0_8px_var(--color-wash-edge)]"
+            data-glass-highlight="head"
             initial={false}
             {...bubbleMotionProps}
+          />
+        )}
+        {bubbleTailMotionProps && (
+          <motion.div
+            className="pointer-events-none invisible absolute"
+            data-glass-highlight="tail"
+            initial={false}
+            {...bubbleTailMotionProps}
           />
         )}
         {MENU_ITEMS.map((item, index) => (

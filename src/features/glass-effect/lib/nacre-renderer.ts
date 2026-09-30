@@ -1,11 +1,17 @@
 import * as THREE from "three";
-import {
-  nacreFragmentShader,
-  nacreVertexShader,
-} from "#/features/glass-effect/lib/nacre-shader";
+import nacreFragmentShader from "#/features/glass-effect/lib/nacre.frag.glsl?raw";
+import nacreVertexShader from "#/features/glass-effect/lib/nacre.vert.glsl?raw";
 
 const MAX_PIXEL_RATIO = 2;
 const BORDER_RADIUS_PX = 32;
+const BUBBLE_RADIUS_PX = 12;
+
+export interface BubbleRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 export class NacreRenderer {
   private readonly renderer: THREE.WebGLRenderer;
@@ -33,6 +39,10 @@ export class NacreRenderer {
         uRadius: { value: BORDER_RADIUS_PX },
         uLight: { value: new THREE.Vector2(-0.4, 0.6) },
         uPixelRatio: { value: 1 },
+        uHead: { value: new THREE.Vector4(0, 0, 0, 0) },
+        uTail: { value: new THREE.Vector4(0, 0, 0, 0) },
+        uBubbleRadius: { value: BUBBLE_RADIUS_PX },
+        uDark: { value: 0 },
       },
     });
 
@@ -49,6 +59,29 @@ export class NacreRenderer {
     );
     this.material.uniforms.uRadius.value = BORDER_RADIUS_PX * pixelRatio;
     this.material.uniforms.uPixelRatio.value = pixelRatio;
+  }
+
+  setLight(x: number, y: number) {
+    this.material.uniforms.uLight.value.set(x, y);
+  }
+
+  setBubble(head: BubbleRect, tail: BubbleRect) {
+    this.material.uniforms.uHead.value.set(
+      head.x,
+      head.y,
+      head.width,
+      head.height,
+    );
+    this.material.uniforms.uTail.value.set(
+      tail.x,
+      tail.y,
+      tail.width,
+      tail.height,
+    );
+  }
+
+  setDark(isDark: boolean) {
+    this.material.uniforms.uDark.value = isDark ? 1 : 0;
   }
 
   render(timeSeconds: number) {

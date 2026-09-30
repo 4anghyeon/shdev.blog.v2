@@ -1,39 +1,30 @@
 import { useEffect, useRef } from "react";
-import { NacreRenderer } from "#/features/glass-effect/lib/nacre-renderer";
+import {
+  createNacreScene,
+  type NacreScene,
+} from "#/features/glass-effect/lib/nacre-scene";
+import { useTheme } from "#/features/theme/provider/ThemeProvider";
 
 export function NacreLayer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const sceneRef = useRef<NacreScene | null>(null);
+  const { isDark } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    let nacre: NacreRenderer;
-    try {
-      nacre = new NacreRenderer(canvas);
-    } catch {
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver(([entry]) => {
-      const { width, height } = entry.contentRect;
-      nacre.setSize(width, height);
-    });
-    resizeObserver.observe(canvas);
-
-    let frameId = 0;
-    const loop = (time: number) => {
-      nacre.render(time / 1000);
-      frameId = requestAnimationFrame(loop);
-    };
-    frameId = requestAnimationFrame(loop);
-
+    const scene = createNacreScene(canvas);
+    sceneRef.current = scene;
     return () => {
-      cancelAnimationFrame(frameId);
-      resizeObserver.disconnect();
-      nacre.dispose();
+      scene.dispose();
+      sceneRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    sceneRef.current?.setDark(isDark);
+  }, [isDark]);
 
   return <canvas ref={canvasRef} className="glass-nacre" aria-hidden />;
 }

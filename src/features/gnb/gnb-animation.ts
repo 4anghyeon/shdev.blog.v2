@@ -1,8 +1,4 @@
-import type {
-  AnimationOptions,
-  DOMKeyframesDefinition,
-  Transition,
-} from "motion";
+import type { Transition } from "motion";
 
 export const TICKER_SPEED_PX_PER_S = 20;
 export const TICKER_MAX_WIDTH_PX = 200;
@@ -21,12 +17,16 @@ export const bubblePositionTransition: Transition = {
   height: { duration: 0 },
 };
 
-export const BUBBLE_SQUISH_KEYFRAMES: DOMKeyframesDefinition = {
-  scaleX: [1, 0.55, 1],
-  scaleY: [1, 0.7, 1],
-};
-export const BUBBLE_SQUISH_OPTIONS: AnimationOptions = {
-  duration: 0.35,
-  times: [0, 0.45, 1],
-  ease: "easeInOut",
+const bubbleTailSpring = {
+  type: "spring",
+  stiffness: 45,
+  damping: 11,
+  mass: 1,
+} as const;
+
+export const bubbleTailTransition: Transition = {
+  x: bubbleTailSpring,
+  width: bubbleTailSpring,
+  y: { duration: 0 },
+  height: { duration: 0 },
 };
