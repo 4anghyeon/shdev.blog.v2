@@ -9,7 +9,7 @@ import { ThemeProvider } from "#/features/theme/provider/ThemeProvider";
 import { GoogleAnalyticsScript } from "#/shared/components/GoogleAnalyticsScript";
 import { BlogMeta } from "#/shared/constant/metadata";
 import ShikiCss from "#/styles/shiki.css?url";
-import appCss from "../styles.css?url";
+import appCss from "../global.css?url";
 
 export const Route = createRootRoute({
   head: () => ({

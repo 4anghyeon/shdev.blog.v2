@@ -1,8 +1,9 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "tailwind-animations";
-@import "./color.css";
-@import "./brush.css";
+@import "./styles/color.css";
+@import "./styles/brush.css";
+@import "./styles/page-slide.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

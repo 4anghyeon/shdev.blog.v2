@@ -1,4 +1,5 @@
 import { createRouter as createTanStackRouter } from "@tanstack/react-router";
+import { getPageSlideViewTransition } from "#/features/gnb/page-slide";
 import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {
@@ -7,6 +8,7 @@ export function getRouter() {
     scrollRestoration: true,
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
+    defaultViewTransition: getPageSlideViewTransition(),
   });
 }
 

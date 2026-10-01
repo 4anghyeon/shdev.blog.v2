@@ -1,0 +1,95 @@
+/* biome-ignore-all lint/correctness/noUnknownTypeSelector: ::view-transition-*() 인자는 요소가 아니라 view transition 이름이다 */
+
+/*
+ * 큰 메뉴 간 좌우 슬라이드 (features/gnb/page-slide.ts)
+ * 본문(main)만 밀고, 풍경 배경·헤더 띠·GNB·테마 버튼은 제자리에 둔다.
+ * 본문 위에 겹치는 고정 레이어도 이름을 붙여야 슬라이드하는 본문보다 위에 그려진다.
+ * 이름은 슬라이드 중에만 붙여서 글 상세 전환에는 영향을 주지 않는다.
+ */
+html:active-view-transition-type(slide-left, slide-right) {
+  & main {
+    view-transition-name: page-in;
+  }
+
+  & main[data-slide-out] {
+    view-transition-name: page-out;
+  }
+
+  /* 글 제목에 인라인으로 붙은 post-title-* 이름을 떼야 제목도 본문과 함께 밀린다 */
+  & main [style*="view-transition-name"] {
+    /* biome-ignore lint/complexity/noImportantStyles: 인라인 style보다 우선해야 한다 */
+    view-transition-name: none !important;
+  }
+
+  & #nav {
+    view-transition-name: gnb;
+  }
+
+  & [data-slide-pin="landscape-band"] {
+    view-transition-name: landscape-band;
+  }
+
+  & [data-slide-pin="theme-toggle"] {
+    view-transition-name: theme-toggle;
+  }
+
+  &::view-transition-group(root),
+  &::view-transition-old(root),
+  &::view-transition-new(root),
+  &::view-transition-group(gnb),
+  &::view-transition-old(gnb),
+  &::view-transition-new(gnb),
+  &::view-transition-group(landscape-band),
+  &::view-transition-old(landscape-band),
+  &::view-transition-new(landscape-band),
+  &::view-transition-group(theme-toggle),
+  &::view-transition-old(theme-toggle),
+  &::view-transition-new(theme-toggle) {
+    animation: none;
+  }
+
+  &::view-transition-old(page-out),
+  &::view-transition-new(page-in) {
+    animation-duration: 880ms;
+    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+}
+
+html:active-view-transition-type(slide-left) {
+  &::view-transition-old(page-out) {
+    animation-name: page-slide-out-to-left;
+  }
+  &::view-transition-new(page-in) {
+    animation-name: page-slide-in-from-right;
+  }
+}
+
+html:active-view-transition-type(slide-right) {
+  &::view-transition-old(page-out) {
+    animation-name: page-slide-out-to-right;
+  }
+  &::view-transition-new(page-in) {
+    animation-name: page-slide-in-from-left;
+  }
+}
+
+@keyframes page-slide-out-to-left {
+  to {
+    transform: translateX(-100vw);
+  }
+}
+@keyframes page-slide-in-from-right {
+  from {
+    transform: translateX(100vw);
+  }
+}
+@keyframes page-slide-out-to-right {
+  to {
+    transform: translateX(100vw);
+  }
+}
+@keyframes page-slide-in-from-left {
+  from {
+    transform: translateX(-100vw);
+  }
+}
