@@ -5,6 +5,7 @@ import type { MarkdownHeading } from "#/features/markdown/utils/render-markdown.
 import { BrushBorder } from "#/shared/components/BrushBorder";
 import { Link } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
+import styles from "./TableOfContents.module.css";
 
 interface TableOfContentsProps {
   headings: MarkdownHeading[];
@@ -53,7 +54,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
         }
       },
       {
-        // 목차는 xl 이상에서만 보이므로 데스크톱 헤더 높이(120px) 아래부터 판단한다
+        // 목차는 넓은 화면에서만 보이므로 데스크톱 헤더 높이(120px) 아래부터 판단한다
         rootMargin: "-120px 0px -80% 0px",
         threshold: 0,
       },
@@ -86,9 +87,10 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   }, []);
 
   return (
-    <nav className="absolute top-21 -right-64 hidden w-56 max-w-56 xl:block">
+    <nav className="absolute top-21 hidden supports-[anchor-name:--a]:block xl:block">
+      {/* 포스트(--post) 오른쪽에 붙이고, 오른쪽 여백이 목차 폭보다 좁아지면 서서히 숨긴다 */}
       <motion.div
-        className="fixed w-56"
+        className={styles.anchored}
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{
@@ -96,36 +98,38 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
           ease: "easeOut",
         }}
       >
-        <BrushBorder
-          side="bottom"
-          className="mb-3 pb-2 font-semibold text-ink-muted text-sm"
-        >
-          목차
-        </BrushBorder>
-        <ul ref={listRef} className="max-h-100 space-y-1 overflow-y-auto">
-          {headings.map((heading) => (
-            <li
-              id={`list-${heading.id}`}
-              key={heading.id}
-              style={{ paddingLeft: `${heading.level - 2}rem` }}
-            >
-              <Link
-                to="."
-                hash={heading.id}
-                className={cn(
-                  "block border-transparent border-l-2 py-1 pl-2 text-ink-muted text-xs transition-colors hover:text-ink-strong",
-                  {
-                    "border-seal text-seal hover:text-seal":
-                      mounted && activeId === heading.id,
-                  },
-                )}
-                hashScrollIntoView={{ behavior: "smooth", block: "start" }}
+        <div className={styles.fade}>
+          <BrushBorder
+            side="bottom"
+            className="mb-3 pb-2 font-semibold text-ink-muted text-sm"
+          >
+            목차
+          </BrushBorder>
+          <ul ref={listRef} className="max-h-100 space-y-1 overflow-y-auto">
+            {headings.map((heading) => (
+              <li
+                id={`list-${heading.id}`}
+                key={heading.id}
+                style={{ paddingLeft: `${heading.level - 2}rem` }}
               >
-                {heading.text}
-              </Link>
-            </li>
-          ))}
-        </ul>
+                <Link
+                  to="."
+                  hash={heading.id}
+                  className={cn(
+                    "block border-transparent border-l-2 py-1 pl-2 text-ink-muted text-xs transition-colors hover:text-ink-strong",
+                    {
+                      "border-seal text-seal hover:text-seal":
+                        mounted && activeId === heading.id,
+                    },
+                  )}
+                  hashScrollIntoView={{ behavior: "smooth", block: "start" }}
+                >
+                  {heading.text}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </motion.div>
     </nav>
   );

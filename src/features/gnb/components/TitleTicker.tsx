@@ -1,10 +1,12 @@
 import { motion, useAnimationFrame, useMotionValue } from "motion/react";
 import { useRef, useState } from "react";
+import glass from "#/features/glass-effect/glass-effect.module.css";
 import {
   TICKER_MAX_WIDTH_PX,
   TICKER_SPEED_PX_PER_S,
   tickerTransition,
 } from "#/features/gnb/gnb-animation";
+import { cn } from "#/shared/lib/tailwind";
 
 export function TitleTicker({ title }: { title: string }) {
   const xValue = useMotionValue(0);
@@ -29,7 +31,11 @@ export function TitleTicker({ title }: { title: string }) {
 
   return (
     <motion.li
-      className="glass-item glass-item-active relative flex max-w-25 overflow-hidden px-2 py-1 font-normal hover:cursor-default md:max-w-50 dark:text-seal"
+      className={cn(
+        glass.item,
+        glass.itemActive,
+        "relative flex max-w-25 overflow-hidden px-2 py-1 font-normal hover:cursor-default md:max-w-50 dark:text-seal",
+      )}
       initial={{ width: 0, opacity: 0 }}
       animate={{ width: TICKER_MAX_WIDTH_PX, opacity: 1 }}
       exit={{ width: 0, opacity: 0, paddingLeft: 0, paddingRight: 0 }}

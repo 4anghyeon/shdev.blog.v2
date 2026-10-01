@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import glass from "#/features/glass-effect/glass-effect.module.css";
 import {
   createNacreScene,
   type NacreScene,
@@ -26,5 +27,5 @@ export function NacreLayer() {
     sceneRef.current?.setDark(isDark);
   }, [isDark]);
 
-  return <canvas ref={canvasRef} className="glass-nacre" aria-hidden />;
+  return <canvas ref={canvasRef} className={glass.nacre} aria-hidden />;
 }

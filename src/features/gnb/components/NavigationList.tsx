@@ -1,6 +1,7 @@
 import { isNil } from "es-toolkit";
 import { motion } from "motion/react";
 import { GlassWrapper } from "#/features/glass-effect/components/GlassWrapper";
+import glass from "#/features/glass-effect/glass-effect.module.css";
 import { NavigationListItem } from "#/features/gnb/components/NavigationListItem";
 import { useMenuBubble } from "#/features/gnb/hooks/use-menu-bubble";
 import { MENU_ITEMS } from "#/shared/constant/menu-items";
@@ -29,7 +30,7 @@ export function NavigationList() {
         className={cn(
           "relative flex gap-x-1 px-2 py-1.5 font-dokdo text-ink-strong text-xl leading-5 [text-shadow:0_0_3px_var(--background),0_0_8px_var(--background)]",
           {
-            "glass-hover-disabled": isBubbleMoving,
+            [glass.hoverDisabled]: isBubbleMoving,
           },
         )}
       >

@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "tailwind-animations";
-@import "#/features/glass-effect/styles.css";
 @import "./color.css";
 @import "./brush.css";
 

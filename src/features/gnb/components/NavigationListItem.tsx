@@ -1,6 +1,7 @@
 import { isEmpty } from "es-toolkit/compat";
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode, Ref } from "react";
+import glass from "#/features/glass-effect/glass-effect.module.css";
 import { tickerTransition } from "#/features/gnb/gnb-animation";
 import { useActiveNavigation } from "#/features/gnb/hooks/use-active-navigation";
 import { usePostStore } from "#/features/post-detail/post-store";
@@ -30,7 +31,7 @@ export function NavigationListItem({
     <>
       <li
         ref={ref}
-        className={cn("glass-item px-2 py-1", {
+        className={cn(glass.item, "px-2 py-1", {
           "text-seal": isActive,
         })}
         data-index={index}

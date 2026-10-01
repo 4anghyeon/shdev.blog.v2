@@ -1,0 +1,31 @@
+/* --post 앵커는 포스트 페이지($slug.tsx)의 article에서 정의한다 */
+
+/* Tailwind 유틸리티가 덮어쓸 수 있도록 components 레이어에 둔다 */
+@layer components {
+  .anchored {
+    position: fixed;
+    width: 14rem;
+
+    /* 포스트 오른쪽부터 뷰포트 끝까지를 컨테이너로 만들어, 남은 폭으로 목차 표시 여부를 판단한다 */
+    @supports (anchor-name: --a) {
+      left: calc(anchor(--post right) + 2rem);
+      right: 0;
+      width: auto;
+      container-type: inline-size;
+      pointer-events: none;
+    }
+  }
+
+  .fade {
+    width: 14rem;
+    pointer-events: auto;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s;
+
+    @container (width < 14rem) {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+}

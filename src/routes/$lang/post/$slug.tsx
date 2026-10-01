@@ -145,7 +145,7 @@ function BlogPost() {
 
   return (
     <PageContainer width="article" className="lg:px-6">
-      <article className="relative">
+      <article className="relative [anchor-name:--post]">
         <AllListLink className="mb-6" viewTransition />
         <BrushBorder
           as="header"
