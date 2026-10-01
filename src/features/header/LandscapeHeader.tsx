@@ -4,7 +4,7 @@ import { LandscapeFrame } from "#/features/header/LandscapeFrame";
 import { LandscapeImages } from "#/features/header/LandscapeImages";
 import { ThemeToggleButton } from "#/features/theme/components/ThemeToggleButton";
 
-// 그라데이션 자체는 전환되지 않으므로, 시작·끝 지점을 @property로 등록한 변수(global.css)로 두고 그 값을 전환한다.
+// 그라데이션 자체는 전환되지 않으므로, 시작·끝 지점을 @property로 등록한 변수(styles.css)로 두고 그 값을 전환한다.
 // 페이지를 오갈 때 흰 그라데이션이 서서히 걷히거나 덮인다. 전환 시간은 바뀐 뒤 상태(variant)의 duration을 따른다.
 const landscapeRevealVariants = cva(
   "mask-[linear-gradient(to_bottom,black_var(--landscape-solid),transparent_var(--landscape-fade))] transition-[--landscape-solid,--landscape-fade] ease-out",
@@ -47,17 +47,13 @@ export function LandscapeHeader() {
           가려진 본문의 링크가 눌리지 않도록 클릭을 막는다 */}
       <div
         aria-hidden
-        data-slide-pin="landscape-band"
         className="mask-[linear-gradient(to_bottom,black_calc(100%-16px),transparent)] fixed inset-x-0 top-0 z-4 h-16 overflow-hidden bg-background lg:h-30"
       >
         <LandscapeFrame className={landscapeRevealVariants({ reveal })}>
           <LandscapeImages />
         </LandscapeFrame>
       </div>
-      <LandscapeFrame
-        data-slide-pin="theme-toggle"
-        className="pointer-events-none fixed inset-x-0 top-0 z-30"
-      >
+      <LandscapeFrame className="pointer-events-none fixed inset-x-0 top-0 z-30">
         {/* 이미지 속 해/달 중심 좌표 (라이트/다크 이미지 모두 71.5%, 20.83%) */}
         <ThemeToggleButton className="pointer-events-auto absolute top-[20.83%] left-[71.5%]" />
       </LandscapeFrame>

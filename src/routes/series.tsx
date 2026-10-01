@@ -15,9 +15,7 @@ function RouteComponent() {
   return (
     <PageContainer width="wide">
       <BrushBorder side="bottom" className="mb-10 flex flex-col gap-y-4 pb-5">
-        <h1 className="font-bold font-dokdo text-5xl text-ink-strong">
-          시리즈
-        </h1>
+        <h1 className="font-bold text-4xl text-ink-strong">시리즈</h1>
         <p className="text-ink">
           지금까지의 경험과 탐구의 과정들이 자연스럽게 이어질 수 있도록 구성한
           기록 모음입니다.
