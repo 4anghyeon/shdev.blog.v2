@@ -2,7 +2,7 @@ import { isEmpty } from "es-toolkit/compat";
 import { AnimatePresence, motion } from "motion/react";
 import type { ReactNode, Ref } from "react";
 import glass from "#/features/glass-effect/glass-effect.module.css";
-import { tickerTransition } from "#/features/gnb/gnb-animation";
+import { tickerTransition } from "#/features/gnb/helper/gnb-animation";
 import { useActiveNavigation } from "#/features/gnb/hooks/use-active-navigation";
 import { usePostStore } from "#/features/post-detail/post-store";
 import { Link, type LinkProps } from "#/shared/components/Link";

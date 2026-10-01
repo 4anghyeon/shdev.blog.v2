@@ -22,11 +22,6 @@ const landscapeRevealVariants = cva(
 
 /**
  * 화면 뒤에 고정되는 풍경 배경과 해/달 테마 버튼.
- *
- * - 배경: 본문 뒤에 고정되어, 본문이 그 위로 스크롤된다.
- * - 헤더 띠: 헤더 높이만큼 같은 풍경을 잘라 본문 위에 고정한다. 스크롤한 본문이 헤더 뒤로 가려진다.
- *   배경과 띠를 모두 fixed로 두어야 오버스크롤(당김) 때도 둘이 함께 움직여 어긋나지 않는다.
- * - 이미지가 고정되어 있으므로 해/달 버튼도 항상 같은 자리에 있다.
  */
 export function LandscapeHeader() {
   const isAbout = useLocation({ select: (loc) => loc.pathname === "/about" });
@@ -43,8 +38,6 @@ export function LandscapeHeader() {
       >
         <LandscapeImages />
       </LandscapeFrame>
-      {/* 높이는 Navbar와 같다 (모바일 64px / 데스크톱 120px). 아래 16px는 본문이 부드럽게 사라지도록 흐리게 둔다.
-          가려진 본문의 링크가 눌리지 않도록 클릭을 막는다 */}
       <div
         aria-hidden
         className="mask-[linear-gradient(to_bottom,black_calc(100%-16px),transparent)] fixed inset-x-0 top-0 z-4 h-16 overflow-hidden bg-background lg:h-30"

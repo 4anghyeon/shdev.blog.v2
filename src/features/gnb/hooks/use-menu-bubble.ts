@@ -2,12 +2,12 @@ import { isEmpty } from "es-toolkit/compat";
 import type { AnimationOptions, DOMKeyframesDefinition } from "motion";
 import { useAnimate, useReducedMotion } from "motion/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { NACRE_ACTIVE_SELECTOR } from "#/features/glass-effect/lib/nacre-scene";
+import { NACRE_ACTIVE_SELECTOR } from "#/features/glass-effect/helper/nacre-scene";
 import {
   bubblePositionTransition,
   bubbleTailTransition,
   TICKER_EXIT_DELAY_MS,
-} from "#/features/gnb/gnb-animation";
+} from "#/features/gnb/helper/gnb-animation";
 import { useActiveNavigation } from "#/features/gnb/hooks/use-active-navigation";
 import { usePostStore } from "#/features/post-detail/post-store";
 

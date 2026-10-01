@@ -1,7 +1,7 @@
 import {
   type BubbleRect,
   NacreRenderer,
-} from "#/features/glass-effect/lib/nacre-renderer";
+} from "#/features/glass-effect/helper/nacre-renderer";
 
 const FRAME_INTERVAL_MS = 1000 / 30;
 const MAX_FRAME_DELTA_MS = 100;

@@ -3,7 +3,7 @@ import glass from "#/features/glass-effect/glass-effect.module.css";
 import {
   createNacreScene,
   type NacreScene,
-} from "#/features/glass-effect/lib/nacre-scene";
+} from "#/features/glass-effect/helper/nacre-scene";
 import { useTheme } from "#/features/theme/provider/ThemeProvider";
 
 export function NacreLayer() {

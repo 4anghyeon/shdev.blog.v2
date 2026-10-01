@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import nacreFragmentShader from "#/features/glass-effect/lib/nacre.frag.glsl?raw";
-import nacreVertexShader from "#/features/glass-effect/lib/nacre.vert.glsl?raw";
+import nacreFragmentShader from "#/features/glass-effect/helper/nacre.frag.glsl?raw";
+import nacreVertexShader from "#/features/glass-effect/helper/nacre.vert.glsl?raw";
 
 const MAX_PIXEL_RATIO = 2;
 const BORDER_RADIUS_PX = 32;

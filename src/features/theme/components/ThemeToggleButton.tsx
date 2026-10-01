@@ -2,7 +2,6 @@ import { useTransition } from "react";
 import { useTheme } from "#/features/theme/provider/ThemeProvider";
 import { cn } from "#/shared/lib/tailwind";
 
-// 헤더 풍경 속 해(라이트)/달(다크) 위에 겹쳐 놓는 투명 버튼
 export function ThemeToggleButton({ className }: { className?: string }) {
   const { isDark, toggleTheme } = useTheme();
   const [isChanging, startThemeChange] = useTransition();

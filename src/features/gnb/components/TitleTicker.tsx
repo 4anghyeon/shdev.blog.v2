@@ -5,7 +5,7 @@ import {
   TICKER_MAX_WIDTH_PX,
   TICKER_SPEED_PX_PER_S,
   tickerTransition,
-} from "#/features/gnb/gnb-animation";
+} from "#/features/gnb/helper/gnb-animation";
 import { cn } from "#/shared/lib/tailwind";
 
 export function TitleTicker({ title }: { title: string }) {

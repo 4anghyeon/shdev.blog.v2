@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { TegakiRenderer } from "tegaki/react";
-import { ABOUT_BODY, ABOUT_GREETING } from "#/features/about/constant";
 import eastSeaDokdo from "#/features/about/fonts/east-sea-dokdo/bundle";
 import { Seal } from "#/shared/components/Seal";
 
@@ -13,12 +12,11 @@ const brushEffects = {
 export function AboutIntro() {
   const [isBodyDone, setIsBodyDone] = useState(false);
 
-  // 인사말과 본문은 같은 delay로 동시에 쓰기 시작한다
   return (
     <div className="flex flex-col gap-5 md:gap-6">
       <TegakiRenderer
         font={eastSeaDokdo}
-        text={ABOUT_GREETING}
+        text={"안녕하세요. 프론트엔드 개발자 이상현입니다."}
         time={{ mode: "uncontrolled", duration: 1.5, delay: WRITING_DELAY }}
         effects={brushEffects}
         quality={{ smoothing: true, clipText: 3 }}
@@ -27,7 +25,9 @@ export function AboutIntro() {
       <div className="flex items-end justify-between gap-6">
         <TegakiRenderer
           font={eastSeaDokdo}
-          text={ABOUT_BODY}
+          text={
+            "만들어가는 과정에서 배운 것들,\n쉬어가며 느낀 소소한 일상을 기록합니다."
+          }
           time={{
             mode: "uncontrolled",
             duration: 2.5,
