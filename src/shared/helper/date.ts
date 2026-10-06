@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
-import "dayjs/locale/ko";
+import ko from "dayjs/locale/ko";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
 dayjs.extend(localizedFormat); // 추가
-dayjs.locale("ko");
+dayjs.locale(ko);
 
 const DATE_FORMAT = {
   DEFAULT: "YYYY-MM-DD",
