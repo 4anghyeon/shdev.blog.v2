@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
+import { DEFAULT_LANG } from "#/shared/constant/lang";
 import { BlogMeta } from "#/shared/constant/metadata";
 
 export const Route = createFileRoute("/sitemap.xml")({
@@ -18,7 +19,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         ];
 
         const postUrls = allPosts.map((post) => ({
-          loc: `${baseUrl}/ko/post/${post.slug}`,
+          loc: `${baseUrl}/${DEFAULT_LANG}/post/${post.slug}`,
           lastmod: (post.updated ?? post.published).split("T")[0],
         }));
 

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
+import { DEFAULT_LANG } from "#/shared/constant/lang";
 import { BlogMeta } from "#/shared/constant/metadata";
 
 export const Route = createFileRoute("/rss.xml")({
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/rss.xml")({
 
         const items = sortedPosts
           .map((post) => {
-            const link = `${baseUrl}/ko/post/${post.slug}`;
+            const link = `${baseUrl}/${DEFAULT_LANG}/post/${post.slug}`;
             const pubDate = new Date(post.published).toUTCString();
             const description = post.description || post.excerpt || "";
 

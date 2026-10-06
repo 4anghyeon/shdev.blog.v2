@@ -11,6 +11,7 @@ import {
 } from "react-aria-components";
 import { usePagefind } from "#/features/search/hooks/use-pagefind";
 import { Link } from "#/shared/components/Link";
+import { DEFAULT_LANG } from "#/shared/constant/lang";
 
 interface PagefindResult {
   url: string;
@@ -89,7 +90,7 @@ export function SearchModal() {
 
     const searchRes = await pagefind.search(value, {
       filters: {
-        lang: "ko",
+        lang: DEFAULT_LANG,
       },
     });
 

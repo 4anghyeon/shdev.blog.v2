@@ -1,4 +1,5 @@
 import { Link } from "#/shared/components/Link";
+import { DEFAULT_LANG } from "#/shared/constant/lang";
 import { cn } from "#/shared/lib/tailwind";
 import type { BlogPost } from "#/shared/schema/blog-post";
 
@@ -22,7 +23,7 @@ export function SeriesPostList({
       {sortedPosts.map((post, index) => (
         <Link
           to="/$lang/post/$slug"
-          params={{ lang: "ko", slug: post.slug }}
+          params={{ lang: DEFAULT_LANG, slug: post.slug }}
           search={{
             from: "series",
           }}

@@ -1,6 +1,7 @@
 import { NavArrowLeft, NavArrowRight } from "iconoir-react";
 import { BrushDivider } from "#/shared/components/BrushDivider";
 import { Link } from "#/shared/components/Link";
+import { DEFAULT_LANG } from "#/shared/constant/lang";
 import { cn } from "#/shared/lib/tailwind";
 
 interface PostNavigationItem {
@@ -39,7 +40,7 @@ function PostNavigationLink({ direction, post }: PostNavigationLinkProps) {
   return (
     <Link
       to="/$lang/post/$slug"
-      params={{ lang: "ko", slug: post.slug }}
+      params={{ lang: DEFAULT_LANG, slug: post.slug }}
       viewTransition
       className={cn(
         "group flex flex-col gap-1 rounded-xs border border-line-subtle p-4 text-sm transition-colors hover:border-line hover:bg-paper lg:w-1/2",

@@ -2,6 +2,7 @@ import { BookStack } from "iconoir-react/regular";
 import { Badge } from "#/shared/components/Badge";
 import { Link } from "#/shared/components/Link";
 import { Tag } from "#/shared/components/Tag";
+import { DEFAULT_LANG } from "#/shared/constant/lang";
 import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
 import { dateHelper } from "#/shared/helper/date";
 import type { BlogPost } from "#/shared/schema/blog-post";
@@ -31,7 +32,7 @@ export function PostListItem({
     <li className="group scale-out">
       <Link
         to="/$lang/post/$slug"
-        params={{ lang: "ko", slug }}
+        params={{ lang: DEFAULT_LANG, slug }}
         viewTransition
         data-ink-blot={index % INK_BLOT_VARIANT_COUNT}
         className="before:mask-ink-blot relative isolate flex flex-col gap-y-2 px-3 py-5 transition-transform duration-100 ease-in-out before:absolute before:-inset-x-4 before:-inset-y-4 before:-z-1 before:scale-[0.97] before:bg-paper-hover before:opacity-0 before:transition-[opacity,scale] before:duration-300 before:ease-out focus-visible:outline-none focus-visible:before:scale-100 focus-visible:before:opacity-70 active:scale-[0.97] group-hover:before:scale-100 group-hover:before:opacity-70 lg:before:-inset-x-8"

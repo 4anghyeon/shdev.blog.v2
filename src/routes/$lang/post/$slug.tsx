@@ -19,26 +19,21 @@ import { TableOfContents } from "#/features/post-detail/components/TableOfConten
 import { usePostStore } from "#/features/post-detail/post-store";
 import { BrushBorder } from "#/shared/components/BrushBorder";
 import { Tag } from "#/shared/components/Tag";
+import { DEFAULT_LANG, isSupportedLang } from "#/shared/constant/lang";
 import { BlogMeta } from "#/shared/constant/metadata";
 import { dateHelper } from "#/shared/helper/date";
 
-const langSchema = z.enum(["ko"]);
-
 export const Route = createFileRoute("/$lang/post/$slug")({
-  params: {
-    parse: (params) => ({
-      lang: langSchema.parse(params.lang),
-      slug: z.string().parse(params.slug),
-    }),
-    stringify: (params) => params,
-  },
   validateSearch: z.object({
     from: z.string().optional(),
   }),
   beforeLoad: ({ params, location }) => {
-    if (params.lang !== "ko") {
+    if (!isSupportedLang(params.lang)) {
       throw redirect({
-        href: location.pathname.replace(`/${params.lang}/`, "/ko/"),
+        href: location.pathname.replace(
+          `/${params.lang}/`,
+          `/${DEFAULT_LANG}/`,
+        ),
         statusCode: 301,
       });
     }
@@ -79,12 +74,12 @@ export const Route = createFileRoute("/$lang/post/$slug")({
       next,
     };
   },
-  head: ({ loaderData }) => {
+  head: ({ params, loaderData }) => {
     if (!loaderData?.post) return {};
 
     const { post } = loaderData;
 
-    const canonicalUrl = `${BlogMeta.baseUrl}ko/post/${post.slug}`;
+    const canonicalUrl = `${BlogMeta.baseUrl}${params.lang}/post/${post.slug}`;
 
     const jsonLd = {
       "@context": "https://schema.org",
@@ -133,6 +128,7 @@ export const Route = createFileRoute("/$lang/post/$slug")({
 
 function BlogPost() {
   const { post, markup, slug, prev, next } = Route.useLoaderData();
+  const { lang } = Route.useParams();
   const setTitle = usePostStore((state) => state.setTitle);
 
   useEffect(() => {
@@ -156,7 +152,7 @@ function BlogPost() {
             className="scroll-m-20 font-bold text-3xl leading-tight tracking-tight lg:text-4xl"
             style={{ viewTransitionName: `post-title-${slug}` }}
             data-pagefind-filter="lang[data-lang]"
-            data-lang="ko"
+            data-lang={lang}
           >
             {post.title}
           </h1>
