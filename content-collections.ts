@@ -19,7 +19,9 @@ const posts = defineCollection({
     const headerImageMatch = content.match(/!\[([^\]]*)\]\(([^)]+)\)/);
     const headerImage = headerImageMatch ? headerImageMatch[2] : undefined;
     const slug = localeHelper.removeLocaleFromPath(post._meta.path);
-    const { markup, headings } = await renderMarkdown(frontMatter.body);
+    const { markup, headings, references } = await renderMarkdown(
+      frontMatter.body,
+    );
 
     return {
       ...post,
@@ -29,6 +31,7 @@ const posts = defineCollection({
       content: frontMatter.body,
       markup,
       headings,
+      references,
     };
   },
 });
