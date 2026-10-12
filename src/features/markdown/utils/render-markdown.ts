@@ -15,6 +15,10 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
+import {
+  type MarkdownReference,
+  rehypeReferences,
+} from "#/features/markdown/utils/rehype-references";
 
 export type MarkdownHeading = {
   id: string;
@@ -25,10 +29,12 @@ export type MarkdownHeading = {
 export type MarkdownResult = {
   markup: string;
   headings: Array<MarkdownHeading>;
+  references: Array<MarkdownReference>;
 };
 
 export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   const headings: Array<MarkdownHeading> = [];
+  const references: Array<MarkdownReference> = [];
 
   const result = await unified()
     .use(remarkParse) // Parse markdown
@@ -76,6 +82,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
         node.children = node.children.filter((n) => n !== lastChild);
       });
     })
+    .use(rehypeReferences, { references })
     .use(() => (tree) => {
       visit(tree, "element", (node: Element) => {
         if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(node.tagName)) {
@@ -97,5 +104,6 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   return {
     markup: String(result),
     headings,
+    references,
   };
 }

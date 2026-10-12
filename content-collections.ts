@@ -1,5 +1,6 @@
 import { defineCollection, defineConfig } from "@content-collections/core";
 import matter from "gray-matter";
+import { fetchOpenGraph } from "#/features/markdown/utils/open-graph";
 import { renderMarkdown } from "#/features/markdown/utils/render-markdown";
 import { localeHelper } from "#/shared/helper/locale";
 import { blogPostSchema } from "#/shared/schema/blog-post";
@@ -19,7 +20,27 @@ const posts = defineCollection({
     const headerImageMatch = content.match(/!\[([^\]]*)\]\(([^)]+)\)/);
     const headerImage = headerImageMatch ? headerImageMatch[2] : undefined;
     const slug = localeHelper.removeLocaleFromPath(post._meta.path);
-    const { markup, headings } = await renderMarkdown(frontMatter.body);
+    const {
+      markup,
+      headings,
+      references: extractedReferences,
+    } = await renderMarkdown(frontMatter.body);
+    const references = await Promise.all(
+      extractedReferences.map(async (reference) => {
+        if (!reference.url) return reference;
+        const openGraph = await fetchOpenGraph(reference.url);
+        return {
+          ...reference,
+          ...(openGraph
+            ? {
+                ogTitle: openGraph.title,
+                ogDescription: openGraph.description,
+                ogImage: openGraph.image,
+              }
+            : {}),
+        };
+      }),
+    );
 
     return {
       ...post,
@@ -29,6 +50,7 @@ const posts = defineCollection({
       content: frontMatter.body,
       markup,
       headings,
+      references,
     };
   },
 });

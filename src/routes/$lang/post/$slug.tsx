@@ -14,6 +14,7 @@ import { Description } from "#/features/post-detail/components/Description";
 import { GiscusComment } from "#/features/post-detail/components/GiscusComment";
 import { PostEndSeal } from "#/features/post-detail/components/PostEndSeal";
 import { PostNavigation } from "#/features/post-detail/components/PostNavigation";
+import { References } from "#/features/post-detail/components/References";
 import { SeriesListByPost } from "#/features/post-detail/components/SeriesListByPost";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents";
 import { usePostStore } from "#/features/post-detail/post-store";
@@ -179,6 +180,7 @@ function BlogPost() {
         </BrushBorder>
         <SeriesListByPost series={post.series} slug={post.slug} />
         <Markdown markup={markup} slug={slug} className="prose" />
+        <References items={post.references} />
         <PostEndSeal key={slug} />
         <PostNavigation prev={prev} next={next} />
         <AllListLink className="mt-8" />
