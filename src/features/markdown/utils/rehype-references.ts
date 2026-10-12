@@ -7,6 +7,9 @@ export type MarkdownReference = {
   title: string;
   url?: string;
   hostname?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
 };
 
 type RehypeReferencesOptions = {
