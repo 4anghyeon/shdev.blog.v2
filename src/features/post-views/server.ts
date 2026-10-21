@@ -8,11 +8,11 @@ const VIEWS_KEY = "views";
 const DEDUPE_TTL_SECONDS = 60 * 60 * 24;
 const VIEWS_CACHE_SECONDS = 60;
 
-function hashIp(ip: string) {
+const hashIp = (ip: string) => {
   return createHash("sha256")
     .update(`${ip}${process.env.VIEW_HASH_SALT ?? ""}`)
     .digest("hex");
-}
+};
 
 const slugInput = z.object({ slug: z.string().min(1) });
 
