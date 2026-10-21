@@ -35,7 +35,7 @@ export function PostListItem({
         params={{ lang: DEFAULT_LANG, slug }}
         viewTransition
         data-ink-blot={index % INK_BLOT_VARIANT_COUNT}
-        className="before:mask-ink-blot relative isolate flex flex-col gap-y-2 px-3 py-5 transition-transform duration-100 ease-in-out before:absolute before:-inset-x-4 before:-inset-y-4 before:-z-1 before:scale-[0.97] before:bg-paper-hover before:opacity-0 before:transition-[opacity,scale] before:duration-300 before:ease-out focus-visible:outline-none focus-visible:before:scale-100 focus-visible:before:opacity-70 active:scale-[0.97] group-hover:before:scale-100 group-hover:before:opacity-70 lg:before:-inset-x-8"
+        className="before:mask-ink-blot relative isolate flex flex-col gap-y-2 py-5 transition-transform duration-100 ease-in-out before:absolute before:-inset-x-4 before:-inset-y-4 before:-z-1 before:scale-[0.97] before:bg-paper-hover before:opacity-0 before:transition-[opacity,scale] before:duration-300 before:ease-out focus-visible:outline-none focus-visible:before:scale-100 focus-visible:before:opacity-70 active:scale-[0.97] group-hover:before:scale-100 group-hover:before:opacity-70 lg:before:-inset-x-8"
       >
         <h2
           className="font-semibold text-ink-strong text-lg leading-6"
