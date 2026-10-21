@@ -5,6 +5,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
+import { EditPencil } from "iconoir-react/regular";
 import { Suspense, useEffect } from "react";
 import { z } from "zod";
 import { PageContainer } from "#/composites/layout/PageContainer";
@@ -171,7 +172,8 @@ function BlogPost() {
             <div className="flex items-center gap-x-3">
               <ViewCount slug={slug} />
               <div className="flex items-center gap-x-1 text-ink-muted text-sm">
-                <span>마지막 수정일:</span>
+                <EditPencil aria-hidden className="size-4 shrink-0" />
+                <span className="sr-only">마지막 수정일</span>
                 <time dateTime={post.updated ? post.updated : post.published}>
                   {dateHelper.format(
                     post.updated ? post.updated : post.published,

@@ -32,7 +32,7 @@ const fetchViews = async (slug: string) => {
 };
 
 /**
- * 마운트 시 글의 조회수를 올리고 현재 조회수를 반환한다. 불러오기 전이거나 실패하면 `null`.
+ * 마운트 시 글의 조회수를 올리고 현재 조회수를 반환한다. 불러오기 전이면 `null`, 조회수가 없거나 실패하면 `0`.
  * 이 브라우저에서 24시간 안에 본 글이면 증가 요청 없이 조회만 한다.
  */
 export const usePostViews = (slug: string) => {
@@ -43,10 +43,10 @@ export const usePostViews = (slug: string) => {
     setViews(null);
 
     fetchViews(slug)
+      .catch(() => null)
       .then((count) => {
-        if (!ignore) setViews(count);
-      })
-      .catch(() => {});
+        if (!ignore) setViews(count ?? 0);
+      });
 
     return () => {
       ignore = true;
