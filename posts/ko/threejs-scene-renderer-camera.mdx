@@ -23,7 +23,7 @@ const scene = new THREE.Scene();
 
 Scene은 트리 구조로 이루어진 Scene Graph를 사용하여 객체들을 관리한다. 이는 부모-자식 관계를 통해 객체들을 체계적으로 구성할 수 있게 해준다.
 
-![Scene Graph](threejs-scene-renderer-camera/scene-graph.png)
+![Scene Graph](threejs-scene-renderer-camera/scene-graph.png "부모-자식 관계로 구성된 Scene Graph")
 
 여기서 각 노드는 각각의 지역 공간(local space)을 가리킨다. 또한, 자식 객체들은 부모 객체의 변환(위치, 크기, 회전)을 상속 받는다.
 
@@ -83,9 +83,9 @@ Camera는 3D 씬을 어떤 시점에서 볼 것인지 결정하는 요소이다.
 
 실제 사람의 눈이나 카메라처럼 원근감을 가지는 카메라이다. `PerspectiveCamera`는 4가지 속성을 바탕으로 [절두체](https://ko.wikipedia.org/wiki/%EC%A0%88%EB%91%90%EC%B2%B4)를 구성한다.
 
-![Perspective Camera Frustum](threejs-scene-renderer-camera/perspective-camera-frustum.png)
+![Perspective Camera Frustum](threejs-scene-renderer-camera/perspective-camera-frustum.png "PerspectiveCamera가 만드는 절두체")
 
-![Perspective Camera Parameters](threejs-scene-renderer-camera/perspective-camera-params.png)
+![Perspective Camera Parameters](threejs-scene-renderer-camera/perspective-camera-params.png "절두체를 구성하는 PerspectiveCamera의 속성")
 
 1. FOV (Field of View, 시야각)
     - 카메라가 보는 시야의 각도 (degree 단위)

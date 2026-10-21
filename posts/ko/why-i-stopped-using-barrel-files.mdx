@@ -7,7 +7,7 @@ tags: ['TypeScript', 'JavaScript', 'Refactoring']
 
 프로젝트에서 순환 참조(Circular Dependency) 에러를 만났다.
 
-![runtime-error.png](why-i-stopped-using-barrel-files/runtime-error.png)
+![runtime-error.png](why-i-stopped-using-barrel-files/runtime-error.png "순환 참조로 발생한 런타임 에러")
 
 원인을 추적하다 보니 **배럴 파일(barrel file)** 이 주범이었다. 배럴 파일은 `index.ts`에 여러 모듈을 하나로 묶어 export하는 파일을 의미한다.
 

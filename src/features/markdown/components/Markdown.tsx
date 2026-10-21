@@ -128,7 +128,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const isInternal = href?.startsWith("/") || href?.startsWith("#");
           return (
             <Link
-              className="box-decoration-clone bg-no-repeat pb-0.5 text-ink-strong underline decoration-seal/40 underline-offset-4 transition-[color,background-size,text-decoration-color] duration-300 [background-image:var(--seal-brush)] [background-position:left_bottom] [background-size:0%_0.45em] hover:text-seal hover:decoration-transparent hover:[background-size:100%_0.45em]"
+              className="pb-0.5 text-ink-strong underline decoration-seal/40 underline-offset-4 transition-[color,text-decoration-color] duration-300 hover:text-seal"
               to={href}
             >
               {domToReact(domNode.children as DOMNode[], options)}

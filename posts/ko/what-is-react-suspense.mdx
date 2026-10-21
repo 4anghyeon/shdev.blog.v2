@@ -90,7 +90,7 @@ function BlogPost() {
 </main>
 ```
 
-![ssr-initial-render-with-fallback.png](what-is-react-suspense/ssr-initial-render-with-fallback.png)
+![ssr-initial-render-with-fallback.png](what-is-react-suspense/ssr-initial-render-with-fallback.png "첫 SSR 응답, 댓글 영역은 fallback으로 표시")
 
 이후, 서버에서 댓글 컴포넌트를 위한 데이터가 준비되면 아래와 같은 과정을 거친다.
 
@@ -107,7 +107,7 @@ function BlogPost() {
 </script>
 ```
 
-![ssr-streaming-comments-loaded.png](what-is-react-suspense/ssr-streaming-comments-loaded.png)
+![ssr-streaming-comments-loaded.png](what-is-react-suspense/ssr-streaming-comments-loaded.png "데이터가 준비된 뒤 스트리밍으로 채워진 댓글")
 
 이 방식 덕분에 모든 데이터를 가져올 때까지 기다리지 않아도 화면에 콘텐츠를 표시할 수 있다.
 
@@ -132,16 +132,16 @@ function BlogPost() {
 }
 ```
 
-![lazy-hydration-partial.png](what-is-react-suspense/lazy-hydration-partial.png)
+![lazy-hydration-partial.png](what-is-react-suspense/lazy-hydration-partial.png "댓글을 제외한 영역부터 진행되는 하이드레이션")
 
 댓글 섹션을 제외한 나머지 JavaScript 로드가 끝난 부분부터 하이드레이션을 진행한다. 이후 댓글 컴포넌트의 JavaScript까지 전부 로드되면 댓글도 하이드레이션된다.
 
 
-![lazy-hydration-complete.png](what-is-react-suspense/lazy-hydration-complete.png)
+![lazy-hydration-complete.png](what-is-react-suspense/lazy-hydration-complete.png "댓글까지 하이드레이션 완료")
 
 지금 까지의 과정을 한번에 보면 다음과 같다.
 
-![suspense-process-overview.gif](what-is-react-suspense/suspense-process-overview.gif)
+![suspense-process-overview.gif](what-is-react-suspense/suspense-process-overview.gif "스트리밍부터 하이드레이션까지 전체 과정")
 ## Suspense를 발동 시는 조건
 
 모든 데이터 로딩이 Suspense를 유발하지는 않는다. React가 컴포넌트의 "지연 상태"를 인식할 수 있는 특정 패턴이 필요하다.

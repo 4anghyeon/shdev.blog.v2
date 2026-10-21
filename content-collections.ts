@@ -17,7 +17,7 @@ const posts = defineCollection({
   schema: blogPostSchema,
   transform: async ({ content, ...post }) => {
     const frontMatter = extractFrontMatter(content);
-    const headerImageMatch = content.match(/!\[([^\]]*)\]\(([^)]+)\)/);
+    const headerImageMatch = content.match(/!\[([^\]]*)\]\(([^)\s]+)/);
     const headerImage = headerImageMatch ? headerImageMatch[2] : undefined;
     const slug = localeHelper.removeLocaleFromPath(post._meta.path);
     const {

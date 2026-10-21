@@ -12,7 +12,7 @@ tags: ['Next.js']
 
 아래 예시 처럼 부모의 상태가 바뀌어도 서버 컴포넌트는 리렌더링 되지 않는다. 그렇다면 서버 컴포넌트는 언제 리렌더링 되는걸까?
 
-![server-component-rendering-strategies-example1](server-component-rendering-strategies/server-component-rendering-strategies-example1.webp)
+![server-component-rendering-strategies-example1](server-component-rendering-strategies/server-component-rendering-strategies-example1.webp "부모 상태가 바뀌어도 리렌더링되지 않는 서버 컴포넌트")
 
 ## 서버 컴포넌트 렌더링 전략
 
@@ -35,14 +35,14 @@ Static Rendering은 Next.js의 기본 렌더링 전략이다. 이 전략의 핵�
 
 1. 화면을 새로고침 했을때
 
-    ![server-component-rendering-strategies-example2](server-component-rendering-strategies/server-component-rendering-strategies-example2.webp)
+    ![server-component-rendering-strategies-example2](server-component-rendering-strategies/server-component-rendering-strategies-example2.webp "새로고침해도 바뀌지 않는 서버 컴포넌트 데이터")
 
     state를 바꾸고 reload해도 데이터가 바뀌지 않는 것을 확인할 수 있다.
 
 
 2. revalidate를 했을 때
 
-    ![server-component-rendering-strategies-example3](server-component-rendering-strategies/server-component-rendering-strategies-example3.webp)
+    ![server-component-rendering-strategies-example3](server-component-rendering-strategies/server-component-rendering-strategies-example3.webp "revalidateTag 실행 후 다시 렌더링되는 서버 컴포넌트")
 
     `revalidateTag`를 실행하면 서버 컴포넌트의 캐시가 무효화되고, 데이터를 다시 불러와 리렌더링하는 것을 확인할 수 있다.
 
@@ -140,7 +140,7 @@ export default Default;
 
 `searchParam`이 붙으면서 모달이 열릴 때, 기존 컴포넌트가 리렌더링 되는걸 볼 수 있다.
 
-![server-component-rendering-strategies-example4](server-component-rendering-strategies/server-component-rendering-strategies-example4.webp)
+![server-component-rendering-strategies-example4](server-component-rendering-strategies/server-component-rendering-strategies-example4.webp "모달이 열릴 때 함께 리렌더링되는 기존 컴포넌트")
 
 #### 해결 방법
 
