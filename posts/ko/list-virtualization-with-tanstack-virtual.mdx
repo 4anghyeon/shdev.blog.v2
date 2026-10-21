@@ -1,14 +1,14 @@
 ---
-title: 'Tanstack Virtual로 Grid 리스트 가상화하기'
-description: 'Grid 레이아웃에 Tanstack Virtual을 적용해 DOM을 최적화한 경험을 공유합니다'
+title: 'TanStack Virtual로 Grid 리스트 가상화하기'
+description: 'Grid 레이아웃에 TanStack Virtual을 적용해 DOM을 최적화한 경험을 공유합니다'
 published: '2024-10-02'
 updated: '2026-04-09'
 tags: ['JavaScript', 'React']
 ---
 
-## Tanstack Virtual 이란?
+## TanStack Virtual 이란?
 
-[Tanstack Virtual](https://tanstack.com/virtual/latest)은 대량의 스크롤 목록을 효율적으로 렌더링할 수 있는 가상화 라이브러리다.
+[TanStack Virtual](https://tanstack.com/virtual/latest)은 대량의 스크롤 목록을 효율적으로 렌더링할 수 있는 가상화 라이브러리다.
 
 ![tanstack-virtual-example1](list-virtualization-with-tanstack-virtual/tanstack-virtual-example1.webp)
 
@@ -16,7 +16,7 @@ tags: ['JavaScript', 'React']
 
 DOM에 렌더링 되는 요소가 많아질수록 어느 순간부터 성능이 급격하게 저하되므로 보여줘야 할 요소가 많을 경우 이러한 가상화 기법을 적용해볼 수 있다.
 
-Virtualize 라이브러리는 Tanstack Virtual 외에도 react-virtualized, react-window 등이 있다.
+Virtualize 라이브러리는 TanStack Virtual 외에도 react-virtualized, react-window 등이 있다.
 
 
 ## 직면한 문제
@@ -25,9 +25,9 @@ Virtualize 라이브러리는 Tanstack Virtual 외에도 react-virtualized, reac
 
 기존 프로젝트는 Grid 레이아웃을 사용하고 있었으며, 화면 크기(Viewport)에 따라 한 줄에 보여주는 카드의 개수가 달라지는 구조였다.
 
-Tanstack Virtual을 사용하게 되면 스크롤 div 안에 아이템들을 absolute로 적용하고, transform을 통해 위치를 조정하도록 되어있다.
+TanStack Virtual을 사용하게 되면 스크롤 div 안에 아이템들을 absolute로 적용하고, transform을 통해 위치를 조정하도록 되어있다.
 
-문제는 Tanstack Virtual의 기본 동작 방식이 **하나의 Row에 하나의 요소** 가 들어가는 것을 전제로 한다는 점이다. 단순히 기존 Grid 부모 요소에 Virtualizer를 입히는 것만으로는 다중 열(Column)로 구성된 Grid 레이아웃을 완벽하게 대응하기 어려웠다.
+문제는 TanStack Virtual의 기본 동작 방식이 **하나의 Row에 하나의 요소** 가 들어가는 것을 전제로 한다는 점이다. 단순히 기존 Grid 부모 요소에 Virtualizer를 입히는 것만으로는 다중 열(Column)로 구성된 Grid 레이아웃을 완벽하게 대응하기 어려웠다.
 
 ## 해결 방법
 

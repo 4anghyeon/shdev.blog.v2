@@ -262,18 +262,18 @@ function BlogPost() {
     function UserProfile({ userId }) {
       const [user, setUser] = useState(null);
       const [error, setError] = useState(null);
-    
+
       Promise.resolve(fetchUserData(userId))
         .then(setUser)
         .catch(setError);
-    
+
       if (error) return <Error error={error} />;
       if (!user) return <Loading />;
       return <h1>{user.name}</h1>;
     }
     ```
 
-### Tanstack Query를 사용할 경우
+### TanStack Query를 사용할 경우
 
 기존에 사용하던 `useQuery` 대신, 반드시 `Suspense` 전용 훅인 `useSuspenseQuery`를 사용해야 의도한 대로 동작한다.
 
