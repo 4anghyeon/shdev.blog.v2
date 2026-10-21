@@ -10,7 +10,7 @@ tags: ['JavaScript', 'React']
 
 [TanStack Virtual](https://tanstack.com/virtual/latest)은 대량의 스크롤 목록을 효율적으로 렌더링할 수 있는 가상화 라이브러리다.
 
-![tanstack-virtual-example1](list-virtualization-with-tanstack-virtual/tanstack-virtual-example1.webp)
+![tanstack-virtual-example1](list-virtualization-with-tanstack-virtual/tanstack-virtual-example1.webp "뷰포트에 보이는 요소만 DOM에 유지하는 가상화")
 
 가상화는 화면에 표시해야 할 요소가 아무리 많아도, 실제 DOM에는 현재 뷰포트(Viewport)에 보이는 일정 수의 요소만 유지하는 기법이다.
 
@@ -21,7 +21,7 @@ Virtualize 라이브러리는 TanStack Virtual 외에도 react-virtualized, reac
 
 ## 직면한 문제
 
-![Image.png](list-virtualization-with-tanstack-virtual/Image.png)
+![Image.png](list-virtualization-with-tanstack-virtual/Image.png "뷰포트 크기에 따라 한 줄의 카드 개수가 바뀌는 Grid 레이아웃")
 
 기존 프로젝트는 Grid 레이아웃을 사용하고 있었으며, 화면 크기(Viewport)에 따라 한 줄에 보여주는 카드의 개수가 달라지는 구조였다.
 
@@ -66,7 +66,7 @@ return (
 
 그림으로 살펴 보면 이런 느낌이다.
 
-![Image.png](list-virtualization-with-tanstack-virtual/Image%20(2).png)
+![Image.png](list-virtualization-with-tanstack-virtual/Image%20(2).png "한 row에 columnSize만큼 아이템을 담는 구조")
 
 핵심은 두 가지다. **한 row에 요소가 하나만 들어가도록 할 것, 그리고 그 안에 몇 개의 아이템을 담을지 `columnSize`로 제어할 것.**
 
@@ -121,7 +121,7 @@ useEffect(() => {
 
 결과로 아래처럼 특정 개수만 실제 DOM에 그려지도록 가상화할 수 있었다!
 
-![list-virtualization-with-tanstack-virtual-example2](list-virtualization-with-tanstack-virtual/tanstack-virtual-example2.webp)
+![list-virtualization-with-tanstack-virtual-example2](list-virtualization-with-tanstack-virtual/tanstack-virtual-example2.webp "일부 아이템만 실제 DOM에 렌더링되는 결과")
 
 
 ## 요약 및 결과

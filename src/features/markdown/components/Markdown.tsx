@@ -11,6 +11,7 @@ import { Blockquote } from "#/features/markdown/components/BlockQuote";
 import { CodeBlock } from "#/features/markdown/components/CodeBlock";
 import { ExampleComponents } from "#/features/markdown/components/custom-components";
 import { ZoomableImage } from "#/features/markdown/components/ZoomableImage";
+import { BrushBorder } from "#/shared/components/BrushBorder";
 import { BrushDivider } from "#/shared/components/BrushDivider";
 import { Link } from "#/shared/components/Link";
 import { cn } from "#/shared/lib/tailwind";
@@ -127,7 +128,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           const isInternal = href?.startsWith("/") || href?.startsWith("#");
           return (
             <Link
-              className="box-decoration-clone bg-no-repeat pb-0.5 text-ink-strong underline decoration-seal/40 underline-offset-4 transition-[color,background-size,text-decoration-color] duration-300 [background-image:var(--seal-brush)] [background-position:left_bottom] [background-size:0%_0.45em] hover:text-seal hover:decoration-transparent hover:[background-size:100%_0.45em]"
+              className="pb-0.5 text-ink-strong underline decoration-seal/40 underline-offset-4 transition-[color,text-decoration-color] duration-300 hover:text-seal"
               to={href}
             >
               {domToReact(domNode.children as DOMNode[], options)}
@@ -189,17 +190,27 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
         }
 
         if (domName === "img") {
-          const resolvedSrc = resolveImageSrc(domNode.attribs.src ?? "");
+          const { title, ...attribs } = domNode.attribs;
+          const resolvedSrc = resolveImageSrc(attribs.src ?? "");
           return (
-            <div className="hanji my-3 flex w-full items-center justify-center rounded-xs bg-paper p-2 lg:p-5">
-              <ZoomableImage
-                {...domNode.attribs}
-                loading="lazy"
-                className="max-h-100 rounded-xs bg-stone-50 shadow-lg shadow-stone-400/50 dark:bg-stone-100 dark:shadow-stone-950/50"
-                alt={domNode.attribs.alt}
-                src={resolvedSrc}
-              />
-            </div>
+            <figure className="my-3">
+              <div className="hanji flex w-full items-center justify-center rounded-xs bg-paper p-2 lg:p-5">
+                <ZoomableImage
+                  {...attribs}
+                  loading="lazy"
+                  className="max-h-100 rounded-xs bg-stone-50 shadow-lg shadow-stone-400/50 dark:bg-stone-100 dark:shadow-stone-950/50"
+                  alt={attribs.alt}
+                  src={resolvedSrc}
+                />
+              </div>
+              {title && (
+                <figcaption className="bg-linear-to-b from-paper to-transparent px-4 pt-1 pb-4 text-center text-ink-muted text-xs">
+                  <BrushBorder as="span" className="inline-block pb-0.5">
+                    {title}
+                  </BrushBorder>
+                </figcaption>
+              )}
+            </figure>
           );
         }
 

@@ -41,7 +41,7 @@ export const ProblemComponent = () => {
 
 위 코드에서 "증가" 버튼을 클릭할 때마다 `veryHeavyWork` 함수가 호출된다. 하지만 `expensiveState`는 이미 초기화되어 react-reconciler에 의해 memoized 되었기 때문에 이 함수의 반환값은 무시되고, 오직 성능 낭비만 발생한다.
 
-![console1.webp](react-lazy-initialization-complete-guide/console1.webp)
+![console1.webp](react-lazy-initialization-complete-guide/console1.webp "리렌더링마다 호출되는 veryHeavyWork")
 
 
 
@@ -68,7 +68,7 @@ export const OptimizedComponent = () => {
 };
 ```
 
-![console2.webp](react-lazy-initialization-complete-guide/console2.webp)
+![console2.webp](react-lazy-initialization-complete-guide/console2.webp "게으른 초기화 적용 후 최초 한 번만 호출되는 veryHeavyWork")
 
 
 

@@ -69,7 +69,7 @@ export const ClientComponent = () => {
 ```
 
 그럼 다음과 같은 경고문과 함께 에러 로그가 나타날 것이다.
-![error-log](server-component-in-client-component/img01.png)
+![error-log](server-component-in-client-component/img01.png "클라이언트 컴포넌트에서 서버 컴포넌트를 import했을 때의 에러")
 
 이처럼 클라이언트 컴포넌트와 서버 컴포넌트를 함께 사용할 때는 아래와 같은 중요한 규칙이 있다.
 
@@ -112,7 +112,7 @@ const App = () => {
 ### Deep Dive
 서버 컴포넌트는 기존의 서버 사이드 렌더링(SSR)과는 완전히 다른 방식으로 동작한다.
 SSR이 서버에서 완성된 HTML을 생성하는 것과 달리, 서버 컴포넌트는 리액트 서버 컴포넌트(RSC, React Server Components) 페이로드라고 하는 특별한 형태의 JSON-like 스트림을 생성한다.
-![img02.png](server-component-in-client-component/img02.png)
+![img02.png](server-component-in-client-component/img02.png "서버 컴포넌트가 전달하는 RSC 페이로드")
 
 RSC 페이로드에는 컴포넌트 트리 구조, 데이터, HTML 콘텐츠 등이 포함되어 있으며, 서버에서는 문자열, 숫자, 배열과 같은 기본적인 데이터 타입과 React 엘리먼트, Date 객체나 Map, Set 등과 같은 내장 객체들을 직렬화하여 이 페이로드에 포함시킨다.
 반면 함수, 클래스 인스턴스, 클로저, 이벤트 리스너와 같은 것들은 직렬화할 수 없다.

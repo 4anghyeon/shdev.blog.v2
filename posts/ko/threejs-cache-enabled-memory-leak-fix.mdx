@@ -15,7 +15,7 @@ Three.js를 이용해 3D 모델을 렌더링하는 기능을 개발 중, "모바
 
 Chrome DevTools의 Memory 탭에서 Heap snapshot을 여러 번 찍어가며 메모리 사용량 변화를 추적해봤다. 예상대로 3D 모델을 로드할 때마다 JSArrayBufferData가 해당 GLB 파일 크기만큼 계속 누적되고 있었다. 10MB짜리 모델을 5번 로드하면 50MB가 그대로 메모리에 남아있는 상황이었다.
 
-![jsarraybuffer-memory.png](threejs-cache-enabled-memory-leak-fix/jsarraybuffer-memory.png)
+![jsarraybuffer-memory.png](threejs-cache-enabled-memory-leak-fix/jsarraybuffer-memory.png "모델을 로드할 때마다 늘어나는 JSArrayBufferData")
 
 분명 `useEffect`의 cleanup 함수에서 dispose를 꼼꼼히 처리하는 로직을 구현해놨는데, 아무리 `geometry.dispose()`, `material.dispose()`, `texture.dispose()`를 다 호출하고, 심지어 명시적으로 `null` 할당까지 해도 메모리 사용량은 줄어들지 않았다.
 

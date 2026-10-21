@@ -8,14 +8,14 @@ tags: ['Git']
 
 `git cherry-pick`은 특정 커밋을 현재 branch로 가져오게 하는 명령어이다. 이름에서도 쉽게 알 수 있듯이 여러 커밋 중에서 특정 커밋(체리)만 따오는 행위라고 이해하면 쉽다.
 
-![cherry-pick 개념](git-cherry-pick/cherry-pick-concept.png)
+![cherry-pick 개념](git-cherry-pick/cherry-pick-concept.png "여러 커밋 중 필요한 커밋만 골라 가져오는 cherry-pick")
 
 
 ## 사용법
 
 모든 커밋은 고유한 식별자인 해시(hash) 값을 가진다. `git cherry-pick`은 이 해시 값을 사용해 특정 커밋을 현재 브랜치로 가져온다.
 
-![커밋 해시 설명](git-cherry-pick/commit-hash-overview.png)
+![커밋 해시 설명](git-cherry-pick/commit-hash-overview.png "커밋마다 붙는 고유한 해시 값")
 
 ### 단일 커밋 가져오기
 

@@ -45,7 +45,7 @@ export type DefaultColors = keyof typeof defaultColors;
 const color: DefaultColors = 'blue'; // 자동완성 가능
 ```
 
-![tailwind color type import](extract-tailwind-color-type/default-colors-autocomplete.png)
+![tailwind color type import](extract-tailwind-color-type/default-colors-autocomplete.png "DefaultColors 타입으로 얻은 색상 키 자동완성")
 
 다만 이 방법으로는 `blue`처럼 색상 키만 얻을 수 있고, `blue-500`처럼 명도까지 포함한 클래스명은 만들 수 없다.
 
@@ -62,7 +62,7 @@ import tailwindConfig from "web/tailwind.config.ts"; // tailwind 설정 파일
 const fullConfig = resolveConfig(tailwindConfig);
 ```
 
-![tailwind-full-config](extract-tailwind-color-type/resolve-config-result.png)
+![tailwind-full-config](extract-tailwind-color-type/resolve-config-result.png "resolveConfig로 얻은 전체 설정 값")
 
 ### ColorShade 타입 만들기
 
@@ -77,7 +77,7 @@ type ColorShade<T extends DefaultColors> = keyof ColorConfig[T] extends
   : never;
 ```
 
-![color-shade-type](extract-tailwind-color-type/color-shade-type.png)
+![color-shade-type](extract-tailwind-color-type/color-shade-type.png "ColorShade 타입으로 추출한 명도 키")
 
 ### 색상과 명도를 조합한 타입 만들기
 
@@ -91,7 +91,7 @@ type TailwindColorClass = {
 }[DefaultColors];
 ```
 
-![tailwind-color-class-type](extract-tailwind-color-type/tailwind-color-class-type.png)
+![tailwind-color-class-type](extract-tailwind-color-type/tailwind-color-class-type.png "색상과 명도를 조합한 클래스명 타입")
 
 ## IconProps에 색상 타입 적용하기
 
@@ -103,7 +103,7 @@ interface IconProps {
 }
 ```
 
-![icon-props-type](extract-tailwind-color-type/icon-props-type.png)
+![icon-props-type](extract-tailwind-color-type/icon-props-type.png "IconProps에 적용된 색상 클래스 타입")
 
 ## 커스텀 색상 적용하기
 
