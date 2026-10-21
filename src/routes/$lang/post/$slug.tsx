@@ -18,6 +18,7 @@ import { References } from "#/features/post-detail/components/References";
 import { SeriesListByPost } from "#/features/post-detail/components/SeriesListByPost";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents";
 import { usePostStore } from "#/features/post-detail/post-store";
+import { ViewCount } from "#/features/post-views/components/ViewCount";
 import { BrushBorder } from "#/shared/components/BrushBorder";
 import { Tag } from "#/shared/components/Tag";
 import { DEFAULT_LANG, isSupportedLang } from "#/shared/constant/lang";
@@ -167,14 +168,17 @@ function BlogPost() {
                 <Tag key={tag}>{tag}</Tag>
               ))}
             </div>
-            <div className="flex items-center gap-x-1 text-ink-muted text-sm">
-              <span>마지막 수정일:</span>
-              <time dateTime={post.updated ? post.updated : post.published}>
-                {dateHelper.format(
-                  post.updated ? post.updated : post.published,
-                  "LOCAL",
-                )}
-              </time>
+            <div className="flex items-center gap-x-3">
+              <ViewCount slug={slug} />
+              <div className="flex items-center gap-x-1 text-ink-muted text-sm">
+                <span>마지막 수정일:</span>
+                <time dateTime={post.updated ? post.updated : post.published}>
+                  {dateHelper.format(
+                    post.updated ? post.updated : post.published,
+                    "LOCAL",
+                  )}
+                </time>
+              </div>
             </div>
           </div>
         </BrushBorder>
