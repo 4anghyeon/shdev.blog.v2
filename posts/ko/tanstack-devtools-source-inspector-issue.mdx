@@ -1,0 +1,143 @@
+---
+title: 'TanStack Devtools 소스 인스펙터가 컴포넌트를 정확히 가리키게 만들기'
+description: 'TanStack Devtools 소스 인스펙터에서 공통 컴포넌트로 만든 컴포넌트가 잡히지 않는 원인을 살펴보고, props를 DOM에 넘겨 해결한 방법'
+published: '2026-10-26'
+tags: ['TanStack']
+---
+
+TanStack Devtools의 소스 인스펙터(Source Inspector)를 쓰면 화면에서 요소를 클릭해 그 요소를 그린 코드로 바로 이동할 수 있다. 프로젝트를 진행하면서 새로 만든 공통 컴포넌트의 위치를 인스펙터로 확인하려 했는데, 정작 그 컴포넌트는 잡히지 않고 내부의 공통 컴포넌트만 계속 노출되는 문제가 발생했다.
+
+## 문제 상황
+
+상품 요약 카드(`ProductSummary.tsx`)는 공통 컴포넌트인 `InfoCard`를 조합해 만든 컴포넌트다.
+
+```typescript
+// ProductSummary.tsx
+function ProductSummary({ product }) {
+  return <InfoCard title={product.name} description={product.description} />;
+}
+
+// InfoCard.tsx (공통 컴포넌트)
+function InfoCard({ title, description }) {
+  return (
+    <div>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+```
+
+이때 인스펙터를 켜면 `ProductSummary.tsx`가 잡히고, 클릭했을 때 해당 파일이 열릴 것이라 기대했다. 하지만 헤더, 섹션, 필드 어디에 마우스를 올려도 `InfoCard.tsx`만 잡힐 뿐, `ProductSummary.tsx`는 전혀 잡히지 않았다.
+
+
+
+![inspector-before-props-spread](tanstack-devtools-source-inspector-issue/inspector-before-props-spread.webp "ProductSummary가 아닌 공통 컴포넌트 InfoCard.tsx가 잡히는 모습")
+
+## 원인 추적
+
+인스펙터에 표시되는 경로는 TanStack Devtools가 각 요소에 주입하는 `data-tsd-source` 속성 값이다. 이 값이 도대체 어디서 어떤 기준으로 붙는지 소스 코드를 통해 확인해 보았다.
+
+### TanStack Devtools 소스 분석
+
+[TanStack Devtools](https://github.com/TanStack/devtools) 소스를 분석한 결과, `@tanstack/devtools-vite` 플러그인은 개발 모드에서 JSX 태그마다 `data-tsd-source="파일:줄:열"` 속성을 붙인다.
+
+개발 모드에서만 동작하게 하는 부분은 [plugin.ts 56\~72줄](https://github.com/TanStack/devtools/blob/06006350d61a3d7bc02a38ce231c9811330b841d/packages/devtools-vite/src/plugin.ts#L56-L72), 속성을 붙이는 부분은 [inject-source.ts 139\~148줄](https://github.com/TanStack/devtools/blob/06006350d61a3d7bc02a38ce231c9811330b841d/packages/devtools-bundler-core/src/inject-source.ts#L139-L148)에 있다.
+
+
+
+플러그인을 거친 뒤의 코드를 보면 위치 정보가 어떻게 붙는지 쉽게 이해할 수 있다. 먼저 `ProductSummary.tsx`는 다음과 같이 변환된다.
+
+```typescript
+// ProductSummary.tsx (변환 후)
+<InfoCard
+  title={product.name}
+  description={product.description}
+  data-tsd-source="ProductSummary.tsx:3:10"
+/>
+```
+
+여기서 `data-tsd-source`도 결국 `title`, `description`과 다를 바 없는 하나의 `prop`일 뿐이다. React에서 컴포넌트에 넘긴 prop은 그 컴포넌트 내부에서 DOM 요소로 직접 내려주어야만 화면에 반영된다. 우리가 컴포넌트에 `className`을 넘겨도 내부에서 `className={className}`으로 받아 쓰지 않으면 스타일이 적용되지 않는 것과 같은 이치다.
+
+`InfoCard.tsx`는 `{ title, description }`만 꺼내 쓰기 때문에, `ProductSummary.tsx`가 전달한 위치 정보는 여기서 버려진다.
+
+그렇다고 화면에 위치 정보가 아예 없는 건 아니다. 플러그인은 `InfoCard.tsx`도 똑같이 변환하기 때문에, 이 파일에서 작성한 div, h3, p에도 각자 위치가 붙는다. 그리고 화면에 실제로 그려지는 요소가 바로 이 div, h3, p다. 그래서 카드 위에 마우스를 올리면 인스펙터에는 `InfoCard.tsx`가 표시된다.
+
+```typescript
+// InfoCard.tsx (변환 후)
+function InfoCard({ title, description }) {
+  return (
+    <div data-tsd-source="InfoCard.tsx:3:5">
+      <h3 data-tsd-source="InfoCard.tsx:4:7">{title}</h3>
+      <p data-tsd-source="InfoCard.tsx:5:7">{description}</p>
+    </div>
+  );
+}
+
+
+```
+
+
+
+정리하자면, 화면에 실제로 그려지는 `div`, `h3`, `p`에는 이미 `InfoCard.tsx`의 위치가 박혀 있다. `ProductSummary.tsx`의 위치는 `InfoCard`까지 전달되지만 내부에서 사용되지 않고 버려지기 때문에, 인스펙터에는 항상 `InfoCard.tsx`만 표시되었던 것이다.
+
+## 해결 방법
+
+### props 스프레드 예외 규칙 활용하기
+
+`ProductSummary.tsx` 의 위치가 인스펙터에 잡히려면, 이 값이 버려지지 않고 DOM까지 내려가야 했다.
+
+그 방법을 찾으려고 플러그인 소스를 다시 살펴보니, 위치를 붙이지 않는 예외가 하나 있었다. 컴포넌트가 자기 `props`를 `{...props}` 형태로 그대로 넘기는 태그에는 위치 정보를 강제로 붙이지 않는다는 점이었다.
+
+```typescript
+// @tanstack/devtools-bundler-core (0.1.1) inject-source.js 일부
+if (
+  node.attributes.some(
+    (a) =>
+      a.type === 'JSXSpreadAttribute' &&
+      a.argument.type === 'Identifier' &&
+      a.argument.name === propsName,
+  )
+)
+  return false;
+```
+
+즉, 공통 컴포넌트에서 나머지 `props`를 바깥 DOM에 그대로 넘겨주면, 상위 컴포넌트(호출한 쪽)에서 주입한 위치 정보가 그 DOM까지 자연스럽게 도달하게 된다. 우리가 평소에 `shadcn/ui` 같은 라이브러리의 컴포넌트(`Button`, `Card` 등)를 클릭했을 때 내부 구현체가 아니라 이를 호출한 파일이 잘 열렸던 것도 다 이런 이유 때문이었다.
+
+이제 앞서 만든 `InfoCard`를 다음과 같이 수정해 보자.
+
+```typescript
+// 변경 전
+function InfoCard({ title, description }: InfoCardProps) {
+  return (
+    <div>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+
+// 변경 후
+function InfoCard({
+  title,
+  description,
+  ...props
+}: InfoCardProps & React.ComponentProps<'div'>) {
+  return (
+    <div {...props}>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+```
+
+![inspector-after-props-spread](tanstack-devtools-source-inspector-issue/inspector-after-props-spread.webp "props를 스프레드한 뒤 호출부인 ProductSummary.tsx가 잡히는 모습")
+
+
+
+## 요약
+
+- 플러그인은 기본적으로 JSX가 작성된 위치를 기준으로 소스 경로를 주입한다. 하지만 컴포넌트에 전달된 위치 정보는 그 컴포넌트가 DOM으로 넘겨주지 않으면 그대로 버려진다.
+- 공통 컴포넌트에서 나머지 `props`를 `{...props}` 형태로 최상위 DOM에 스프레드해주면, 인스펙터가 최하단 DOM 요소에서도 부모 컴포넌트(호출부)의 위치를 정확하게 찾아낼 수 있다.
+
