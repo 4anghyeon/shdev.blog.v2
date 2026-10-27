@@ -1,0 +1,66 @@
+---
+title: 'Claude Code에 메타몽 넣기 (with Mods)'
+description: 'Claude Code Mods가 뭔지 가볍게 살펴보고, 터미널에 메타몽을 넣어보자'
+published: '2026-10-27'
+tags: ['Claude']
+---
+
+얼마 전 Claude Code에 [Mods](https://code.claude.com/docs/en/plugins/mods/overview)라는 기능이 추가된 걸 봤다. 이게 뭔지, 무엇을 할 수 있는지 한번 살펴봤다.
+
+## Claude Code Mods
+
+Mods는 2026년 10월에 공개된 기능인데, 한마디로 Claude Code의 동작과 화면을 바꿀 수 있는 작은 TypeScript 함수다. 터미널 CLI(Command Line Interface)든 데스크톱 앱이든 상관없이 동작한다.
+
+Claude Code는 도구를 호출하거나 권한을 묻거나 화면을 그릴 때마다 이벤트를 발생시킨다. Mods는 이 이벤트를 가로채서 다음과 같은 일을 할 수 있다.
+
+- 프롬프트 고쳐 쓰기
+- 새로운 UI 그리기
+- 기본 기능을 내 버전으로 바꾸기
+물론 기존에도 hooks로 Claude Code의 동작에 반응할 수는 있었다. 하지만 화면에 새로운 UI를 그리는 건 불가능했는데, Mods로는 그게 된다. 게다가 플러그인 안에 담겨 배포되니까, 설치하고 공유하는 방법도 일반 플러그인이랑 똑같다.
+
+공개된 지 이제 한 달 정도밖에 안 됐는데, 벌써 많은 사람이 자기만의 Mods를 만들어 공유하고 있다.
+
+- [hamzafer/claude-code-mods](https://github.com/hamzafer/claude-code-mods)
+- [claudemods.dev](https://claudemods.dev/ko/)
+
+
+> [!WARNING]
+> 직접 만들어 쓰거나 다른 사람의 Mods를 설치할 때 이건 꼭 알아둬야 한다. Mods는 샌드박스 없이 Claude Code와 같은 권한으로 내 컴퓨터에서 실행된다. 그러니 믿을 만한 곳에서 받았는지, 코드가 무슨 일을 하는지 한 번쯤은 확인해 보는 게 좋다.
+
+
+## 터미널에 메타몽 넣기
+
+여기 있는 프로젝트들을 구경하다 보니, 처음엔 단순한 UI 변형부터 시작하는 게 제일 쉬워 보였다. 그래서 심심했던 Claude Code 터미널에, 실제로 내 책상 위에 올려져 있는 메타몽을 넣어보기로 했다. (사실 생긴 게 단순해서 그리기 쉬워 보이기도 했고..)
+
+![내 책상 위의 메타몽](./images/ditto-figure.jpg)
+
+기능은 전부 Claude Code와 함께 만들었는데, 기능 자체를 만드는 건 전혀 어렵지 않았다. Opus 5.5 짱짱맨...
+
+문제는 메타몽의 스프라이트(sprite) 애니메이션 이미지. 원본 이미지를 그대로 재현하기도 어려운데 터미널에서는 그림이 더 찌그러져 보이니까, 여기서 시간을 제일 많이 썼다..
+
+그렇게 프롬프트를 고치고 또 고친 끝에, 드디어 내 Claude Code 터미널에 못생긴 메타몽이 뜨게 됐다!
+
+![터미널에 뜬 메타몽](/images/posts/claude-code-mods-ditto/claude-with-ditto.webp "Claude Code 터미널에 자리 잡은 메타몽")
+
+## 메타몽이 하는 일
+
+메타몽은 프롬프트 바로 위에 자리 잡고, Claude Code의 작업 상태를 표정으로 알려준다.
+
+| 상태         | 모습                                                                                             | 언제                                                   |
+|--------------|--------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+| 대기 중      | ![대기 중](https://github.com/4anghyeon/claude-with-ditto/raw/main/docs/images/idle.gif)         | 세션을 시작했을 때                                     |
+| 생각 중      | ![생각 중](https://github.com/4anghyeon/claude-with-ditto/raw/main/docs/images/thinking.gif)     | 프롬프트를 보내거나 파일을 읽을 때, 테스트를 실행할 때 |
+| 함께 작업 중 | ![함께 작업 중](https://github.com/4anghyeon/claude-with-ditto/raw/main/docs/images/working.gif) | 파일을 수정하거나 명령을 실행할 때                     |
+| 오류 발견    | ![오류 발견](https://github.com/4anghyeon/claude-with-ditto/raw/main/docs/images/error.gif)      | 답변에 오류나 실패가 있을 때                           |
+| 작업 완료    | ![작업 완료](https://github.com/4anghyeon/claude-with-ditto/raw/main/docs/images/done.gif)       | Claude가 답을 마쳤을 때                                |
+
+
+메타몽만 넣으면 너무 심심할 것 같아서, 평소에 가장 자주 확인하는 정보들도 옆에 같이 띄웠다. 상태별 한마디가 5초마다 바뀌면서 뜨고, 컨텍스트 사용량, 사용량 한도와 세션 비용, 지금 쓰는 모델까지 한눈에 볼 수 있다.
+
+코드는 [GitHub](https://github.com/4anghyeon/claude-with-ditto)에 올려 뒀다!
+
+
+
+## 마무리
+
+별 기능은 아니지만, 귀여운 캐릭터가 터미널 아래에 자리 잡고 있으니 딱딱했던 터미널이 한결 산뜻해졌다. 다른 사람들이 올려둔 Mods를 보면 훨씬 획기적이고 다양한 기능도 만들 수 있을 것 같으니, 앞으로 조금씩 더 발전시켜 봐야겠다.
