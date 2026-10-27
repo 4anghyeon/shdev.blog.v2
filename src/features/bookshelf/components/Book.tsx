@@ -12,6 +12,8 @@ const HOVER_OFFSET = 1.4;
 const PULL_LIFT = 0.4;
 const PULL_CLEARANCE = 3;
 const SMOOTH_TIME = 0.22;
+/** 꽂히는 책은 다음 책이 뽑혀 나오는 동안 길을 비워 줘야 해서 꺼낼 때보다 빠르게 움직인다 */
+const RETURN_SMOOTH_TIME = 0.09;
 
 const ALIGN_DISTANCE = 0.6;
 const ALIGN_ANGLE = 0.02;
@@ -83,6 +85,8 @@ export function Book({
       focusTime.current = 0;
     }
 
+    let smoothTime = SMOOTH_TIME;
+
     if (phase.current === "focused") {
       focusTime.current += delta;
       const scale = getFocusPose(
@@ -109,6 +113,7 @@ export function Book({
         group.quaternion.angleTo(RESTING) < ALIGN_ANGLE &&
         Math.abs(group.scale.x - 1) < ALIGN_SCALE;
       // 칸 앞에서 위치와 자세를 모두 바로잡은 뒤에 밀어 넣어야 옆 책이나 선반을 뚫지 않는다
+      if (isOutOfSlot) smoothTime = RETURN_SMOOTH_TIME;
       if (isOutOfSlot && !isAlignedWithSlot) {
         targetPosition.copy(pulledPosition);
       } else {
@@ -119,9 +124,9 @@ export function Book({
       targetScale.setScalar(1);
     }
 
-    easing.damp3(group.scale, targetScale, SMOOTH_TIME, delta);
-    easing.damp3(group.position, targetPosition, SMOOTH_TIME, delta);
-    easing.dampQ(group.quaternion, targetQuaternion, SMOOTH_TIME, delta);
+    easing.damp3(group.scale, targetScale, smoothTime, delta);
+    easing.damp3(group.position, targetPosition, smoothTime, delta);
+    easing.dampQ(group.quaternion, targetQuaternion, smoothTime, delta);
   });
 
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
