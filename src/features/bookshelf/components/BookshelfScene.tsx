@@ -35,11 +35,8 @@ import type { BookItem } from "#/shared/constant/book-items";
 
 const CAMERA_FOV = 32;
 const CAMERA_TILT = 1.5;
-const PARALLAX = 2.5;
 const SCROLL_DAMPING = 0.15;
 
-const parallax = new Vector3();
-const parallaxTarget = new Vector3();
 const lookTarget = new Vector3();
 
 interface ViewportSize {
@@ -103,12 +100,12 @@ interface CameraRigProps extends Pick<ScrollRefs, "scrollRef"> {
 }
 
 /**
- * 스크롤 위치에 맞춰 시선 높이를 옮기고, 포인터를 따라 살짝 시점을 움직인다.
+ * 스크롤 위치에 맞춰 시선 높이를 옮긴다.
  */
 function CameraRig({ pose, scrollRef }: CameraRigProps) {
   const scrollProgress = useRef(0);
 
-  useFrame(({ camera, pointer }, delta) => {
+  useFrame(({ camera }, delta) => {
     easing.damp(
       scrollProgress,
       "current",
@@ -117,9 +114,7 @@ function CameraRig({ pose, scrollRef }: CameraRigProps) {
       delta,
     );
     const y = MathUtils.lerp(pose.startY, pose.endY, scrollProgress.current);
-    parallaxTarget.set(pointer.x * PARALLAX, pointer.y * PARALLAX, 0);
-    easing.damp3(parallax, parallaxTarget, 0.4, delta);
-    camera.position.set(parallax.x, y + CAMERA_TILT + parallax.y, pose.z);
+    camera.position.set(0, y + CAMERA_TILT, pose.z);
     camera.lookAt(lookTarget.set(0, y, 0));
   });
 
