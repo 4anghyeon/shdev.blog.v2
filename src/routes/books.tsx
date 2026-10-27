@@ -2,7 +2,9 @@ import { ClientOnly, createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence } from "motion/react";
 import { lazy, Suspense, useEffect } from "react";
 import { z } from "zod";
+import { PageContainer } from "#/composites/layout/PageContainer";
 import { BookDetailPanel } from "#/features/bookshelf/components/BookDetailPanel";
+import { BrushBorder } from "#/shared/components/BrushBorder";
 import { BOOK_ITEMS } from "#/shared/constant/book-items";
 
 const BookshelfScene = lazy(() =>
@@ -36,13 +38,17 @@ function RouteComponent() {
   }, [selectedId, navigate]);
 
   return (
-    <main className="relative h-[calc(100svh-4rem)] w-full lg:h-[calc(100svh-7.5rem)]">
-      <div className="pointer-events-none absolute top-2 left-5 z-10 lg:left-20">
-        <h1 className="font-bold text-2xl text-ink-strong">읽은 책</h1>
-        <p className="mt-1 text-ink-muted text-sm">
-          {BOOK_ITEMS.length}권 · 책을 눌러 꺼내 보세요
+    <PageContainer
+      width="wide"
+      className="flex min-h-[calc(100svh-4rem)] flex-col lg:min-h-[calc(100svh-7.5rem)]"
+    >
+      <BrushBorder side="bottom" className="mb-10 flex flex-col gap-y-4 pb-5">
+        <h1 className="font-bold text-4xl text-ink-strong">읽은 책</h1>
+        <p className="text-ink">
+          지금까지 읽은 책들을 꽂아 둔 책장입니다. 책을 눌러 한 권씩 꺼내 볼 수
+          있습니다.
         </p>
-      </div>
+      </BrushBorder>
       <ul className="sr-only">
         {BOOK_ITEMS.map((book) => (
           <li key={book.id}>
@@ -52,25 +58,29 @@ function RouteComponent() {
           </li>
         ))}
       </ul>
-      <ClientOnly>
-        <Suspense>
-          <BookshelfScene
-            books={BOOK_ITEMS}
-            selectedId={selectedBook?.id}
-            onSelect={selectBook}
-            onDeselect={closeBook}
-          />
-        </Suspense>
-      </ClientOnly>
-      <AnimatePresence>
-        {selectedBook && (
-          <BookDetailPanel
-            key={selectedBook.id}
-            book={selectedBook}
-            onClose={closeBook}
-          />
-        )}
-      </AnimatePresence>
-    </main>
+      <div className="relative min-h-80 flex-1">
+        <div className="absolute inset-0">
+          <ClientOnly>
+            <Suspense>
+              <BookshelfScene
+                books={BOOK_ITEMS}
+                selectedId={selectedBook?.id}
+                onSelect={selectBook}
+                onDeselect={closeBook}
+              />
+            </Suspense>
+          </ClientOnly>
+        </div>
+        <AnimatePresence>
+          {selectedBook && (
+            <BookDetailPanel
+              key={selectedBook.id}
+              book={selectedBook}
+              onClose={closeBook}
+            />
+          )}
+        </AnimatePresence>
+      </div>
+    </PageContainer>
   );
 }

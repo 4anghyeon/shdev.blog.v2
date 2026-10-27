@@ -16,7 +16,7 @@ export function BookDetailPanel({ book, onClose }: BookDetailPanelProps) {
   ];
 
   return (
-    <div className="pointer-events-none absolute inset-0 flex items-end p-4 pb-24 md:items-center md:justify-end md:p-6">
+    <div className="pointer-events-none absolute inset-0 flex items-end p-4 pb-16 md:items-center md:justify-end md:p-6">
       <motion.aside
         aria-label={`${book.title} 정보`}
         initial={{ opacity: 0, y: 16 }}

@@ -36,7 +36,7 @@ const computeCameraPose = (layout: ShelfLayout, size: ViewportSize) => {
     ) * FIT_MARGIN;
   const viewHeight = 2 * tan * (distance + SHELF_DEPTH / 2);
   const shelfPixels = (layout.height / (2 * tan * distance)) * size.height;
-  // 폭에 맞춰진 경우 세로로 남는 공간이 생기므로 영역 중앙 대신 제목 바로 아래에 붙인다
+  // 폭에 맞춰진 경우 세로로 남는 공간이 생기므로 영역 중앙 대신 위쪽에 붙인다
   const anchorY = Math.min(area.centerY, area.top + shelfPixels / 2);
   // 책장을 화면 중앙보다 아래에 그리려면 시선을 그만큼 위로 올린다
   const centerY = (anchorY / size.height - 0.5) * viewHeight;
@@ -55,7 +55,7 @@ interface CameraRigProps {
 }
 
 /**
- * 제목과 하단 내비게이션을 뺀 영역에 책장 전체가 들어오도록 거리와 높이를 맞추고,
+ * 하단 내비게이션을 뺀 영역에 책장 전체가 들어오도록 거리와 높이를 맞추고,
  * 포인터를 따라 살짝 시점을 움직인다.
  */
 function CameraRig({ layout }: CameraRigProps) {
