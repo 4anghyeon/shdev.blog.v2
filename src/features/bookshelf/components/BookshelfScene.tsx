@@ -1,11 +1,22 @@
-import { ContactShadows, Environment, Lightformer } from "@react-three/drei";
+import {
+  ContactShadows,
+  Environment,
+  Lightformer,
+  PerformanceMonitor,
+} from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";
-import { Suspense, use } from "react";
+import { Suspense, use, useState } from "react";
 import { AgXToneMapping, MathUtils, Vector3 } from "three";
 import { Book } from "#/features/bookshelf/components/Book";
 import { Shelf } from "#/features/bookshelf/components/Shelf";
 import { loadBookFonts } from "#/features/bookshelf/helper/book-artwork";
+import {
+  detectInitialQualityTier,
+  MIN_ACCEPTABLE_FPS,
+  QUALITY_SETTINGS,
+  type QualitySettings,
+} from "#/features/bookshelf/helper/quality";
 import { getShelfArea } from "#/features/bookshelf/helper/screen-area";
 import {
   computeShelfLayout,
@@ -76,15 +87,21 @@ function CameraRig({ layout }: CameraRigProps) {
   return null;
 }
 
-function StudioLights() {
+interface QualityProps {
+  quality: QualitySettings;
+}
+
+function StudioLights({ quality }: QualityProps) {
   return (
     <>
       <ambientLight intensity={0.35} />
+      {/* 그림자 맵은 크기가 바뀌어도 다시 만들어지지 않아서 key로 조명을 새로 만든다 */}
       <directionalLight
+        key={quality.shadowMapSize}
         castShadow
         position={[35, 60, 90]}
         intensity={2.4}
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[quality.shadowMapSize, quality.shadowMapSize]}
         shadow-bias={-0.0002}
         shadow-normalBias={0.05}
       >
@@ -93,7 +110,11 @@ function StudioLights() {
           args={[-90, 90, 90, -90, 1, 300]}
         />
       </directionalLight>
-      <Environment resolution={256} frames={1}>
+      <Environment
+        key={quality.environmentResolution}
+        resolution={quality.environmentResolution}
+        frames={1}
+      >
         <Lightformer
           form="rect"
           intensity={3}
@@ -120,13 +141,20 @@ function StudioLights() {
   );
 }
 
-interface ShelfContentsProps {
+interface BookshelfProps {
   books: readonly BookItem[];
   selectedId: string | undefined;
   onSelect: (id: string) => void;
 }
 
-function ShelfContents({ books, selectedId, onSelect }: ShelfContentsProps) {
+interface ShelfContentsProps extends BookshelfProps, QualityProps {}
+
+function ShelfContents({
+  books,
+  selectedId,
+  onSelect,
+  quality,
+}: ShelfContentsProps) {
   use(loadBookFonts());
   const size = useThree((state) => state.size);
   const area = getShelfArea(size);
@@ -153,36 +181,52 @@ function ShelfContents({ books, selectedId, onSelect }: ShelfContentsProps) {
         opacity={0.35}
         blur={2.5}
         far={20}
+        frames={quality.contactShadowFrames}
       />
     </>
   );
 }
 
-interface BookshelfSceneProps extends ShelfContentsProps {
+interface BookshelfSceneProps extends BookshelfProps {
   onDeselect: () => void;
 }
 
-/** 읽은 책을 꽂아 둔 3D 책장 캔버스. */
+/**
+ * 읽은 책을 꽂아 둔 3D 책장 캔버스.
+ * 저사양 기기로 보이거나 실제 프레임레이트가 떨어지면 낮은 품질 단계로 내려간다.
+ */
 export function BookshelfScene({
   books,
   selectedId,
   onSelect,
   onDeselect,
 }: BookshelfSceneProps) {
+  const [qualityTier, setQualityTier] = useState(detectInitialQualityTier);
+  const quality = QUALITY_SETTINGS[qualityTier];
+
   return (
     <Canvas
       shadows
-      dpr={[1, 2]}
+      dpr={quality.dpr}
       camera={{ fov: CAMERA_FOV, near: 1, far: 2000, position: [0, 0, 200] }}
       gl={{ antialias: true, toneMapping: AgXToneMapping }}
       onPointerMissed={onDeselect}
     >
-      <StudioLights />
+      <StudioLights quality={quality} />
       <Suspense fallback={null}>
         <ShelfContents
           books={books}
           selectedId={selectedId}
           onSelect={onSelect}
+          quality={quality}
+        />
+        {/*
+          로딩 중 텍스처 생성으로 생기는 일시적인 끊김을 저사양으로 오인하지 않도록 장면이 준비된 뒤에 측정한다.
+          다시 올리면 품질이 오르내리며 깜빡일 수 있어서 낮추기만 한다.
+        */}
+        <PerformanceMonitor
+          bounds={() => [MIN_ACCEPTABLE_FPS, Number.POSITIVE_INFINITY]}
+          onDecline={() => setQualityTier("low")}
         />
       </Suspense>
     </Canvas>
