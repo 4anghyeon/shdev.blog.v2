@@ -1,4 +1,4 @@
-import { clamp, sumBy } from "es-toolkit";
+import { clamp, range, sumBy } from "es-toolkit";
 import {
   type BookDimensions,
   getBookDimensions,
@@ -91,11 +91,10 @@ export const computeShelfLayout = (
   let best: { innerWidth: number; rows: number[][] } | undefined;
   let bestScore = Number.POSITIVE_INFINITY;
 
-  for (
-    let innerWidth = minWidth;
-    innerWidth <= maxWidth;
-    innerWidth += WIDTH_STEP
-  ) {
+  // 간격 단위로만 훑으면 한 단에 모두 꽂히는 최대 폭을 건너뛸 수 있어서 따로 넣는다
+  const candidateWidths = [...range(minWidth, maxWidth, WIDTH_STEP), maxWidth];
+
+  for (const innerWidth of candidateWidths) {
     const rows = packRows(dimensions, innerWidth);
     const size = measureShelf(rows, innerWidth, compartmentHeight);
     const fitScale =

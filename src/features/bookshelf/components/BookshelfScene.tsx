@@ -14,7 +14,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { AgXToneMapping, MathUtils, Vector3 } from "three";
+import { MathUtils, NeutralToneMapping, Vector3 } from "three";
 import { Book } from "#/features/bookshelf/components/Book";
 import { Shelf } from "#/features/bookshelf/components/Shelf";
 import { loadBookFonts } from "#/features/bookshelf/helper/book-artwork";
@@ -264,7 +264,7 @@ export function BookshelfScene({
             far: 2000,
             position: [0, 0, 200],
           }}
-          gl={{ antialias: true, toneMapping: AgXToneMapping }}
+          gl={{ antialias: true, toneMapping: NeutralToneMapping }}
           onPointerMissed={onDeselect}
         >
           <StudioLights quality={quality} />

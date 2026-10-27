@@ -113,7 +113,8 @@ const createBookParts = (
   const boardLength = spineZ + d.depth / 2;
   const boardX = d.thickness / 2 - d.board / 2;
   const blockStart = -d.depth / 2 + d.overhang;
-  const blockEnd = spineZ + (radius - d.board) * d.spineBulge * 0.6;
+  // 책등은 가장자리로 갈수록 뒤로 휘어서, 종이 뭉치가 휜 부분까지 들어가면 양옆으로 비어져 나온다
+  const blockEnd = spineZ - 0.01;
   const blockThickness = d.thickness - d.board * 2 - 0.02;
   const blockHeight = d.height - d.overhang * 2;
 

@@ -36,10 +36,7 @@ export function BookDetailPanel({ book, onClose }: BookDetailPanelProps) {
         >
           <X className="size-4" />
         </button>
-        <p className="text-ink-muted text-xs tracking-wide">
-          {book.readAt} 완독
-        </p>
-        <h2 className="mt-1 pr-6 font-bold text-ink-strong text-xl leading-snug">
+        <h2 className="pr-6 font-bold text-ink-strong text-xl leading-snug">
           {book.title}
         </h2>
         <p className="mt-1 text-ink text-sm">{book.author}</p>
