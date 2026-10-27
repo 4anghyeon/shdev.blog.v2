@@ -6,7 +6,14 @@ import {
 } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { easing } from "maath";
-import { Suspense, use, useState } from "react";
+import {
+  type RefObject,
+  Suspense,
+  use,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { AgXToneMapping, MathUtils, Vector3 } from "three";
 import { Book } from "#/features/bookshelf/components/Book";
 import { Shelf } from "#/features/bookshelf/components/Shelf";
@@ -20,68 +27,100 @@ import {
 import { getShelfArea } from "#/features/bookshelf/helper/screen-area";
 import {
   computeShelfLayout,
+  FIT_MARGIN,
   SHELF_DEPTH,
   type ShelfLayout,
 } from "#/features/bookshelf/helper/shelf-layout";
 import type { BookItem } from "#/shared/constant/book-items";
 
 const CAMERA_FOV = 32;
-const FIT_MARGIN = 1.12;
+const CAMERA_TILT = 1.5;
 const PARALLAX = 2.5;
+const SCROLL_DAMPING = 0.15;
 
-const cameraTarget = new Vector3();
+const parallax = new Vector3();
+const parallaxTarget = new Vector3();
+const lookTarget = new Vector3();
 
 interface ViewportSize {
   width: number;
   height: number;
 }
 
-const computeCameraPose = (layout: ShelfLayout, size: ViewportSize) => {
+interface CameraPose {
+  z: number;
+  /** 스크롤 맨 위와 맨 아래에서의 시선 높이 */
+  startY: number;
+  endY: number;
+  /** 맨 위 선반에서 맨 아래 선반까지 스크롤해야 하는 거리(px) */
+  scrollPixels: number;
+}
+
+const computeCameraPose = (
+  layout: ShelfLayout,
+  size: ViewportSize,
+): CameraPose => {
   const tan = Math.tan(MathUtils.degToRad(CAMERA_FOV) / 2);
   const aspect = size.width / size.height;
   const area = getShelfArea(size);
+  const widthFitDistance = layout.width / 2 / (tan * aspect);
+  const heightFitDistance =
+    layout.height / 2 / (tan * (area.height / size.height));
   const distance =
-    Math.max(
-      layout.height / 2 / (tan * (area.height / size.height)),
-      layout.width / 2 / (tan * aspect),
-    ) * FIT_MARGIN;
+    (layout.isScrollable
+      ? widthFitDistance
+      : Math.max(widthFitDistance, heightFitDistance)) * FIT_MARGIN;
   const viewHeight = 2 * tan * (distance + SHELF_DEPTH / 2);
   const shelfPixels = (layout.height / (2 * tan * distance)) * size.height;
-  // 폭에 맞춰진 경우 세로로 남는 공간이 생기므로 영역 중앙 대신 위쪽에 붙인다
-  const anchorY = Math.min(area.centerY, area.top + shelfPixels / 2);
+  // 세로로 공간이 남으면 위쪽에 붙이고, 스크롤해야 하면 맨 위 선반부터 보이게 한다
+  const startAnchor = area.top + shelfPixels / 2;
+  const scrollPixels = Math.max(0, shelfPixels - area.height);
   // 책장을 화면 중앙보다 아래에 그리려면 시선을 그만큼 위로 올린다
-  const centerY = (anchorY / size.height - 0.5) * viewHeight;
+  const toWorldY = (anchor: number) =>
+    (anchor / size.height - 0.5) * viewHeight;
+
   return {
-    base: new Vector3(
-      0,
-      centerY + layout.height * 0.04,
-      SHELF_DEPTH / 2 + distance,
-    ),
-    lookAt: new Vector3(0, centerY, 0),
+    z: SHELF_DEPTH / 2 + distance,
+    startY: toWorldY(startAnchor),
+    endY: toWorldY(startAnchor - scrollPixels),
+    scrollPixels,
   };
 };
 
-interface CameraRigProps {
-  layout: ShelfLayout;
+interface ScrollRefs {
+  scrollRef: RefObject<HTMLDivElement | null>;
+  spacerRef: RefObject<HTMLDivElement | null>;
+}
+
+const getScrollProgress = (element: HTMLDivElement | null) => {
+  if (!element) return 0;
+  const range = element.scrollHeight - element.clientHeight;
+  return range > 0 ? element.scrollTop / range : 0;
+};
+
+interface CameraRigProps extends Pick<ScrollRefs, "scrollRef"> {
+  pose: CameraPose;
 }
 
 /**
- * 하단 내비게이션을 뺀 영역에 책장 전체가 들어오도록 거리와 높이를 맞추고,
- * 포인터를 따라 살짝 시점을 움직인다.
+ * 스크롤 위치에 맞춰 시선 높이를 옮기고, 포인터를 따라 살짝 시점을 움직인다.
  */
-function CameraRig({ layout }: CameraRigProps) {
-  const size = useThree((state) => state.size);
-
-  const { base, lookAt } = computeCameraPose(layout, size);
+function CameraRig({ pose, scrollRef }: CameraRigProps) {
+  const scrollProgress = useRef(0);
 
   useFrame(({ camera, pointer }, delta) => {
-    cameraTarget.set(
-      base.x + pointer.x * PARALLAX,
-      base.y + pointer.y * PARALLAX,
-      base.z,
+    easing.damp(
+      scrollProgress,
+      "current",
+      getScrollProgress(scrollRef.current),
+      SCROLL_DAMPING,
+      delta,
     );
-    easing.damp3(camera.position, cameraTarget, 0.4, delta);
-    camera.lookAt(lookAt);
+    const y = MathUtils.lerp(pose.startY, pose.endY, scrollProgress.current);
+    parallaxTarget.set(pointer.x * PARALLAX, pointer.y * PARALLAX, 0);
+    easing.damp3(parallax, parallaxTarget, 0.4, delta);
+    camera.position.set(parallax.x, y + CAMERA_TILT + parallax.y, pose.z);
+    camera.lookAt(lookTarget.set(0, y, 0));
   });
 
   return null;
@@ -147,23 +186,31 @@ interface BookshelfProps {
   onSelect: (id: string) => void;
 }
 
-interface ShelfContentsProps extends BookshelfProps, QualityProps {}
+interface ShelfContentsProps extends BookshelfProps, QualityProps, ScrollRefs {}
 
 function ShelfContents({
   books,
   selectedId,
   onSelect,
   quality,
+  scrollRef,
+  spacerRef,
 }: ShelfContentsProps) {
   use(loadBookFonts());
   const size = useThree((state) => state.size);
-  const area = getShelfArea(size);
-  const aspect = area.width / area.height;
-  const layout = computeShelfLayout(books, aspect);
+  const layout = computeShelfLayout(books, getShelfArea(size));
+  const pose = computeCameraPose(layout, size);
+
+  // 스크롤 길이는 캔버스 크기를 알아야 정해져서, 캔버스 밖의 여백 요소 높이를 직접 맞춘다
+  useLayoutEffect(() => {
+    if (spacerRef.current) {
+      spacerRef.current.style.height = `${pose.scrollPixels}px`;
+    }
+  }, [spacerRef, pose.scrollPixels]);
 
   return (
     <>
-      <CameraRig layout={layout} />
+      <CameraRig pose={pose} scrollRef={scrollRef} />
       <Shelf layout={layout} />
       {layout.placements.map((placement) => (
         <Book
@@ -193,6 +240,7 @@ interface BookshelfSceneProps extends BookshelfProps {
 
 /**
  * 읽은 책을 꽂아 둔 3D 책장 캔버스.
+ * 책장이 화면보다 길면 캔버스를 고정한 채 바깥 영역을 스크롤해서 카메라를 내린다.
  * 저사양 기기로 보이거나 실제 프레임레이트가 떨어지면 낮은 품질 단계로 내려간다.
  */
 export function BookshelfScene({
@@ -203,32 +251,45 @@ export function BookshelfScene({
 }: BookshelfSceneProps) {
   const [qualityTier, setQualityTier] = useState(detectInitialQualityTier);
   const quality = QUALITY_SETTINGS[qualityTier];
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Canvas
-      shadows
-      dpr={quality.dpr}
-      camera={{ fov: CAMERA_FOV, near: 1, far: 2000, position: [0, 0, 200] }}
-      gl={{ antialias: true, toneMapping: AgXToneMapping }}
-      onPointerMissed={onDeselect}
+    <div
+      ref={scrollRef}
+      className="absolute inset-0 overflow-y-auto [scrollbar-width:thin]"
     >
-      <StudioLights quality={quality} />
-      <Suspense fallback={null}>
-        <ShelfContents
-          books={books}
-          selectedId={selectedId}
-          onSelect={onSelect}
-          quality={quality}
-        />
-        {/*
-          로딩 중 텍스처 생성으로 생기는 일시적인 끊김을 저사양으로 오인하지 않도록 장면이 준비된 뒤에 측정한다.
-          다시 올리면 품질이 오르내리며 깜빡일 수 있어서 낮추기만 한다.
-        */}
-        <PerformanceMonitor
-          bounds={() => [MIN_ACCEPTABLE_FPS, Number.POSITIVE_INFINITY]}
-          onDecline={() => setQualityTier("low")}
-        />
-      </Suspense>
-    </Canvas>
+      <div className="sticky top-0 h-full">
+        <Canvas
+          shadows
+          dpr={quality.dpr}
+          camera={{
+            fov: CAMERA_FOV,
+            near: 1,
+            far: 2000,
+            position: [0, 0, 200],
+          }}
+          gl={{ antialias: true, toneMapping: AgXToneMapping }}
+          onPointerMissed={onDeselect}
+        >
+          <StudioLights quality={quality} />
+          <Suspense fallback={null}>
+            <ShelfContents
+              books={books}
+              selectedId={selectedId}
+              onSelect={onSelect}
+              quality={quality}
+              scrollRef={scrollRef}
+              spacerRef={spacerRef}
+            />
+            <PerformanceMonitor
+              bounds={() => [MIN_ACCEPTABLE_FPS, Number.POSITIVE_INFINITY]}
+              onDecline={() => setQualityTier("low")}
+            />
+          </Suspense>
+        </Canvas>
+      </div>
+      <div ref={spacerRef} />
+    </div>
   );
 }

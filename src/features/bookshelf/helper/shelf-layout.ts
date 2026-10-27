@@ -1,4 +1,4 @@
-import { sumBy } from "es-toolkit";
+import { clamp, sumBy } from "es-toolkit";
 import {
   type BookDimensions,
   getBookDimensions,
@@ -12,6 +12,10 @@ const SIDE_PADDING = 1.2;
 const TOP_CLEARANCE = 5;
 const MIN_INNER_WIDTH = 30;
 const WIDTH_STEP = 2;
+/** 책장 둘레에 남기는 여백 비율 */
+export const FIT_MARGIN = 1.12;
+/** 책등 글자를 알아볼 수 있는 최소 배율(1cm당 화면 px). 이보다 작아지면 한 화면에 다 넣지 않고 스크롤한다 */
+const MIN_PIXELS_PER_CM = 8;
 
 export interface BookPlacement {
   book: BookItem;
@@ -25,7 +29,14 @@ export interface ShelfLayout {
   rows: number;
   width: number;
   height: number;
+  /** 최소 배율로도 화면에 다 들어가지 않아 세로로 스크롤해야 하는지 */
+  isScrollable: boolean;
   placements: BookPlacement[];
+}
+
+interface PixelArea {
+  width: number;
+  height: number;
 }
 
 const packRows = (items: BookDimensions[], innerWidth: number) => {
@@ -47,13 +58,22 @@ const packRows = (items: BookDimensions[], innerWidth: number) => {
   return rows;
 };
 
+const measureShelf = (
+  rows: number[][],
+  innerWidth: number,
+  compartmentHeight: number,
+) => ({
+  width: innerWidth + SHELF_BOARD * 2,
+  height: rows.length * (compartmentHeight + SHELF_BOARD) + SHELF_BOARD,
+});
+
 /**
- * 화면 비율과 가장 비슷한 비율이 되도록 선반 폭을 골라 책을 배치한다.
- * 좁은 화면에서는 여러 단으로, 넓은 화면에서는 한 단으로 길게 꽂힌다.
+ * 책장 전체가 최소 배율 이상으로 화면에 들어오는 폭 중에서 화면 비율과 가장 비슷한 폭을 고른다.
+ * 그런 폭이 없을 만큼 책이 많으면 최소 배율로 화면 폭을 채우고 세로로 스크롤하게 한다.
  */
 export const computeShelfLayout = (
   books: readonly BookItem[],
-  viewAspect: number,
+  area: PixelArea,
 ): ShelfLayout => {
   const dimensions = books.map(getBookDimensions);
   const compartmentHeight =
@@ -67,7 +87,8 @@ export const computeShelfLayout = (
   );
   const maxWidth = Math.max(minWidth, singleRowWidth);
 
-  let best = { innerWidth: maxWidth, rows: packRows(dimensions, maxWidth) };
+  const viewAspect = area.width / area.height;
+  let best: { innerWidth: number; rows: number[][] } | undefined;
   let bestScore = Number.POSITIVE_INFINITY;
 
   for (
@@ -76,25 +97,40 @@ export const computeShelfLayout = (
     innerWidth += WIDTH_STEP
   ) {
     const rows = packRows(dimensions, innerWidth);
-    const width = innerWidth + SHELF_BOARD * 2;
-    const height =
-      rows.length * (compartmentHeight + SHELF_BOARD) + SHELF_BOARD;
-    const score = Math.abs(Math.log(width / height / viewAspect));
+    const size = measureShelf(rows, innerWidth, compartmentHeight);
+    const fitScale =
+      Math.min(area.width / size.width, area.height / size.height) / FIT_MARGIN;
+    if (fitScale < MIN_PIXELS_PER_CM) continue;
+    const score = Math.abs(Math.log(size.width / size.height / viewAspect));
     if (score < bestScore) {
       bestScore = score;
       best = { innerWidth, rows };
     }
   }
 
-  const rowCount = best.rows.length;
-  const width = best.innerWidth + SHELF_BOARD * 2;
-  const height = rowCount * (compartmentHeight + SHELF_BOARD) + SHELF_BOARD;
+  const isScrollable = best === undefined;
+  const scrollWidth = clamp(
+    area.width / (MIN_PIXELS_PER_CM * FIT_MARGIN) - SHELF_BOARD * 2,
+    minWidth,
+    maxWidth,
+  );
+  const chosen = best ?? {
+    innerWidth: scrollWidth,
+    rows: packRows(dimensions, scrollWidth),
+  };
 
-  const placements = best.rows.flatMap((row, rowIndex) => {
+  const rowCount = chosen.rows.length;
+  const { width, height } = measureShelf(
+    chosen.rows,
+    chosen.innerWidth,
+    compartmentHeight,
+  );
+
+  const placements = chosen.rows.flatMap((row, rowIndex) => {
     const boardIndex = rowCount - 1 - rowIndex;
     const floorY =
       boardIndex * (compartmentHeight + SHELF_BOARD) + SHELF_BOARD - height / 2;
-    let x = -best.innerWidth / 2 + SIDE_PADDING;
+    let x = -chosen.innerWidth / 2 + SIDE_PADDING;
 
     return row.map((bookIndex) => {
       const d = dimensions[bookIndex];
@@ -109,11 +145,12 @@ export const computeShelfLayout = (
   });
 
   return {
-    innerWidth: best.innerWidth,
+    innerWidth: chosen.innerWidth,
     compartmentHeight,
     rows: rowCount,
     width,
     height,
+    isScrollable,
     placements,
   };
 };
