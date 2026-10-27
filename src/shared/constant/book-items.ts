@@ -16,10 +16,14 @@ export interface BookItem {
   color: string;
   /** 표지 글자색 */
   ink: string;
-  /** 판형 (cm) */
-  size: { height: number; width: number };
+  /** 실측 크기 (cm). 두께를 모르면 쪽수로 추정한다 */
+  size: { height: number; width: number; thickness?: number };
   pages: number;
   summary: string;
+  /** 앞표지 이미지 경로. 없으면 color와 ink로 표지를 그린다 */
+  cover?: string;
+  /** 책등 이미지 경로 (위가 이미지 위쪽이 되도록 세운 세로 이미지). 없으면 color와 ink로 책등을 그린다 */
+  spine?: string;
   postUrl?: string;
   links?: BookLink[];
 }
@@ -31,12 +35,14 @@ export const BOOK_ITEMS: readonly BookItem[] = [
     author: "유인동",
     readAt: "2025-04",
     binding: "paperback",
-    color: "#1f2a44",
+    color: "#2e2a6b",
     ink: "#f2e6c9",
-    size: { height: 24, width: 18.3 },
+    size: { height: 23.5, width: 18.4, thickness: 2.1 },
     pages: 532,
     summary:
       "객체지향, 함수형, 명령형 패러다임을 하나의 코드베이스 안에서 조합하는 방법을 이터레이터 프로토콜 중심으로 풀어낸 책.",
+    cover: "/images/books/multiparadigm-programming/cover.webp",
+    spine: "/images/books/multiparadigm-programming/spine.webp",
     postUrl: "/ko/post/multi-paradigm-extends-modern-languages",
   },
   {
