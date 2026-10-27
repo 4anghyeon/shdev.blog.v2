@@ -229,7 +229,24 @@ function ShelfContents({
   );
 }
 
-interface BookshelfSceneProps extends BookshelfProps {
+interface SceneReadySignalProps {
+  onReady: () => void;
+}
+
+/** 장면의 첫 프레임이 실제로 그려진 뒤에 준비 완료를 알린다. */
+function SceneReadySignal({ onReady }: SceneReadySignalProps) {
+  const frameCount = useRef(0);
+
+  // useFrame은 렌더링 직전에 호출되므로, 두 번째 호출 시점에야 첫 프레임이 화면에 그려져 있다
+  useFrame(() => {
+    frameCount.current += 1;
+    if (frameCount.current === 2) onReady();
+  });
+
+  return null;
+}
+
+interface BookshelfSceneProps extends BookshelfProps, SceneReadySignalProps {
   onDeselect: () => void;
 }
 
@@ -243,6 +260,7 @@ export function BookshelfScene({
   selectedId,
   onSelect,
   onDeselect,
+  onReady,
 }: BookshelfSceneProps) {
   const [qualityTier, setQualityTier] = useState(detectInitialQualityTier);
   const quality = QUALITY_SETTINGS[qualityTier];
@@ -277,6 +295,7 @@ export function BookshelfScene({
               scrollRef={scrollRef}
               spacerRef={spacerRef}
             />
+            <SceneReadySignal onReady={onReady} />
             <PerformanceMonitor
               bounds={() => [MIN_ACCEPTABLE_FPS, Number.POSITIVE_INFINITY]}
               onDecline={() => setQualityTier("low")}

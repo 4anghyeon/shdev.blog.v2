@@ -1,9 +1,10 @@
 import { ClientOnly, createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence } from "motion/react";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { z } from "zod";
 import { PageContainer } from "#/composites/layout/PageContainer";
 import { BookDetailPanel } from "#/features/bookshelf/components/BookDetailPanel";
+import { BookshelfLoading } from "#/features/bookshelf/components/BookshelfLoading";
 import { BrushBorder } from "#/shared/components/BrushBorder";
 import { BOOK_ITEMS } from "#/shared/constant/book-items";
 
@@ -22,6 +23,7 @@ function RouteComponent() {
   const { book: selectedId } = Route.useSearch();
   const navigate = Route.useNavigate();
   const selectedBook = BOOK_ITEMS.find((book) => book.id === selectedId);
+  const [isSceneReady, setIsSceneReady] = useState(false);
 
   const selectBook = (id: string) => navigate({ search: { book: id } });
   const closeBook = () => {
@@ -66,10 +68,14 @@ function RouteComponent() {
                 selectedId={selectedBook?.id}
                 onSelect={selectBook}
                 onDeselect={closeBook}
+                onReady={() => setIsSceneReady(true)}
               />
             </Suspense>
           </ClientOnly>
         </div>
+        <AnimatePresence>
+          {!isSceneReady && <BookshelfLoading />}
+        </AnimatePresence>
         <AnimatePresence>
           {selectedBook && (
             <BookDetailPanel
