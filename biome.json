@@ -13,6 +13,7 @@
       "!.next",
       "!dist",
       "!build",
+      "!.cache",
       "!routeTree.gen.ts",
       "!*.mdx",
       "!**/routeTree.gen.ts",

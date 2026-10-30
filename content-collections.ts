@@ -1,9 +1,21 @@
 import { defineCollection, defineConfig } from "@content-collections/core";
 import matter from "gray-matter";
+import { z } from "zod";
 import { fetchOpenGraph } from "#/features/markdown/utils/open-graph";
 import { renderMarkdown } from "#/features/markdown/utils/render-markdown";
 import { localeHelper } from "#/shared/helper/locale";
 import { blogPostSchema } from "#/shared/schema/blog-post";
+import relatedPostsData from "./.cache/related-posts/related-posts.gen.json";
+
+const relatedPosts = z
+  .record(
+    z.string(),
+    z.record(
+      z.string(),
+      z.array(z.object({ slug: z.string(), score: z.number() })),
+    ),
+  )
+  .parse(relatedPostsData);
 
 function extractFrontMatter(content: string) {
   const { data, content: body, excerpt } = matter(content, { excerpt: true });
@@ -51,6 +63,9 @@ const posts = defineCollection({
       markup,
       headings,
       references,
+      relatedSlugs: (relatedPosts[post._meta.directory]?.[slug] ?? []).map(
+        (related) => related.slug,
+      ),
     };
   },
 });
