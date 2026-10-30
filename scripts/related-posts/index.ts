@@ -10,6 +10,7 @@ import {
   saveCache,
 } from "./embedding/embedding-cache.ts";
 import { loadPosts, type PostSource } from "./post/load-posts.ts";
+import { centerPosts } from "./ranking/center-posts.ts";
 import { type EmbeddedPost, rankRelated } from "./ranking/rank-related.ts";
 import { scoreDistribution } from "./ranking/score-distribution.ts";
 import {
@@ -121,8 +122,9 @@ const main = async () => {
     tags: post.tags,
     vector: cache.posts[post.key].vector,
   }));
-  const pairs = buildSimilarityPairs(embedded);
-  const related = sortKeys(mapValues(rankRelated(embedded, pairs), sortKeys));
+  const centered = centerPosts(embedded);
+  const pairs = buildSimilarityPairs(centered);
+  const related = sortKeys(mapValues(rankRelated(centered, pairs), sortKeys));
   await writeTextFile(PATHS.output, `${JSON.stringify(related, null, 2)}\n`);
 
   printDistribution(pairs);

@@ -21,6 +21,16 @@ export const weightedSum = (
   );
 };
 
+export const meanVector = (vectors: Array<Vector>): Vector => {
+  return weightedSum(
+    vectors.map((vector) => ({ vector, weight: 1 / vectors.length })),
+  );
+};
+
+export const subtract = (a: Vector, b: Vector): Vector => {
+  return a.map((value, i) => value - b[i]);
+};
+
 export const roundVector = (vector: Vector, precision: number): Vector => {
   return vector.map((value) => Number(value.toFixed(precision)));
 };

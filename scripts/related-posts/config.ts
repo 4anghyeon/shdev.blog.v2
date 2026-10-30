@@ -28,6 +28,7 @@ export const EMBEDDING = {
 
 export const RANKING = {
   tagWeight: 0.05,
-  minScore: 0.3,
+  // 센터링 후 점수 기준이다. 0.1 아래는 대부분 무관한 추천이었다.
+  minScore: 0.12,
   topK: 3,
 } as const;
