@@ -12,6 +12,10 @@ import {
 import { loadPosts, type PostSource } from "./post/load-posts.ts";
 import { type EmbeddedPost, rankRelated } from "./ranking/rank-related.ts";
 import { scoreDistribution } from "./ranking/score-distribution.ts";
+import {
+  buildSimilarityPairs,
+  type SimilarityPair,
+} from "./ranking/similarity-pairs.ts";
 import { sortKeys, writeTextFile } from "./utils/file.ts";
 
 interface Options {
@@ -25,12 +29,15 @@ const selectTargets = (
   cache: EmbeddingCache,
   { all, only }: Options,
 ) => {
+  const onlySlugs = new Set(only);
   const targets = posts.filter(
-    (post) => all || !cache.posts[post.key] || only.includes(post.slug),
+    (post) => all || !cache.posts[post.key] || onlySlugs.has(post.slug),
   );
+  const targetKeys = new Set(targets.map((post) => post.key));
   const stale = posts.filter(
     (post) =>
-      !targets.includes(post) && cache.posts[post.key]?.hash !== hashPost(post),
+      !targetKeys.has(post.key) &&
+      cache.posts[post.key]?.hash !== hashPost(post),
   );
   return { targets, stale };
 };
@@ -56,8 +63,8 @@ const embedTargets = async (
   }
 };
 
-const printDistribution = (posts: Array<EmbeddedPost>) => {
-  const distribution = scoreDistribution(posts);
+const printDistribution = (pairs: Array<SimilarityPair>) => {
+  const distribution = scoreDistribution(pairs);
   if (!distribution) return;
 
   const format = (value: number) => value.toFixed(3);
@@ -85,9 +92,8 @@ const main = async () => {
     );
   }
 
-  const unknownSlugs = values.only.filter(
-    (slug) => !posts.some((post) => post.slug === slug),
-  );
+  const postSlugs = new Set(posts.map((post) => post.slug));
+  const unknownSlugs = values.only.filter((slug) => !postSlugs.has(slug));
   if (unknownSlugs.length > 0) {
     throw new Error(`존재하지 않는 글: ${unknownSlugs.join(", ")}`);
   }
@@ -115,10 +121,11 @@ const main = async () => {
     tags: post.tags,
     vector: cache.posts[post.key].vector,
   }));
-  const related = sortKeys(mapValues(rankRelated(embedded), sortKeys));
+  const pairs = buildSimilarityPairs(embedded);
+  const related = sortKeys(mapValues(rankRelated(embedded, pairs), sortKeys));
   await writeTextFile(PATHS.output, `${JSON.stringify(related, null, 2)}\n`);
 
-  printDistribution(embedded);
+  printDistribution(pairs);
   console.info(`연관글 결과 저장: ${path.relative(PATHS.root, PATHS.output)}`);
 
   if (stale.length > 0) {
