@@ -1,4 +1,5 @@
 import { ArrowUpRight, BookOpen, Link2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import type { MarkdownReference } from "#/features/markdown/utils/rehype-references";
 import { BrushDivider } from "#/shared/components/BrushDivider";
 
@@ -21,20 +22,6 @@ export function References({ items }: ReferencesProps) {
         {items.map((item) => {
           const title = item.ogTitle || item.title;
           const description = item.ogDescription;
-          const visual = item.ogImage ? (
-            <img
-              src={item.ogImage}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              className="h-16 w-24 shrink-0 object-cover"
-            />
-          ) : (
-            <div className="flex h-16 w-24 shrink-0 items-center justify-center bg-paper-hover text-ink-faint">
-              <Link2 className="size-5" aria-hidden="true" />
-            </div>
-          );
-
           const details = (
             <span className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 px-2.5 py-1.5">
               <span className="flex min-w-0 items-center gap-1 font-semibold text-ink-strong text-xs leading-snug sm:text-sm">
@@ -69,7 +56,7 @@ export function References({ items }: ReferencesProps) {
                   rel="noopener noreferrer nofollow external"
                   className={className}
                 >
-                  {visual}
+                  <ReferenceThumbnail src={item.ogImage} />
                   {details}
                 </a>
               ) : (
@@ -85,5 +72,37 @@ export function References({ items }: ReferencesProps) {
         })}
       </ul>
     </section>
+  );
+}
+
+/** 참고 링크의 OG 이미지를 보여주고, 없거나 불러오지 못하면 링크 아이콘으로 대신한다. */
+function ReferenceThumbnail({ src }: { src?: string }) {
+  const [isBroken, setIsBroken] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  // 하이드레이션 전에 실패한 이미지는 onError가 호출되지 않으므로 마운트 시점에 한 번 더 확인한다
+  useEffect(() => {
+    const image = imageRef.current;
+    if (image?.complete && image.naturalWidth === 0) setIsBroken(true);
+  }, []);
+
+  if (!src || isBroken) {
+    return (
+      <div className="flex h-16 w-24 shrink-0 items-center justify-center bg-paper-hover text-ink-faint">
+        <Link2 className="size-5" aria-hidden="true" />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      ref={imageRef}
+      src={src}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      onError={() => setIsBroken(true)}
+      className="h-16 w-24 shrink-0 object-cover"
+    />
   );
 }
