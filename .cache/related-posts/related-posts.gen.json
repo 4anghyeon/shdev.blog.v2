@@ -1,0 +1,600 @@
+{
+  "ko": {
+    "aesthetic-usability-effect": [
+      {
+        "slug": "jakobs-law-ux",
+        "score": 0.3147
+      },
+      {
+        "slug": "cognitive-bias-ux",
+        "score": 0.2981
+      },
+      {
+        "slug": "reduce-badge-overuse",
+        "score": 0.2372
+      }
+    ],
+    "being-lazy-with-ai": [
+      {
+        "slug": "cognitive-bias-ux",
+        "score": 0.2163
+      },
+      {
+        "slug": "reduce-badge-overuse",
+        "score": 0.1817
+      },
+      {
+        "slug": "claude-code-mods-ditto",
+        "score": 0.1374
+      }
+    ],
+    "blog-search-using-pagefind": [
+      {
+        "slug": "next-js-dynamic-og-image-generation",
+        "score": 0.1464
+      }
+    ],
+    "claude-code-extensions-overview": [
+      {
+        "slug": "claude-code-mods-ditto",
+        "score": 0.4353
+      }
+    ],
+    "claude-code-mods-ditto": [
+      {
+        "slug": "claude-code-extensions-overview",
+        "score": 0.4353
+      },
+      {
+        "slug": "being-lazy-with-ai",
+        "score": 0.1374
+      }
+    ],
+    "cognitive-bias-ux": [
+      {
+        "slug": "aesthetic-usability-effect",
+        "score": 0.2981
+      },
+      {
+        "slug": "jakobs-law-ux",
+        "score": 0.2914
+      },
+      {
+        "slug": "hicks-law-ux",
+        "score": 0.2438
+      }
+    ],
+    "cookie-consent-guide": [
+      {
+        "slug": "cookies-httponly-secure-samesite",
+        "score": 0.4006
+      },
+      {
+        "slug": "diving-deep-into-jwt",
+        "score": 0.153
+      }
+    ],
+    "cookies-httponly-secure-samesite": [
+      {
+        "slug": "cookie-consent-guide",
+        "score": 0.4006
+      },
+      {
+        "slug": "diving-deep-into-jwt",
+        "score": 0.3041
+      },
+      {
+        "slug": "kakao-line-app-login-difference",
+        "score": 0.1378
+      }
+    ],
+    "css-container-queries": [
+      {
+        "slug": "understanding-dpr-and-half-pixel",
+        "score": 0.2465
+      },
+      {
+        "slug": "css-font-variant-numeric-guide",
+        "score": 0.1784
+      }
+    ],
+    "css-font-variant-numeric-guide": [
+      {
+        "slug": "unify-password-input-masking",
+        "score": 0.3057
+      },
+      {
+        "slug": "understanding-dpr-and-half-pixel",
+        "score": 0.2545
+      },
+      {
+        "slug": "mastering-html-tabindex",
+        "score": 0.1895
+      }
+    ],
+    "diving-deep-into-jwt": [
+      {
+        "slug": "cookies-httponly-secure-samesite",
+        "score": 0.3041
+      },
+      {
+        "slug": "kakao-line-app-login-difference",
+        "score": 0.2165
+      },
+      {
+        "slug": "cookie-consent-guide",
+        "score": 0.153
+      }
+    ],
+    "extract-tailwind-color-type": [
+      {
+        "slug": "vanilla-extract-normalize-css",
+        "score": 0.1993
+      },
+      {
+        "slug": "typescript-typeof",
+        "score": 0.1972
+      },
+      {
+        "slug": "what-is-oklch",
+        "score": 0.1611
+      }
+    ],
+    "functional-programming-type-system-lisp": [
+      {
+        "slug": "paradigm-convergence-generator-iterator-lisp",
+        "score": 0.6558
+      },
+      {
+        "slug": "multi-paradigm-extends-modern-languages",
+        "score": 0.5555
+      },
+      {
+        "slug": "practical-functional-programming",
+        "score": 0.5325
+      }
+    ],
+    "git-cherry-pick": [],
+    "hicks-law-ux": [
+      {
+        "slug": "jakobs-law-ux",
+        "score": 0.4363
+      },
+      {
+        "slug": "cognitive-bias-ux",
+        "score": 0.2438
+      },
+      {
+        "slug": "aesthetic-usability-effect",
+        "score": 0.2144
+      }
+    ],
+    "jakobs-law-ux": [
+      {
+        "slug": "hicks-law-ux",
+        "score": 0.4363
+      },
+      {
+        "slug": "aesthetic-usability-effect",
+        "score": 0.3147
+      },
+      {
+        "slug": "cognitive-bias-ux",
+        "score": 0.2914
+      }
+    ],
+    "javascript-interpreter-vs-compiler": [
+      {
+        "slug": "functional-programming-type-system-lisp",
+        "score": 0.1498
+      },
+      {
+        "slug": "multi-paradigm-extends-modern-languages",
+        "score": 0.1256
+      }
+    ],
+    "kakao-line-app-login-difference": [
+      {
+        "slug": "diving-deep-into-jwt",
+        "score": 0.2165
+      },
+      {
+        "slug": "cookies-httponly-secure-samesite",
+        "score": 0.1378
+      }
+    ],
+    "list-virtualization-with-tanstack-virtual": [],
+    "mastering-html-tabindex": [
+      {
+        "slug": "css-font-variant-numeric-guide",
+        "score": 0.1895
+      },
+      {
+        "slug": "cookies-httponly-secure-samesite",
+        "score": 0.1276
+      }
+    ],
+    "multi-paradigm-extends-modern-languages": [
+      {
+        "slug": "paradigm-convergence-generator-iterator-lisp",
+        "score": 0.6739
+      },
+      {
+        "slug": "functional-programming-type-system-lisp",
+        "score": 0.5555
+      },
+      {
+        "slug": "multiparadigm-with-template-engine",
+        "score": 0.5073
+      }
+    ],
+    "multiparadigm-async-programming-guide": [
+      {
+        "slug": "practical-functional-programming",
+        "score": 0.6286
+      },
+      {
+        "slug": "multi-paradigm-extends-modern-languages",
+        "score": 0.364
+      },
+      {
+        "slug": "paradigm-convergence-generator-iterator-lisp",
+        "score": 0.3163
+      }
+    ],
+    "multiparadigm-with-template-engine": [
+      {
+        "slug": "multi-paradigm-extends-modern-languages",
+        "score": 0.5073
+      },
+      {
+        "slug": "paradigm-convergence-generator-iterator-lisp",
+        "score": 0.4243
+      },
+      {
+        "slug": "functional-programming-type-system-lisp",
+        "score": 0.4219
+      }
+    ],
+    "named-export-vs-default-export": [
+      {
+        "slug": "why-i-stopped-using-barrel-files",
+        "score": 0.2499
+      },
+      {
+        "slug": "vanilla-extract-normalize-css",
+        "score": 0.1492
+      },
+      {
+        "slug": "typescript-typeof",
+        "score": 0.1238
+      }
+    ],
+    "next-js-dynamic-og-image-generation": [
+      {
+        "slug": "blog-search-using-pagefind",
+        "score": 0.1464
+      },
+      {
+        "slug": "vercel-server-action-issue",
+        "score": 0.1432
+      }
+    ],
+    "nextjs-middleware-matcher-variable-issue": [
+      {
+        "slug": "vercel-server-action-issue",
+        "score": 0.1708
+      },
+      {
+        "slug": "server-component-rendering-strategies",
+        "score": 0.1588
+      }
+    ],
+    "paradigm-convergence-generator-iterator-lisp": [
+      {
+        "slug": "multi-paradigm-extends-modern-languages",
+        "score": 0.6739
+      },
+      {
+        "slug": "functional-programming-type-system-lisp",
+        "score": 0.6558
+      },
+      {
+        "slug": "practical-functional-programming",
+        "score": 0.5392
+      }
+    ],
+    "practical-functional-programming": [
+      {
+        "slug": "multiparadigm-async-programming-guide",
+        "score": 0.6286
+      },
+      {
+        "slug": "paradigm-convergence-generator-iterator-lisp",
+        "score": 0.5392
+      },
+      {
+        "slug": "functional-programming-type-system-lisp",
+        "score": 0.5325
+      }
+    ],
+    "react-lazy-initialization-complete-guide": [
+      {
+        "slug": "what-is-react-suspense",
+        "score": 0.3841
+      },
+      {
+        "slug": "sync-with-effect",
+        "score": 0.3204
+      },
+      {
+        "slug": "zustand-closure-deep-dive",
+        "score": 0.277
+      }
+    ],
+    "react-render-props-pattern": [
+      {
+        "slug": "what-is-react-suspense",
+        "score": 0.2117
+      },
+      {
+        "slug": "server-component-in-client-component",
+        "score": 0.1905
+      },
+      {
+        "slug": "server-component-rendering-strategies",
+        "score": 0.1885
+      }
+    ],
+    "reduce-badge-overuse": [
+      {
+        "slug": "aesthetic-usability-effect",
+        "score": 0.2372
+      },
+      {
+        "slug": "hicks-law-ux",
+        "score": 0.1844
+      },
+      {
+        "slug": "being-lazy-with-ai",
+        "score": 0.1817
+      }
+    ],
+    "server-component-in-client-component": [
+      {
+        "slug": "server-component-rendering-strategies",
+        "score": 0.489
+      },
+      {
+        "slug": "what-is-react-suspense",
+        "score": 0.279
+      },
+      {
+        "slug": "vercel-server-action-issue",
+        "score": 0.2433
+      }
+    ],
+    "server-component-rendering-strategies": [
+      {
+        "slug": "server-component-in-client-component",
+        "score": 0.489
+      },
+      {
+        "slug": "what-is-react-suspense",
+        "score": 0.2476
+      },
+      {
+        "slug": "vercel-server-action-issue",
+        "score": 0.2282
+      }
+    ],
+    "sync-with-effect": [
+      {
+        "slug": "react-lazy-initialization-complete-guide",
+        "score": 0.3204
+      },
+      {
+        "slug": "what-is-react-suspense",
+        "score": 0.2542
+      },
+      {
+        "slug": "react-render-props-pattern",
+        "score": 0.1843
+      }
+    ],
+    "tanstack-devtools-source-inspector-issue": [
+      {
+        "slug": "server-component-in-client-component",
+        "score": 0.1392
+      },
+      {
+        "slug": "why-i-stopped-using-barrel-files",
+        "score": 0.1389
+      },
+      {
+        "slug": "react-render-props-pattern",
+        "score": 0.1285
+      }
+    ],
+    "threejs-about-light": [
+      {
+        "slug": "threejs-geometry-materials-mesh",
+        "score": 0.4752
+      },
+      {
+        "slug": "threejs-scene-renderer-camera",
+        "score": 0.3981
+      },
+      {
+        "slug": "threejs-cache-enabled-memory-leak-fix",
+        "score": 0.2306
+      }
+    ],
+    "threejs-cache-enabled-memory-leak-fix": [
+      {
+        "slug": "threejs-geometry-materials-mesh",
+        "score": 0.2891
+      },
+      {
+        "slug": "threejs-scene-renderer-camera",
+        "score": 0.2444
+      },
+      {
+        "slug": "threejs-about-light",
+        "score": 0.2306
+      }
+    ],
+    "threejs-geometry-materials-mesh": [
+      {
+        "slug": "threejs-scene-renderer-camera",
+        "score": 0.5479
+      },
+      {
+        "slug": "threejs-about-light",
+        "score": 0.4752
+      },
+      {
+        "slug": "threejs-cache-enabled-memory-leak-fix",
+        "score": 0.2891
+      }
+    ],
+    "threejs-scene-renderer-camera": [
+      {
+        "slug": "threejs-geometry-materials-mesh",
+        "score": 0.5479
+      },
+      {
+        "slug": "threejs-about-light",
+        "score": 0.3981
+      },
+      {
+        "slug": "threejs-cache-enabled-memory-leak-fix",
+        "score": 0.2444
+      }
+    ],
+    "typescript-typeof": [
+      {
+        "slug": "extract-tailwind-color-type",
+        "score": 0.1972
+      },
+      {
+        "slug": "functional-programming-type-system-lisp",
+        "score": 0.1762
+      },
+      {
+        "slug": "why-i-stopped-using-barrel-files",
+        "score": 0.1294
+      }
+    ],
+    "understanding-dpr-and-half-pixel": [
+      {
+        "slug": "css-font-variant-numeric-guide",
+        "score": 0.2545
+      },
+      {
+        "slug": "css-container-queries",
+        "score": 0.2465
+      },
+      {
+        "slug": "what-is-oklch",
+        "score": 0.1232
+      }
+    ],
+    "unify-password-input-masking": [
+      {
+        "slug": "css-font-variant-numeric-guide",
+        "score": 0.3057
+      },
+      {
+        "slug": "understanding-dpr-and-half-pixel",
+        "score": 0.1228
+      }
+    ],
+    "vanilla-extract-normalize-css": [
+      {
+        "slug": "extract-tailwind-color-type",
+        "score": 0.1993
+      },
+      {
+        "slug": "css-font-variant-numeric-guide",
+        "score": 0.1782
+      },
+      {
+        "slug": "named-export-vs-default-export",
+        "score": 0.1492
+      }
+    ],
+    "vercel-server-action-issue": [
+      {
+        "slug": "server-component-in-client-component",
+        "score": 0.2433
+      },
+      {
+        "slug": "server-component-rendering-strategies",
+        "score": 0.2282
+      },
+      {
+        "slug": "nextjs-middleware-matcher-variable-issue",
+        "score": 0.1708
+      }
+    ],
+    "what-is-graphql": [
+      {
+        "slug": "diving-deep-into-jwt",
+        "score": 0.1435
+      }
+    ],
+    "what-is-oklch": [
+      {
+        "slug": "css-font-variant-numeric-guide",
+        "score": 0.178
+      },
+      {
+        "slug": "extract-tailwind-color-type",
+        "score": 0.1611
+      },
+      {
+        "slug": "reduce-badge-overuse",
+        "score": 0.1274
+      }
+    ],
+    "what-is-react-suspense": [
+      {
+        "slug": "react-lazy-initialization-complete-guide",
+        "score": 0.3841
+      },
+      {
+        "slug": "server-component-in-client-component",
+        "score": 0.279
+      },
+      {
+        "slug": "sync-with-effect",
+        "score": 0.2542
+      }
+    ],
+    "why-i-stopped-using-barrel-files": [
+      {
+        "slug": "named-export-vs-default-export",
+        "score": 0.2499
+      },
+      {
+        "slug": "tanstack-devtools-source-inspector-issue",
+        "score": 0.1389
+      },
+      {
+        "slug": "typescript-typeof",
+        "score": 0.1294
+      }
+    ],
+    "zustand-closure-deep-dive": [
+      {
+        "slug": "react-lazy-initialization-complete-guide",
+        "score": 0.277
+      },
+      {
+        "slug": "sync-with-effect",
+        "score": 0.13
+      }
+    ]
+  }
+}
