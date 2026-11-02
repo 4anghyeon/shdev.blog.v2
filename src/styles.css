@@ -59,6 +59,7 @@
   /* Animations */
   --animate-bounce-slow: float 4s linear infinite;
   --animate-stamp: stamp 0.7s linear both;
+  --animate-year-active: year-active auto linear;
 
   /* Shadows */
   --shadow-page:
@@ -93,6 +94,13 @@
       opacity: 1;
       transform: scale(1) rotate(-3deg);
       filter: blur(0) drop-shadow(0 0 0 rgb(220 38 38 / 0));
+    }
+  }
+
+  @keyframes year-active {
+    from,
+    to {
+      color: var(--color-ink-strong);
     }
   }
 
