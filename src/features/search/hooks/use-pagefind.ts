@@ -1,5 +1,14 @@
 import { use, useMemo } from "react";
 
+export interface PagefindResult {
+  url: string;
+  excerpt: string;
+  meta: {
+    title: string;
+    image?: string;
+  };
+}
+
 export const usePagefind = () => {
   const pagefindPromise = useMemo(async () => {
     if (typeof window === "undefined") return Promise.resolve(null);

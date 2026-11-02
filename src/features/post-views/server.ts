@@ -1,12 +1,14 @@
 import { createHash } from "node:crypto";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestIP, setResponseHeader } from "@tanstack/react-start/server";
+import { allPosts } from "content-collections";
 import { z } from "zod";
 import { getRedis } from "#/shared/lib/redis";
 
 const VIEWS_KEY = "views";
 const DEDUPE_TTL_SECONDS = 60 * 60 * 24;
 const VIEWS_CACHE_SECONDS = 60;
+const POPULAR_POSTS_LIMIT = 3;
 
 const hashIp = (ip: string) => {
   return createHash("sha256")
@@ -50,3 +52,38 @@ export const getViews = createServerFn({ method: "GET" })
 
     return (await redis.zscore(VIEWS_KEY, slug)) ?? 0;
   });
+
+/** 조회수가 많은 순으로 글의 slug, 제목, 설명을 반환한다. 삭제된 글은 건너뛴다. Redis가 없으면 빈 배열. */
+export const getPopularPosts = createServerFn({ method: "GET" }).handler(
+  async () => {
+    const redis = getRedis();
+    if (!redis) return [];
+
+    setResponseHeader(
+      "Cache-Control",
+      `public, s-maxage=${VIEWS_CACHE_SECONDS}, stale-while-revalidate=${VIEWS_CACHE_SECONDS}`,
+    );
+
+    const slugs = await redis.zrange<string[]>(
+      VIEWS_KEY,
+      0,
+      POPULAR_POSTS_LIMIT * 2 - 1,
+      { rev: true },
+    );
+
+    return slugs
+      .flatMap((slug) => {
+        const post = allPosts.find((p) => p.slug === slug);
+        return post
+          ? [
+              {
+                slug: post.slug,
+                title: post.title,
+                description: post.description,
+              },
+            ]
+          : [];
+      })
+      .slice(0, POPULAR_POSTS_LIMIT);
+  },
+);

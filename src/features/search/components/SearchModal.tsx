@@ -9,18 +9,13 @@ import {
   Modal as RACModal,
   TextField,
 } from "react-aria-components";
-import { usePagefind } from "#/features/search/hooks/use-pagefind";
-import { Link } from "#/shared/components/Link";
+import { usePopularPosts } from "#/features/post-views/hooks/use-popular-posts";
+import { SearchContent } from "#/features/search/components/SearchContent";
+import {
+  type PagefindResult,
+  usePagefind,
+} from "#/features/search/hooks/use-pagefind";
 import { DEFAULT_LANG } from "#/shared/constant/lang";
-
-interface PagefindResult {
-  url: string;
-  excerpt: string;
-  meta: {
-    title: string;
-    image?: string;
-  };
-}
 
 const overlayStyles = cva(
   "fixed top-0 left-0 isolate z-50 h-[100dvh] w-full bg-scrim text-center backdrop-blur-xs",
@@ -46,6 +41,7 @@ export function SearchModal() {
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<PagefindResult[]>([]);
   const pagefind = usePagefind();
+  const popularPosts = usePopularPosts();
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -54,11 +50,13 @@ export function SearchModal() {
     links?.[index]?.focus();
   };
 
+  const showPopularPosts = results.length === 0 && popularPosts.length > 0;
+
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
     // 한글 조합 중에 포커스를 옮기면 조합 중이던 글자가 한 번 더 입력된다
     if (e.nativeEvent.isComposing) return;
 
-    if (e.key === "ArrowDown" && results.length > 0) {
+    if (e.key === "ArrowDown" && (results.length > 0 || showPopularPosts)) {
       e.preventDefault();
       focusResult(0);
     }
@@ -147,40 +145,18 @@ export function SearchModal() {
                 </div>
 
                 <div className="max-h-[60vh] overflow-y-auto p-2">
-                  {results.length > 0 ? (
-                    <div ref={resultsRef} className="space-y-1">
-                      {results.map((result, index) => (
-                        <Link
-                          key={result.url}
-                          to={result.url}
-                          onClick={() => {
-                            close();
-                            setSearch("");
-                            setResults([]);
-                          }}
-                          onKeyDown={(e) => handleResultKeyDown(e, index)}
-                          className="group flex flex-col gap-y-2 rounded-xs border-transparent border-l-2 px-3 py-5 no-underline transition-all duration-100 ease-in-out hover:border-seal/60 hover:bg-paper-hover focus-visible:border-seal/60 focus-visible:bg-paper-hover focus-visible:outline-none active:scale-[0.97]"
-                        >
-                          <span className="font-semibold text-ink-strong transition-colors group-hover:text-seal group-focus-visible:text-seal">
-                            {result.meta.title}
-                          </span>
-                          <p
-                            className="mt-1 line-clamp-2 text-ink-muted text-sm [&_mark]:rounded-xs [&_mark]:bg-seal-highlight [&_mark]:px-0.5 [&_mark]:text-seal-highlight-foreground"
-                            // biome-ignore lint/security/noDangerouslySetInnerHtml: <>
-                            dangerouslySetInnerHTML={{ __html: result.excerpt }}
-                          />
-                        </Link>
-                      ))}
-                    </div>
-                  ) : search !== "" ? (
-                    <div className="py-12 text-center text-ink-muted">
-                      "{search}"에 대한 결과가 없습니다
-                    </div>
-                  ) : (
-                    <div className="py-12 text-center text-ink-muted">
-                      검색어를 입력하세요...
-                    </div>
-                  )}
+                  <SearchContent
+                    search={search}
+                    results={results}
+                    popularPosts={popularPosts}
+                    resultsRef={resultsRef}
+                    onSelect={() => {
+                      close();
+                      setSearch("");
+                      setResults([]);
+                    }}
+                    onResultKeyDown={handleResultKeyDown}
+                  />
                 </div>
               </div>
             )}
