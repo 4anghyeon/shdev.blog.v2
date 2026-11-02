@@ -7,6 +7,7 @@ import {
 import { allPosts } from "content-collections";
 import { EditPencil } from "iconoir-react/regular";
 import { Suspense, useEffect } from "react";
+import type { BlogPosting, BreadcrumbList } from "schema-dts";
 import { z } from "zod";
 import { PageContainer } from "#/composites/layout/PageContainer";
 import { Markdown } from "#/features/markdown/components/Markdown";
@@ -102,7 +103,7 @@ export const Route = createFileRoute("/$lang/post/$slug")({
 
     const author = headHelper.person();
 
-    const blogPosting = {
+    const blogPosting: BlogPosting = {
       "@type": "BlogPosting",
       headline: post.title,
       description: post.description,
@@ -117,7 +118,7 @@ export const Route = createFileRoute("/$lang/post/$slug")({
       keywords: post.tags?.join(","),
     };
 
-    const breadcrumbList = {
+    const breadcrumbList: BreadcrumbList = {
       "@type": "BreadcrumbList",
       itemListElement: [
         {
@@ -158,10 +159,7 @@ export const Route = createFileRoute("/$lang/post/$slug")({
         { rel: "alternate", hrefLang: "x-default", href: canonicalUrl },
         { rel: "alternate", hrefLang: "ko-KR", href: canonicalUrl },
       ],
-      scripts: [
-        headHelper.jsonLd(blogPosting),
-        headHelper.jsonLd(breadcrumbList),
-      ],
+      scripts: [headHelper.jsonLd(blogPosting, breadcrumbList)],
     };
   },
   component: BlogPost,
