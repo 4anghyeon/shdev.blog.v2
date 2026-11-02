@@ -45,6 +45,12 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: ShikiCss,
       },
+      {
+        rel: "alternate",
+        type: "application/rss+xml",
+        title: BlogMeta.title,
+        href: `${BlogMeta.baseUrl}rss.xml`,
+      },
       // 내비게이션 손글씨 폰트. 구글 폰트는 한글을 글자 범위(unicode-range)별로 나눠 필요한 조각만 내려받는다
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {

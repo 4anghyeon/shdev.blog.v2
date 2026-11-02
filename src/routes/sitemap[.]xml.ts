@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { DEFAULT_LANG } from "#/shared/constant/lang";
 import { BlogMeta } from "#/shared/constant/metadata";
+import { xmlHelper } from "#/shared/helper/xml";
 
 interface SitemapUrl {
   loc: string;
@@ -10,7 +11,7 @@ interface SitemapUrl {
 
 const toUrlEntry = ({ loc, lastmod }: SitemapUrl) => {
   const lastmodTag = lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "";
-  return `  <url>\n    <loc>${loc}</loc>${lastmodTag}\n  </url>`;
+  return `  <url>\n    <loc>${xmlHelper.escape(loc)}</loc>${lastmodTag}\n  </url>`;
 };
 
 export const Route = createFileRoute("/sitemap.xml")({
