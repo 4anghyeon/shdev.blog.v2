@@ -26,6 +26,7 @@ import { Tag } from "#/shared/components/Tag";
 import { DEFAULT_LANG, isSupportedLang } from "#/shared/constant/lang";
 import { BlogMeta } from "#/shared/constant/metadata";
 import { dateHelper } from "#/shared/helper/date";
+import { headHelper } from "#/shared/helper/head";
 
 export const Route = createFileRoute("/$lang/post/$slug")({
   validateSearch: z.object({
@@ -99,22 +100,46 @@ export const Route = createFileRoute("/$lang/post/$slug")({
 
     const canonicalUrl = `${BlogMeta.baseUrl}${params.lang}/post/${post.slug}`;
 
-    const jsonLd = {
-      "@context": "https://schema.org",
+    const author = headHelper.person();
+
+    const blogPosting = {
       "@type": "BlogPosting",
       headline: post.title,
       description: post.description,
-      author: { "@type": "Person", name: "Lee SangHyeon" },
+      url: canonicalUrl,
+      mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+      image: `${BlogMeta.baseUrl}images/main-og.webp`,
+      inLanguage: "ko-KR",
+      author,
+      publisher: author,
       datePublished: post.published,
       dateModified: post.updated ?? post.published,
       keywords: post.tags?.join(","),
+    };
+
+    const breadcrumbList = {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: BlogMeta.siteName,
+          item: BlogMeta.baseUrl,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: post.title,
+          item: canonicalUrl,
+        },
+      ],
     };
 
     return {
       meta: [
         { title: post.title },
         { name: "description", content: post.description },
-        { name: "author", content: "sanghyeon" },
+        { name: "author", content: BlogMeta.author.name },
         { name: "robots", content: "index, follow" },
         { property: "og:type", content: "article" },
         { property: "og:url", content: canonicalUrl },
@@ -134,10 +159,8 @@ export const Route = createFileRoute("/$lang/post/$slug")({
         { rel: "alternate", hrefLang: "ko-KR", href: canonicalUrl },
       ],
       scripts: [
-        {
-          type: "application/ld+json",
-          children: JSON.stringify(jsonLd),
-        },
+        headHelper.jsonLd(blogPosting),
+        headHelper.jsonLd(breadcrumbList),
       ],
     };
   },

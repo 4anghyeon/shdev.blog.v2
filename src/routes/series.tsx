@@ -4,8 +4,16 @@ import { SeriesListItem } from "#/features/series/components/SeriesListItem";
 import { getPostsBySeries } from "#/features/series/helper";
 import { BrushBorder } from "#/shared/components/BrushBorder";
 import { SERIES_ITEMS } from "#/shared/constant/series-itmes";
+import { headHelper } from "#/shared/helper/head";
 
 export const Route = createFileRoute("/series")({
+  head: () =>
+    headHelper.page({
+      path: "series",
+      title: "시리즈",
+      description:
+        "지금까지의 경험과 탐구의 과정들이 자연스럽게 이어질 수 있도록 구성한 기록 모음입니다.",
+    }),
   component: RouteComponent,
 });
 

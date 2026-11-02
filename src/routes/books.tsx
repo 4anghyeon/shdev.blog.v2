@@ -7,6 +7,7 @@ import { BookDetailPanel } from "#/features/bookshelf/components/BookDetailPanel
 import { BookshelfLoading } from "#/features/bookshelf/components/BookshelfLoading";
 import { BrushBorder } from "#/shared/components/BrushBorder";
 import { BOOK_ITEMS } from "#/shared/constant/book-items";
+import { headHelper } from "#/shared/helper/head";
 
 const BookshelfScene = lazy(() =>
   import("#/features/bookshelf/components/BookshelfScene").then((module) => ({
@@ -16,6 +17,13 @@ const BookshelfScene = lazy(() =>
 
 export const Route = createFileRoute("/books")({
   validateSearch: z.object({ book: z.string().optional() }),
+  head: () =>
+    headHelper.page({
+      path: "books",
+      title: "책장",
+      description:
+        "읽은 책들을 한 권씩 꽂아 둔 책장입니다. 눌러서 꺼내 볼 수 있어요.",
+    }),
   component: RouteComponent,
 });
 

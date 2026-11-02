@@ -30,6 +30,7 @@ export const Route = createRootRoute({
       },
       { property: "og:url", content: BlogMeta.baseUrl },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         name: "naver-site-verification",
         content: "a525afa1b71b59077665f12a8a87b009d8c7b70b",

@@ -1,6 +1,7 @@
 import { Github, Linkedin, Mail } from "iconoir-react";
 import { Rss } from "lucide-react";
 import { Link } from "#/shared/components/Link";
+import { BlogMeta } from "#/shared/constant/metadata";
 
 export function Footer() {
   return (
@@ -8,21 +9,23 @@ export function Footer() {
       <div className="flex gap-4 [&>a]:hover:animate-sway">
         <Link
           className="hover:text-gray-500"
-          to={"https://github.com/4anghyeon" as string}
+          to={BlogMeta.social.github as string}
+          rel="me noopener noreferrer"
           aria-label="Github Link"
         >
           <Github />
         </Link>
         <Link
           className="hover:text-[#0A66C2]"
-          to={"https://linkedin.com/in/4anghyeon" as string}
+          to={BlogMeta.social.linkedin as string}
+          rel="me noopener noreferrer"
           aria-label="LinkedIn Link"
         >
           <Linkedin />
         </Link>
         <Link
           className="hover:text-yellow-500"
-          to={"mailto:uphyeon@kakao.com" as string}
+          to={`mailto:${BlogMeta.social.email}` as string}
           aria-label="email address"
         >
           <Mail />

@@ -5,12 +5,23 @@ import { PageContainer } from "#/composites/layout/PageContainer";
 import { PostListItem } from "#/features/post-list/components/PostListItem";
 import { Badge } from "#/shared/components/Badge";
 import { BlogMeta } from "#/shared/constant/metadata";
+import { headHelper } from "#/shared/helper/head";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     links: [
       { rel: "canonical", href: BlogMeta.baseUrl },
       { rel: "alternate", hrefLang: "x-default", href: BlogMeta.baseUrl },
+    ],
+    scripts: [
+      headHelper.jsonLd({
+        "@type": "WebSite",
+        name: BlogMeta.siteName,
+        url: BlogMeta.baseUrl,
+        description: BlogMeta.description,
+        inLanguage: "ko-KR",
+        author: headHelper.person(),
+      }),
     ],
   }),
   component: App,
