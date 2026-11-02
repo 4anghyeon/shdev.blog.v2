@@ -3,6 +3,10 @@ import { allPosts } from "content-collections";
 import { groupBy } from "es-toolkit/array";
 import { PageContainer } from "#/composites/layout/PageContainer";
 import { PostListItem } from "#/features/post-list/components/PostListItem";
+import {
+  getYearSectionId,
+  YearNavigation,
+} from "#/features/post-list/components/YearNavigation";
 import { Badge } from "#/shared/components/Badge";
 import { BlogMeta } from "#/shared/constant/metadata";
 import { headHelper } from "#/shared/helper/head";
@@ -42,9 +46,14 @@ function App() {
 
   return (
     <PageContainer width="list">
+      <YearNavigation years={years} />
       <div className="flex flex-col gap-y-12">
         {years.map((year) => (
-          <section key={year} className="flex flex-col gap-y-4">
+          <section
+            key={year}
+            id={getYearSectionId(year)}
+            className="flex scroll-mt-28 flex-col gap-y-4 lg:scroll-mt-42"
+          >
             <div className="flex items-center gap-x-2 pb-2">
               <h2 className="font-bold font-dokdo text-5xl text-ink-strong">
                 {year}
