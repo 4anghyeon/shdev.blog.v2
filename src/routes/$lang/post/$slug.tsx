@@ -16,6 +16,7 @@ import { GiscusComment } from "#/features/post-detail/components/GiscusComment";
 import { PostEndSeal } from "#/features/post-detail/components/PostEndSeal";
 import { PostNavigation } from "#/features/post-detail/components/PostNavigation";
 import { References } from "#/features/post-detail/components/References";
+import { RelatedPosts } from "#/features/post-detail/components/RelatedPosts";
 import { SeriesListByPost } from "#/features/post-detail/components/SeriesListByPost";
 import { TableOfContents } from "#/features/post-detail/components/TableOfContents";
 import { usePostStore } from "#/features/post-detail/post-store";
@@ -69,12 +70,26 @@ export const Route = createFileRoute("/$lang/post/$slug")({
           }
         : null;
 
+    const related = post.relatedSlugs.flatMap((relatedSlug) => {
+      const relatedPost = allPosts.find((p) => p.slug === relatedSlug);
+      return relatedPost
+        ? [
+            {
+              slug: relatedPost.slug,
+              title: relatedPost.title,
+              description: relatedPost.description,
+            },
+          ]
+        : [];
+    });
+
     return {
       post,
       markup: post.markup,
       slug: post.slug,
       prev,
       next,
+      related,
     };
   },
   head: ({ params, loaderData }) => {
@@ -130,7 +145,7 @@ export const Route = createFileRoute("/$lang/post/$slug")({
 });
 
 function BlogPost() {
-  const { post, markup, slug, prev, next } = Route.useLoaderData();
+  const { post, markup, slug, prev, next, related } = Route.useLoaderData();
   const { lang } = Route.useParams();
   const setTitle = usePostStore((state) => state.setTitle);
 
@@ -188,6 +203,7 @@ function BlogPost() {
         <Markdown markup={markup} slug={slug} className="prose" />
         <References items={post.references} />
         <PostEndSeal key={slug} />
+        <RelatedPosts posts={related} />
         <PostNavigation prev={prev} next={next} />
         <AllListLink className="mt-8" />
         <ClientOnly>
