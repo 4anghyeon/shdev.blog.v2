@@ -16,7 +16,8 @@ export const QUALITY_SETTINGS = {
     contactShadowFrames: Number.POSITIVE_INFINITY,
   },
   low: {
-    dpr: 1,
+    // 3배율 휴대폰 화면에서 1로 낮추면 흐릿해져서, 캔버스가 작은 모바일에서도 부담이 적은 1.5까지는 허용한다
+    dpr: [1, 1.5],
     shadowMapSize: 1024,
     environmentResolution: 64,
     contactShadowFrames: 1,
@@ -27,7 +28,7 @@ export const QUALITY_SETTINGS = {
 export const MIN_ACCEPTABLE_FPS = 40;
 
 const LOW_END_CORES = 4;
-const LOW_END_MEMORY_GB = 4;
+const LOW_END_MEMORY_GB = 2;
 
 /**
  * 코어 수와 메모리로 첫 품질 단계를 고른다.
