@@ -154,4 +154,18 @@ export const BOOK_ITEMS: readonly BookItem[] = [
     cover: "/images/books/mencius/cover.webp",
     spine: "/images/books/mencius/spine.webp",
   },
+  {
+    id: "dark-psychology",
+    title: "다크 심리학 : 심리 조종의 기술",
+    author: "다크 인사이트",
+    binding: "paperback",
+    color: "#161616",
+    ink: "#e8e8e8",
+    size: { height: 19.5, width: 13.5, thickness: 2 },
+    pages: 288,
+    summary:
+      "사람의 행동과 선택에 영향을 주는 심리 조종의 원리와 전략을 다룬 책.",
+    cover: "/images/books/dark-psychology/cover.webp",
+    spine: "/images/books/dark-psychology/spine.webp",
+  },
 ];
