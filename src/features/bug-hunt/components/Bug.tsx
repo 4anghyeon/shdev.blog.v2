@@ -6,6 +6,11 @@ import {
   useRef,
   useState,
 } from "react";
+import { BugShape } from "#/features/bug-hunt/components/BugShape";
+import {
+  BUG_SPECIES,
+  pickSpecies,
+} from "#/features/bug-hunt/helper/bug-species";
 import {
   ESCAPE_SPEED_PX_PER_S,
   type FlightState,
@@ -14,7 +19,6 @@ import {
   pickOffscreenPoint,
   pickWaypoint,
   stepFlight,
-  WANDER_SPEED_PX_PER_S,
 } from "#/features/bug-hunt/helper/flight-path";
 
 const LIFETIME_MS = 18_000;
@@ -31,7 +35,7 @@ interface BugProps {
 }
 
 /**
- * 화면 밖에서 날아 들어와 돌아다니다가, 잡히지 않으면 일정 시간 뒤 화면 밖으로 도망가는 날벌레.
+ * 무작위 종류로 화면 밖에서 날아 들어와 돌아다니다가, 잡히지 않으면 일정 시간 뒤 화면 밖으로 도망가는 날벌레.
  * 잡혔거나 도망쳐서 더 이상 화면에 둘 필요가 없으면 `onDone`을 부른다.
  */
 export function Bug({ onCatch, onDone }: BugProps) {
@@ -49,6 +53,7 @@ export function Bug({ onCatch, onDone }: BugProps) {
   const isDoneRef = useRef(false);
   const releaseTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const [isCaught, setIsCaught] = useState(false);
+  const [species] = useState(pickSpecies);
 
   useAnimationFrame((time, delta) => {
     if (isDoneRef.current) return;
@@ -94,7 +99,7 @@ export function Bug({ onCatch, onDone }: BugProps) {
       {
         speed: isEscapingRef.current
           ? ESCAPE_SPEED_PX_PER_S
-          : WANDER_SPEED_PX_PER_S,
+          : BUG_SPECIES[species].wanderSpeed,
         pointer: isEscapingRef.current ? null : pointerRef.current,
       },
     );
@@ -151,42 +156,9 @@ export function Bug({ onCatch, onDone }: BugProps) {
     >
       {!isCaught && (
         <motion.div className="text-ink-strong" style={{ rotate }}>
-          <BugShape />
+          <BugShape species={species} />
         </motion.div>
       )}
     </motion.button>
-  );
-}
-
-function BugShape() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 20 20" aria-hidden="true">
-      <motion.g
-        style={{ originX: "10px", originY: "10px" }}
-        animate={{ scaleX: [1, 0.35] }}
-        transition={{
-          duration: 0.04,
-          repeat: Number.POSITIVE_INFINITY,
-          repeatType: "mirror",
-        }}
-      >
-        <ellipse
-          cx="5.5"
-          cy="9"
-          rx="4.5"
-          ry="2.5"
-          className="fill-ink-muted/50"
-        />
-        <ellipse
-          cx="14.5"
-          cy="9"
-          rx="4.5"
-          ry="2.5"
-          className="fill-ink-muted/50"
-        />
-      </motion.g>
-      <ellipse cx="10" cy="11.5" rx="2.6" ry="4.5" className="fill-current" />
-      <circle cx="10" cy="6" r="2" className="fill-current" />
-    </svg>
   );
 }

@@ -27,7 +27,6 @@ const JITTER_ACCEL = 1200;
 const FLEE_RADIUS_PX = 70;
 const FLEE_ACCEL = 800;
 
-export const WANDER_SPEED_PX_PER_S = 110;
 export const ESCAPE_SPEED_PX_PER_S = 360;
 
 /** 화면 네 가장자리 중 하나의 바깥쪽에서 무작위 지점을 고른다. */

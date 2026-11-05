@@ -21,7 +21,7 @@ export function ThanksToast({ point, message, onDone }: ThanksToastProps) {
   return (
     <motion.p
       role="status"
-      className="absolute top-0 left-0 -translate-x-1/2 whitespace-nowrap font-dokdo text-3xl text-seal"
+      className="absolute top-0 left-0 -translate-x-1/2 whitespace-nowrap font-dokdo text-3xl text-seal [text-shadow:0_0_4px_var(--background),0_0_10px_var(--background),0_0_18px_var(--background)]"
       style={{ left: x, top: point.y - 24 }}
       initial={{ opacity: 0, y: 8, scale: 0.9 }}
       animate={{
