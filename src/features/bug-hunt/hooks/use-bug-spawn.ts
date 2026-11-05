@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 const SPAWN_COUNT_KEY = "bug-hunt:spawned";
 const MAX_SPAWNS_PER_SESSION = import.meta.env.DEV
   ? Number.POSITIVE_INFINITY
-  : 2;
+  : 3;
 const SPAWN_DELAY_RANGE_MS: [number, number] = import.meta.env.DEV
   ? [3_000, 5_000]
-  : [30_000, 90_000];
+  : [20_000, 90_000];
 const SPAWN_PROBABILITY = import.meta.env.DEV ? 1 : 0.2;
+const FIRST_SPAWN_DELAY_RANGE_MS: [number, number] = import.meta.env.DEV
+  ? [3_000, 5_000]
+  : [15_000, 45_000];
 
 const getSpawnCount = () => {
   try {
@@ -22,6 +25,14 @@ const increaseSpawnCount = () => {
   try {
     sessionStorage.setItem(SPAWN_COUNT_KEY, String(getSpawnCount() + 1));
   } catch {}
+};
+
+/** 세션의 첫 벌레는 짧은 대기 뒤 반드시 나오고, 그 뒤로는 더 긴 간격마다 확률적으로 나온다. */
+const getSpawnRule = (spawnCount: number) => {
+  if (spawnCount === 0) {
+    return { delayRange: FIRST_SPAWN_DELAY_RANGE_MS, probability: 1 };
+  }
+  return { delayRange: SPAWN_DELAY_RANGE_MS, probability: SPAWN_PROBABILITY };
 };
 
 /**
@@ -39,18 +50,20 @@ export const useBugSpawn = () => {
 
     const schedule = () => {
       clearTimeout(timer);
-      if (document.hidden || getSpawnCount() >= MAX_SPAWNS_PER_SESSION) return;
+      const spawnCount = getSpawnCount();
+      if (document.hidden || spawnCount >= MAX_SPAWNS_PER_SESSION) return;
 
+      const { delayRange, probability } = getSpawnRule(spawnCount);
       timer = setTimeout(
         () => {
-          if (Math.random() < SPAWN_PROBABILITY) {
+          if (Math.random() < probability) {
             increaseSpawnCount();
             setIsBugVisible(true);
           } else {
             schedule();
           }
         },
-        random(...SPAWN_DELAY_RANGE_MS),
+        random(...delayRange),
       );
     };
 
