@@ -5,6 +5,7 @@ import { Analytics } from "@vercel/analytics/react";
 import type { ReactNode } from "react";
 import { Footer } from "#/composites/layout/Footer";
 import { Navbar } from "#/composites/layout/Navbar";
+import { BugHunt } from "#/features/bug-hunt/components/BugHunt";
 import { ThemeProvider } from "#/features/theme/provider/ThemeProvider";
 import { GoogleAnalyticsScript } from "#/shared/components/GoogleAnalyticsScript";
 import { BlogMeta } from "#/shared/constant/metadata";
@@ -79,6 +80,7 @@ function RootDocument({ children }: { children: ReactNode }) {
           <Navbar />
           {children}
           <Footer />
+          <BugHunt />
         </ThemeProvider>
         <TanStackDevtools
           config={{
