@@ -1,6 +1,11 @@
 import { random } from "es-toolkit";
 import { motion, useAnimationFrame, useMotionValue } from "motion/react";
-import { useEffect, useRef } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ESCAPE_SPEED_PX_PER_S,
   type FlightState,
@@ -18,14 +23,18 @@ const WAYPOINT_REACHED_PX = 30;
 const REST_PROBABILITY = 0.45;
 const REST_DURATION_RANGE_MS: [number, number] = [900, 1800];
 const MAX_FRAME_DELTA_MS = 50;
+const CLICK_GUARD_MS = 350;
 
 interface BugProps {
   onCatch: (point: Point) => void;
-  onEscape: () => void;
+  onDone: () => void;
 }
 
-/** 화면 밖에서 날아 들어와 돌아다니다가, 잡히지 않으면 일정 시간 뒤 화면 밖으로 도망가는 날벌레. */
-export function Bug({ onCatch, onEscape }: BugProps) {
+/**
+ * 화면 밖에서 날아 들어와 돌아다니다가, 잡히지 않으면 일정 시간 뒤 화면 밖으로 도망가는 날벌레.
+ * 잡혔거나 도망쳐서 더 이상 화면에 둘 필요가 없으면 `onDone`을 부른다.
+ */
+export function Bug({ onCatch, onDone }: BugProps) {
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
   const rotate = useMotionValue(0);
@@ -38,14 +47,8 @@ export function Bug({ onCatch, onEscape }: BugProps) {
   const pointerRef = useRef<Point | null>(null);
   const isEscapingRef = useRef(false);
   const isDoneRef = useRef(false);
-
-  useEffect(() => {
-    const handlePointerMove = (event: PointerEvent) => {
-      pointerRef.current = { x: event.clientX, y: event.clientY };
-    };
-    window.addEventListener("pointermove", handlePointerMove);
-    return () => window.removeEventListener("pointermove", handlePointerMove);
-  }, []);
+  const releaseTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [isCaught, setIsCaught] = useState(false);
 
   useAnimationFrame((time, delta) => {
     if (isDoneRef.current) return;
@@ -99,7 +102,7 @@ export function Bug({ onCatch, onEscape }: BugProps) {
 
     if (isEscapingRef.current && isOffscreen(next.position, viewport)) {
       isDoneRef.current = true;
-      onEscape();
+      onDone();
       return;
     }
 
@@ -110,24 +113,47 @@ export function Bug({ onCatch, onEscape }: BugProps) {
     );
   });
 
-  const handlePointerDown = () => {
+  const handlePointerDown = (event: ReactPointerEvent) => {
     if (isDoneRef.current) return;
+    event.preventDefault();
     isDoneRef.current = true;
+    setIsCaught(true);
     onCatch({ x: x.get(), y: y.get() });
+
+    // 터치는 손가락을 뗀 뒤에 click이 따로 오므로, 그때까지 빈 터치 영역을 남겨 뒤에 있는 링크가 click을 받지 않게 한다
+    const release = () => {
+      window.removeEventListener("pointerup", release);
+      window.removeEventListener("pointercancel", release);
+      releaseTimerRef.current = setTimeout(onDone, CLICK_GUARD_MS);
+    };
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
   };
+
+  useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      pointerRef.current = { x: event.clientX, y: event.clientY };
+    };
+    window.addEventListener("pointermove", handlePointerMove);
+    return () => window.removeEventListener("pointermove", handlePointerMove);
+  }, []);
+
+  useEffect(() => () => clearTimeout(releaseTimerRef.current), []);
 
   return (
     <motion.button
       type="button"
       tabIndex={-1}
       aria-label="날벌레 잡기"
-      className="pointer-events-auto absolute -top-8 -left-8 flex size-16 cursor-crosshair items-center justify-center"
+      className="pointer-events-auto absolute -top-8 -left-8 flex size-16 cursor-crosshair touch-none items-center justify-center"
       style={{ x, y }}
       onPointerDown={handlePointerDown}
     >
-      <motion.div className="text-ink-strong" style={{ rotate }}>
-        <BugShape />
-      </motion.div>
+      {!isCaught && (
+        <motion.div className="text-ink-strong" style={{ rotate }}>
+          <BugShape />
+        </motion.div>
+      )}
     </motion.button>
   );
 }

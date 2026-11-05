@@ -28,7 +28,6 @@ export function BugHunt() {
   const [catches, setCatches] = useState<Catch[]>([]);
 
   const handleCatch = (point: Point) => {
-    dismissBug();
     recordCatch();
     setCatches((prev) => [
       ...prev,
@@ -42,7 +41,7 @@ export function BugHunt() {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-45 overflow-hidden">
-      {isBugVisible && <Bug onCatch={handleCatch} onEscape={dismissBug} />}
+      {isBugVisible && <Bug onCatch={handleCatch} onDone={dismissBug} />}
       {catches.map(({ id, point, message }) => (
         <div key={id}>
           <Splat point={point} />
