@@ -8,10 +8,10 @@ const MAX_SPAWNS_PER_SESSION = import.meta.env.DEV
 const SPAWN_DELAY_RANGE_MS: [number, number] = import.meta.env.DEV
   ? [3_000, 5_000]
   : [20_000, 90_000];
-const SPAWN_PROBABILITY = import.meta.env.DEV ? 1 : 0.2;
+const SPAWN_PROBABILITY = import.meta.env.DEV ? 1 : 0.5;
 const FIRST_SPAWN_DELAY_RANGE_MS: [number, number] = import.meta.env.DEV
   ? [3_000, 5_000]
-  : [15_000, 45_000];
+  : [10_000, 30_000];
 
 const getSpawnCount = () => {
   try {
