@@ -155,7 +155,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           return (
             <ul
               className={cn("wrap-break-word mt-2 list-disc ps-5", {
-                "[&>li]:mb-2": isParentNull,
+                "[&>li]:mb-0.5": isParentNull,
               })}
             >
               {domToReact(domNode.children as DOMNode[], options)}
@@ -169,7 +169,7 @@ export function Markdown({ markup, slug, className }: MarkdownProps) {
           return (
             <ol
               className={cn("wrap-break-word mt-2 list-decimal ps-5", {
-                "[&>li]:mb-2": isParentNull,
+                "[&>li]:mb-0.5": isParentNull,
               })}
             >
               {domToReact(domNode.children as DOMNode[], options)}

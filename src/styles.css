@@ -141,3 +141,21 @@
     animation-range: exit 0% exit 70%;
   }
 }
+
+/* KaTeX */
+.prose .katex {
+  font-size: 1em;
+}
+
+.prose .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25em;
+  margin: 1.25rem 0;
+  padding: 0.25rem 0;
+  text-align: center;
+}
+
+.katex-display > .katex {
+  white-space: nowrap;
+}

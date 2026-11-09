@@ -7,10 +7,12 @@ import type { Element } from "hast";
 import { toString as hastToString } from "hast-util-to-string";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { rehypeGithubAlerts } from "rehype-github-alerts";
+import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeStringify from "rehype-stringify";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
@@ -39,9 +41,12 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   const result = await unified()
     .use(remarkParse) // Parse markdown
     .use(remarkGfm) // Support GitHub Flavored Markdown
+    .use(remarkMath) // Parse $inline$ and $$block$$ math
     .use(remarkRehype, {
       allowDangerousHtml: true,
     }) // Convert to HTML AST
+    // Shiki가 수식 노드(code.language-math)를 코드 블록으로 하이라이팅하지 않도록 먼저 렌더링한다
+    .use(rehypeKatex)
     .use(rehypeSlug) // Add IDs to headings
     .use(rehypeGithubAlerts, {})
     .use(rehypeShiki, {

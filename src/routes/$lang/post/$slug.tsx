@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { allPosts } from "content-collections";
 import { EditPencil } from "iconoir-react/regular";
+import KatexCss from "katex/dist/katex.min.css?url";
 import { Suspense, useEffect } from "react";
 import type { BlogPosting, BreadcrumbList } from "schema-dts";
 import { z } from "zod";
@@ -158,6 +159,9 @@ export const Route = createFileRoute("/$lang/post/$slug")({
         { rel: "canonical", href: canonicalUrl },
         { rel: "alternate", hrefLang: "x-default", href: canonicalUrl },
         { rel: "alternate", hrefLang: "ko-KR", href: canonicalUrl },
+        ...(loaderData.markup.includes('class="katex"')
+          ? [{ rel: "stylesheet", href: KatexCss }]
+          : []),
       ],
       scripts: [headHelper.jsonLd(blogPosting, breadcrumbList)],
     };
