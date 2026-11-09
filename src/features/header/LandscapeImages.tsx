@@ -1,3 +1,4 @@
+import { LandscapeBirds } from "#/features/header/LandscapeBirds";
 import { cn } from "#/shared/lib/tailwind";
 
 interface LandscapeSceneProps {
@@ -7,7 +8,7 @@ interface LandscapeSceneProps {
 }
 
 /**
- * 한 테마의 풍경. 소나무를 지운 배경 위에 소나무 레이어를 겹쳐 흔든다.
+ * 한 테마의 풍경. 소나무를 지운 배경, 새, 흔들리는 소나무 레이어를 차례로 겹친다.
  */
 function LandscapeScene({ background, tree, className }: LandscapeSceneProps) {
   return (
@@ -24,6 +25,7 @@ function LandscapeScene({ background, tree, className }: LandscapeSceneProps) {
         height={336}
         className="absolute inset-0 size-full"
       />
+      <LandscapeBirds />
       {/* 소나무 레이어(708x240)는 배경(1500x336)의 왼쪽 위 696x228 영역에 위·왼쪽으로 12px씩 덧댄 것이라 그만큼 밖으로 빼서 놓는다.
           회전축은 줄기가 화면 왼쪽으로 빠져나가는 지점(배경 기준 0, 185)이다. */}
       <img
@@ -45,12 +47,12 @@ export function LandscapeImages() {
       <LandscapeScene
         background="/images/about-landscape-hero.webp"
         tree="/images/about-landscape-tree.webp"
-        className="dark:opacity-0"
+        className="text-[#a2a19b] dark:opacity-0"
       />
       <LandscapeScene
         background="/images/about-landscape-hero-dark.webp"
         tree="/images/about-landscape-tree-dark.webp"
-        className="opacity-0 dark:opacity-100"
+        className="text-[#162448] opacity-0 dark:opacity-100"
       />
     </>
   );
