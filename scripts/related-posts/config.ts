@@ -18,7 +18,8 @@ export const EMBEDDING = {
   model: "nvidia/nemotron-3.5-embed-1b",
   // 긴 입력을 벡터 하나로 압축하면 주제가 흐려지므로 섹션보다 작은 단위로 잘라 임베딩한다.
   maxChunkChars: 500,
-  batchSize: 32,
+  // 입력이 2개 이상인 요청은 API가 500(service inference failed)을 돌려주므로 한 번에 하나씩 보낸다.
+  batchSize: 1,
   // 무료 티어의 분당 요청 제한을 넘지 않도록 요청 사이에 간격을 둔다.
   requestIntervalMs: 1_600,
   maxRetries: 3,

@@ -7,9 +7,9 @@ interface DescriptionProps {
 
 export function Description({ children }: DescriptionProps) {
   const [description, setDescription] = useState("");
+  const descriptionString = children?.toString();
 
   useEffect(() => {
-    const descriptionString = children?.toString();
     if (descriptionString) {
       const et = new EchoText(
         [descriptionString],
@@ -20,7 +20,7 @@ export function Description({ children }: DescriptionProps) {
       });
       et.start();
     }
-  }, [children?.toString]);
+  }, [descriptionString]);
 
   return (
     <div className="flex items-center gap-x-4">
