@@ -60,6 +60,7 @@
   --animate-bounce-slow: float 4s linear infinite;
   --animate-stamp: stamp 0.7s linear both;
   --animate-year-active: year-active auto linear;
+  --animate-pine-sway: pine-sway 10s ease-in-out infinite;
 
   /* Shadows */
   --shadow-page:
@@ -101,6 +102,26 @@
     from,
     to {
       color: var(--color-ink-strong);
+    }
+  }
+
+  /* 가지 끝이 위로만 들리게 한다. 아래로 내리면 이미지 위쪽 가장자리 밖(그려지지 않은 부분)이 드러난다 */
+  @keyframes pine-sway {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    24% {
+      transform: rotate(-0.5deg);
+    }
+    42% {
+      transform: rotate(-0.2deg);
+    }
+    66% {
+      transform: rotate(-0.6deg);
+    }
+    84% {
+      transform: rotate(-0.25deg);
     }
   }
 
