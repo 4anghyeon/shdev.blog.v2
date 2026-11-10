@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Seal } from "#/shared/components/Seal";
 
 export function PostEndSeal() {
-  const ref = useRef<HTMLDivElement>(null);
   const [isRead, setIsRead] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = ref.current;

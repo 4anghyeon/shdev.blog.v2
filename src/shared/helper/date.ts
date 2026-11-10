@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import ko from "dayjs/locale/ko";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 
-dayjs.extend(localizedFormat); // 추가
+dayjs.extend(localizedFormat);
 dayjs.locale(ko);
 
 const DATE_FORMAT = {

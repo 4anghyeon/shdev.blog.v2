@@ -42,6 +42,8 @@ const getSpawnRule = (spawnCount: number) => {
 export const useBugSpawn = () => {
   const [isBugVisible, setIsBugVisible] = useState(false);
 
+  const dismissBug = () => setIsBugVisible(false);
+
   useEffect(() => {
     if (isBugVisible) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -75,8 +77,6 @@ export const useBugSpawn = () => {
       document.removeEventListener("visibilitychange", schedule);
     };
   }, [isBugVisible]);
-
-  const dismissBug = () => setIsBugVisible(false);
 
   return { isBugVisible, dismissBug };
 };

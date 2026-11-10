@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-// 개별 도형을 위한 컴포넌트
 const Shape3D = ({ createGeometry }: any) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -13,7 +12,6 @@ const Shape3D = ({ createGeometry }: any) => {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // 이전 렌더러 정리
     if (containerRef.current) {
       const oldCanvas = containerRef.current.querySelector("canvas");
       if (oldCanvas) {
@@ -29,7 +27,6 @@ const Shape3D = ({ createGeometry }: any) => {
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     camera.position.z = 5;
 
-    // 새 렌더러 생성
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: "high-performance",
@@ -42,7 +39,6 @@ const Shape3D = ({ createGeometry }: any) => {
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 조명 설정
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -50,12 +46,10 @@ const Shape3D = ({ createGeometry }: any) => {
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
-    // Controls 설정
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controlsRef.current = controls;
 
-    // 도형 생성
     const geometry = createGeometry();
     const material = new THREE.MeshBasicMaterial({});
     const mesh = new THREE.Mesh(geometry, material);
@@ -63,7 +57,6 @@ const Shape3D = ({ createGeometry }: any) => {
 
     let isDisposed = false;
 
-    // Animation loop
     const animate = () => {
       if (isDisposed) return;
 
@@ -86,7 +79,6 @@ const Shape3D = ({ createGeometry }: any) => {
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       isDisposed = true;
 
@@ -99,11 +91,9 @@ const Shape3D = ({ createGeometry }: any) => {
         controlsRef.current = null;
       }
 
-      // 지오메트리와 재질 정리
       if (geometry) geometry.dispose();
       if (material) material.dispose();
 
-      // Scene의 모든 객체 정리
       if (sceneRef.current) {
         sceneRef.current.traverse((object) => {
           if (object instanceof THREE.Mesh) {
@@ -119,7 +109,6 @@ const Shape3D = ({ createGeometry }: any) => {
         sceneRef.current = null;
       }
 
-      // 렌더러 정리
       if (rendererRef.current) {
         rendererRef.current.dispose();
         rendererRef.current.forceContextLoss();
@@ -137,7 +126,6 @@ const Shape3D = ({ createGeometry }: any) => {
   );
 };
 
-// 메인 컴포넌트는 동일
 export const VariousGeometryExample = () => {
   const shapes = [
     {

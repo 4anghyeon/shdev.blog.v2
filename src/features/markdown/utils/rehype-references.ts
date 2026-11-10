@@ -18,7 +18,6 @@ type RehypeReferencesOptions = {
 
 const REFERENCE_LABEL = "참고";
 
-// hast 노드가 element인지 확인하는 타입 가드
 const isElement = (node: RootContent | undefined): node is Element =>
   node?.type === "element";
 
@@ -39,7 +38,6 @@ const isReferenceLabel = (node: RootContent) => {
   );
 };
 
-// URL에서 www.를 뗀 hostname을 꺼낸다
 const toHostname = (url: URL) => url.hostname.replace(/^www\./, "");
 
 // 제목이 URL 그대로면 hostname + 경로로 줄여 보여준다

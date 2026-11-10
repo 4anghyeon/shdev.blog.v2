@@ -4,14 +4,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const SpotLightDemo = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<OrbitControls>(null);
-  const lightRef = useRef<SpotLight>(null);
-  const helperRef = useRef<SpotLightHelper>(null);
-  const targetRef = useRef<THREE.Object3D>(null);
-  const animFrameRef = useRef<number>(0);
-
-  // SpotLight 속성
   const [intensity, setIntensity] = useState(1.0);
   const [color, setColor] = useState("#ffffff");
   const [positionX, setPositionX] = useState(0);
@@ -26,6 +18,59 @@ export const SpotLightDemo = () => {
   const [castShadow, setCastShadow] = useState(true);
   const [showHelper, setShowHelper] = useState(true);
 
+  const mountRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<OrbitControls>(null);
+  const lightRef = useRef<SpotLight>(null);
+  const helperRef = useRef<SpotLightHelper>(null);
+  const targetRef = useRef<THREE.Object3D>(null);
+  const animFrameRef = useRef<number>(0);
+
+  // Convert angle from radians to degrees for display
+  const angleDegrees = ((angle * 180) / Math.PI).toFixed(1);
+
+  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIntensity(parseFloat(e.target.value));
+  };
+
+  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+  };
+
+  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
+    if (axis === "x") setPositionX(value);
+    if (axis === "y") setPositionY(value);
+    if (axis === "z") setPositionZ(value);
+  };
+
+  const handleTargetChange = (axis: "x" | "z", value: number) => {
+    if (axis === "x") setTargetX(value);
+    if (axis === "z") setTargetZ(value);
+  };
+
+  const handleAngleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAngle(parseFloat(e.target.value));
+  };
+
+  const handlePenumbraChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPenumbra(parseFloat(e.target.value));
+  };
+
+  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDistance(parseFloat(e.target.value));
+  };
+
+  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDecay(parseFloat(e.target.value));
+  };
+
+  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCastShadow(e.target.checked);
+  };
+
+  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
+    setShowHelper(e.target.checked);
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
     if (!mountRef.current) return;
@@ -33,36 +78,29 @@ export const SpotLightDemo = () => {
       mountRef.current.children.item(0)?.remove();
     }
 
-    // Scene setup
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#111827");
     scene.fog = new THREE.Fog(0x111827, 10, 30);
 
-    // Camera setup
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.set(0, 5, 12);
 
-    // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
     mountRef.current.appendChild(renderer.domElement);
 
-    // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controlsRef.current = controls;
 
-    // Grid helper
     const gridHelper = new THREE.GridHelper(30, 30);
     scene.add(gridHelper);
 
-    // Create stage/theater-like environment
-    // Floor
     const floorGeometry = new THREE.PlaneGeometry(30, 30);
     const floorMaterial = new THREE.MeshStandardMaterial({
       color: 0x333333,
@@ -74,8 +112,6 @@ export const SpotLightDemo = () => {
     floor.receiveShadow = true;
     scene.add(floor);
 
-    // Add some objects to show the spotlight effect
-    // Central stage platform
     const platformGeometry = new THREE.CylinderGeometry(3, 3, 0.2, 32);
     const platformMaterial = new THREE.MeshStandardMaterial({
       color: 0x555555,
@@ -87,11 +123,8 @@ export const SpotLightDemo = () => {
     platform.receiveShadow = true;
     scene.add(platform);
 
-    // Create some performers/props on the stage
-    // First performer (dancer)
     const dancer = new THREE.Group();
 
-    // Body
     const bodyGeometry = new THREE.CapsuleGeometry(0.25, 1, 4, 8);
     const bodyMaterial = new THREE.MeshStandardMaterial({
       color: 0x3366ff,
@@ -103,7 +136,6 @@ export const SpotLightDemo = () => {
     body.castShadow = true;
     dancer.add(body);
 
-    // Head
     const headGeometry = new THREE.SphereGeometry(0.2, 16, 16);
     const headMaterial = new THREE.MeshStandardMaterial({
       color: 0xffccaa,
@@ -115,7 +147,6 @@ export const SpotLightDemo = () => {
     head.castShadow = true;
     dancer.add(head);
 
-    // Arms
     const armGeometry = new THREE.CapsuleGeometry(0.07, 0.6, 4, 8);
 
     const leftArm = new THREE.Mesh(armGeometry, bodyMaterial);
@@ -130,7 +161,6 @@ export const SpotLightDemo = () => {
     rightArm.castShadow = true;
     dancer.add(rightArm);
 
-    // Legs
     const legGeometry = new THREE.CapsuleGeometry(0.1, 0.7, 4, 8);
 
     const leftLeg = new THREE.Mesh(legGeometry, bodyMaterial);
@@ -146,7 +176,6 @@ export const SpotLightDemo = () => {
     dancer.position.set(0, 0.3, 0);
     scene.add(dancer);
 
-    // Add some props around the stage
     const propsCount = 8;
     const radius = 2.5;
     const propGeometries = [
@@ -208,7 +237,6 @@ export const SpotLightDemo = () => {
       scene.add(prop);
     }
 
-    // Additional tall objects around the scene
     const pillarGeometry = new THREE.CylinderGeometry(0.2, 0.2, 3, 8);
     const pillarMaterial = new THREE.MeshStandardMaterial({
       color: 0x888888,
@@ -235,13 +263,11 @@ export const SpotLightDemo = () => {
     const ambientLight = new THREE.AmbientLight(0x333333, 0.1);
     scene.add(ambientLight);
 
-    // SpotLight target
     const target = new THREE.Object3D();
     target.position.set(targetX, 0, targetZ);
     scene.add(target);
     targetRef.current = target;
 
-    // SpotLight
     const spotLight = new THREE.SpotLight(
       color,
       intensity,
@@ -254,7 +280,6 @@ export const SpotLightDemo = () => {
     spotLight.target = target;
     spotLight.castShadow = castShadow;
 
-    // Shadow settings for spot light
     spotLight.shadow.mapSize.width = 1024;
     spotLight.shadow.mapSize.height = 1024;
     spotLight.shadow.camera.near = 0.5;
@@ -263,31 +288,25 @@ export const SpotLightDemo = () => {
     scene.add(spotLight);
     lightRef.current = spotLight;
 
-    // Visualize the light source as a small sphere
     const lightBulbGeometry = new THREE.SphereGeometry(0.1, 16, 16);
     const lightBulbMaterial = new THREE.MeshBasicMaterial({ color: color });
     const lightBulb = new THREE.Mesh(lightBulbGeometry, lightBulbMaterial);
     lightBulb.position.copy(spotLight.position);
     scene.add(lightBulb);
 
-    // SpotLight Helper
     const helper = new THREE.SpotLightHelper(spotLight);
     helper.visible = showHelper;
     scene.add(helper);
     helperRef.current = helper;
 
-    // Animation loop
     const animate = () => {
       animFrameRef.current = requestAnimationFrame(animate);
 
-      // Animate dancer rotating slowly
       dancer.rotation.y += 0.01;
 
-      // Update light bulb position
       lightBulb.position.copy(spotLight.position);
       lightBulbMaterial.color = spotLight.color;
 
-      // Update helper if needed
       if (helperRef.current) {
         helperRef.current.update();
       }
@@ -298,7 +317,6 @@ export const SpotLightDemo = () => {
 
     animate();
 
-    // Handle window resize
     const handleResize = () => {
       if (!mountRef.current || !renderer) return;
       const width = mountRef.current.clientWidth;
@@ -311,7 +329,6 @@ export const SpotLightDemo = () => {
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(animFrameRef.current);
       window.removeEventListener("resize", handleResize);
@@ -323,7 +340,6 @@ export const SpotLightDemo = () => {
     };
   }, []);
 
-  // Update light properties when state changes
   useEffect(() => {
     if (lightRef.current) {
       lightRef.current.intensity = intensity;
@@ -392,52 +408,6 @@ export const SpotLightDemo = () => {
       helperRef.current.visible = showHelper;
     }
   }, [showHelper]);
-
-  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntensity(parseFloat(e.target.value));
-  };
-
-  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setColor(e.target.value);
-  };
-
-  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
-    if (axis === "x") setPositionX(value);
-    if (axis === "y") setPositionY(value);
-    if (axis === "z") setPositionZ(value);
-  };
-
-  const handleTargetChange = (axis: "x" | "z", value: number) => {
-    if (axis === "x") setTargetX(value);
-    if (axis === "z") setTargetZ(value);
-  };
-
-  const handleAngleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAngle(parseFloat(e.target.value));
-  };
-
-  const handlePenumbraChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPenumbra(parseFloat(e.target.value));
-  };
-
-  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDistance(parseFloat(e.target.value));
-  };
-
-  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDecay(parseFloat(e.target.value));
-  };
-
-  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCastShadow(e.target.checked);
-  };
-
-  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    setShowHelper(e.target.checked);
-  };
-
-  // Convert angle from radians to degrees for display
-  const angleDegrees = ((angle * 180) / Math.PI).toFixed(1);
 
   return (
     <div className="mt-4 flex w-full flex-col">

@@ -277,10 +277,9 @@ interface BookMeshProps extends BookModelProps {
 /** 표지판, 종이 뭉치, 둥근 책등으로 조립한 책 한 권의 형태. */
 function BookMesh({ book, dimensions, images }: BookMeshProps) {
   const parts = createBookParts(book, dimensions, images);
+  const { layout } = parts;
 
   useEffect(() => parts.dispose, [parts]);
-
-  const { layout } = parts;
 
   return (
     <group>

@@ -14,14 +14,12 @@ export const useUserAgent = (): UserAgent => {
     if (typeof window !== "undefined") {
       const userAgent = navigator.userAgent;
 
-      // OS 체크
       if (userAgent.indexOf("Win") !== -1) {
         setOs("window");
       } else if (userAgent.indexOf("Mac") !== -1) {
         setOs("mac");
       }
 
-      // 모바일 체크
       const mobileRegex =
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
       setIsMobileDevice(mobileRegex.test(userAgent));

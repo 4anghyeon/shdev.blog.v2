@@ -39,6 +39,8 @@ interface BugProps {
  * 잡혔거나 도망쳐서 더 이상 화면에 둘 필요가 없으면 `onDone`을 부른다.
  */
 export function Bug({ onCatch, onDone }: BugProps) {
+  const [isCaught, setIsCaught] = useState(false);
+  const [species] = useState(pickSpecies);
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
   const rotate = useMotionValue(0);
@@ -52,8 +54,23 @@ export function Bug({ onCatch, onDone }: BugProps) {
   const isEscapingRef = useRef(false);
   const isDoneRef = useRef(false);
   const releaseTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const [isCaught, setIsCaught] = useState(false);
-  const [species] = useState(pickSpecies);
+
+  const handlePointerDown = (event: ReactPointerEvent) => {
+    if (isDoneRef.current) return;
+    event.preventDefault();
+    isDoneRef.current = true;
+    setIsCaught(true);
+    onCatch({ x: x.get(), y: y.get() });
+
+    // 터치는 손가락을 뗀 뒤에 click이 따로 오므로, 그때까지 빈 터치 영역을 남겨 뒤에 있는 링크가 click을 받지 않게 한다
+    const release = () => {
+      window.removeEventListener("pointerup", release);
+      window.removeEventListener("pointercancel", release);
+      releaseTimerRef.current = setTimeout(onDone, CLICK_GUARD_MS);
+    };
+    window.addEventListener("pointerup", release);
+    window.addEventListener("pointercancel", release);
+  };
 
   useAnimationFrame((time, delta) => {
     if (isDoneRef.current) return;
@@ -117,23 +134,6 @@ export function Bug({ onCatch, onDone }: BugProps) {
       (Math.atan2(next.velocity.y, next.velocity.x) * 180) / Math.PI + 90,
     );
   });
-
-  const handlePointerDown = (event: ReactPointerEvent) => {
-    if (isDoneRef.current) return;
-    event.preventDefault();
-    isDoneRef.current = true;
-    setIsCaught(true);
-    onCatch({ x: x.get(), y: y.get() });
-
-    // 터치는 손가락을 뗀 뒤에 click이 따로 오므로, 그때까지 빈 터치 영역을 남겨 뒤에 있는 링크가 click을 받지 않게 한다
-    const release = () => {
-      window.removeEventListener("pointerup", release);
-      window.removeEventListener("pointercancel", release);
-      releaseTimerRef.current = setTimeout(onDone, CLICK_GUARD_MS);
-    };
-    window.addEventListener("pointerup", release);
-    window.addEventListener("pointercancel", release);
-  };
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {

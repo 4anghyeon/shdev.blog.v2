@@ -42,15 +42,16 @@ export function SearchModal() {
   const [results, setResults] = useState<PagefindResult[]>([]);
   const pagefind = usePagefind();
   const popularPosts = usePopularPosts();
+
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
+
+  const showPopularPosts = results.length === 0 && popularPosts.length > 0;
 
   const focusResult = (index: number) => {
     const links = resultsRef.current?.querySelectorAll<HTMLAnchorElement>("a");
     links?.[index]?.focus();
   };
-
-  const showPopularPosts = results.length === 0 && popularPosts.length > 0;
 
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
     // 한글 조합 중에 포커스를 옮기면 조합 중이던 글자가 한 번 더 입력된다

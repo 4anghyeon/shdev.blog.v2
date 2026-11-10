@@ -7,9 +7,10 @@ import {
 import { useTheme } from "#/features/theme/provider/ThemeProvider";
 
 export function NacreLayer() {
+  const { isDark } = useTheme();
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<NacreScene | null>(null);
-  const { isDark } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;

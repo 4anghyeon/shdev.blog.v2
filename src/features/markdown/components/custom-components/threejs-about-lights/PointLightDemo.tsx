@@ -4,13 +4,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const PointLightDemo = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<OrbitControls>(null);
-  const lightRef = useRef<PointLight>(null);
-  const helperRef = useRef<PointLightHelper>(null);
-  const animFrameRef = useRef<number>(0);
-
-  // PointLight 속성
   const [intensity, setIntensity] = useState(1.0);
   const [color, setColor] = useState("#ff9900");
   const [positionX, setPositionX] = useState(0);
@@ -21,43 +14,72 @@ export const PointLightDemo = () => {
   const [castShadow, setCastShadow] = useState(true);
   const [showHelper, setShowHelper] = useState(true);
 
+  const mountRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<OrbitControls>(null);
+  const lightRef = useRef<PointLight>(null);
+  const helperRef = useRef<PointLightHelper>(null);
+  const animFrameRef = useRef<number>(0);
+
+  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIntensity(parseFloat(e.target.value));
+  };
+
+  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+  };
+
+  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
+    if (axis === "x") setPositionX(value);
+    if (axis === "y") setPositionY(value);
+    if (axis === "z") setPositionZ(value);
+  };
+
+  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDistance(parseFloat(e.target.value));
+  };
+
+  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDecay(parseFloat(e.target.value));
+  };
+
+  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCastShadow(e.target.checked);
+  };
+
+  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
+    setShowHelper(e.target.checked);
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
     if (!mountRef.current) return;
     if (mountRef.current.children.length > 0) {
       mountRef.current.children.item(0)?.remove();
     }
-    // Scene setup
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#111827");
 
-    // Camera setup
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.set(0, 4, 8);
 
-    // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
     mountRef.current.appendChild(renderer.domElement);
 
-    // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controlsRef.current = controls;
 
-    // Grid helper
     const gridHelper = new THREE.GridHelper(20, 20);
     scene.add(gridHelper);
 
-    // Create room environment
     const roomSize = 10;
 
-    // Wall material
     const wallMaterial = new THREE.MeshStandardMaterial({
       color: 0xcccccc,
       roughness: 0.8,
@@ -65,7 +87,6 @@ export const PointLightDemo = () => {
       side: THREE.DoubleSide,
     });
 
-    // Floor
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(roomSize, roomSize),
       wallMaterial,
@@ -75,7 +96,6 @@ export const PointLightDemo = () => {
     floor.receiveShadow = true;
     scene.add(floor);
 
-    // Back wall
     const backWall = new THREE.Mesh(
       new THREE.PlaneGeometry(roomSize, roomSize),
       wallMaterial,
@@ -84,7 +104,6 @@ export const PointLightDemo = () => {
     backWall.receiveShadow = true;
     scene.add(backWall);
 
-    // Left wall
     const leftWall = new THREE.Mesh(
       new THREE.PlaneGeometry(roomSize, roomSize),
       wallMaterial,
@@ -94,7 +113,6 @@ export const PointLightDemo = () => {
     leftWall.receiveShadow = true;
     scene.add(leftWall);
 
-    // Right wall
     const rightWall = new THREE.Mesh(
       new THREE.PlaneGeometry(roomSize, roomSize),
       wallMaterial,
@@ -104,11 +122,9 @@ export const PointLightDemo = () => {
     rightWall.receiveShadow = true;
     scene.add(rightWall);
 
-    // Add objects to scene
     // Create a few different objects to show shadows and light falloff
     const objects: THREE.Mesh[] = [];
 
-    // Column 1
     const cylinder1 = new THREE.Mesh(
       new THREE.CylinderGeometry(0.5, 0.5, 4, 16),
       new THREE.MeshStandardMaterial({
@@ -123,7 +139,6 @@ export const PointLightDemo = () => {
     scene.add(cylinder1);
     objects.push(cylinder1);
 
-    // Column 2
     const cylinder2 = new THREE.Mesh(
       new THREE.CylinderGeometry(0.5, 0.5, 4, 16),
       new THREE.MeshStandardMaterial({
@@ -138,7 +153,6 @@ export const PointLightDemo = () => {
     scene.add(cylinder2);
     objects.push(cylinder2);
 
-    // Column 3
     const cylinder3 = new THREE.Mesh(
       new THREE.CylinderGeometry(0.5, 0.5, 4, 16),
       new THREE.MeshStandardMaterial({
@@ -153,7 +167,6 @@ export const PointLightDemo = () => {
     scene.add(cylinder3);
     objects.push(cylinder3);
 
-    // Column 4
     const cylinder4 = new THREE.Mesh(
       new THREE.CylinderGeometry(0.5, 0.5, 4, 16),
       new THREE.MeshStandardMaterial({
@@ -168,7 +181,6 @@ export const PointLightDemo = () => {
     scene.add(cylinder4);
     objects.push(cylinder4);
 
-    // Center table
     const table = new THREE.Group();
 
     const tableTop = new THREE.Mesh(
@@ -212,7 +224,6 @@ export const PointLightDemo = () => {
     table.position.y = -roomSize / 2 + 1.5;
     scene.add(table);
 
-    // Small objects on table
     const sphere = new THREE.Mesh(
       new THREE.SphereGeometry(0.3, 32, 32),
       new THREE.MeshStandardMaterial({
@@ -256,16 +267,13 @@ export const PointLightDemo = () => {
     scene.add(torus);
     objects.push(torus);
 
-    // Add ambient light (very dim)
     const ambientLight = new THREE.AmbientLight(0x404040, 0.05);
     scene.add(ambientLight);
 
-    // PointLight
     const pointLight = new THREE.PointLight(color, intensity, distance, decay);
     pointLight.position.set(positionX, positionY, positionZ);
     pointLight.castShadow = castShadow;
 
-    // Shadow settings for point light
     pointLight.shadow.mapSize.width = 1024;
     pointLight.shadow.mapSize.height = 1024;
     pointLight.shadow.camera.near = 0.1;
@@ -274,13 +282,11 @@ export const PointLightDemo = () => {
     scene.add(pointLight);
     lightRef.current = pointLight;
 
-    // PointLight Helper
     const helper = new THREE.PointLightHelper(pointLight, 0.3);
     helper.visible = showHelper;
     scene.add(helper);
     helperRef.current = helper;
 
-    // Light bulb mesh to visualize the light source
     const bulbGeometry = new THREE.SphereGeometry(0.1, 16, 16);
     const bulbMaterial = new THREE.MeshBasicMaterial({
       color: pointLight.color,
@@ -289,11 +295,9 @@ export const PointLightDemo = () => {
     bulb.position.copy(pointLight.position);
     scene.add(bulb);
 
-    // Animation loop
     const animate = () => {
       animFrameRef.current = requestAnimationFrame(animate);
 
-      // Optional: Add subtle animation to objects
       torus.rotation.x += 0.01;
       torus.rotation.y += 0.01;
       box.rotation.y += 0.005;
@@ -307,7 +311,6 @@ export const PointLightDemo = () => {
 
     animate();
 
-    // Handle window resize
     const handleResize = () => {
       if (!mountRef.current || !renderer) return;
       const width = mountRef.current.clientWidth;
@@ -320,7 +323,6 @@ export const PointLightDemo = () => {
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(animFrameRef.current);
       window.removeEventListener("resize", handleResize);
@@ -332,7 +334,6 @@ export const PointLightDemo = () => {
     };
   }, []);
 
-  // Update light properties when state changes
   useEffect(() => {
     if (lightRef.current) {
       lightRef.current.intensity = intensity;
@@ -377,36 +378,6 @@ export const PointLightDemo = () => {
       helperRef.current.visible = showHelper;
     }
   }, [showHelper]);
-
-  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntensity(parseFloat(e.target.value));
-  };
-
-  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setColor(e.target.value);
-  };
-
-  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
-    if (axis === "x") setPositionX(value);
-    if (axis === "y") setPositionY(value);
-    if (axis === "z") setPositionZ(value);
-  };
-
-  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDistance(parseFloat(e.target.value));
-  };
-
-  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDecay(parseFloat(e.target.value));
-  };
-
-  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCastShadow(e.target.checked);
-  };
-
-  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    setShowHelper(e.target.checked);
-  };
 
   return (
     <div className="mt-4 flex w-full flex-col">

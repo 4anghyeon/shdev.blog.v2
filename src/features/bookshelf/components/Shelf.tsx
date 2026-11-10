@@ -1,11 +1,6 @@
 import { range } from "es-toolkit";
 import { useEffect } from "react";
-import { MeshStandardMaterial } from "three";
-import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
-import {
-  cloneTexture,
-  getWoodTexture,
-} from "#/features/bookshelf/helper/procedural-textures";
+import { BoxGeometry, MeshStandardMaterial } from "three";
 import {
   SHELF_BOARD,
   SHELF_DEPTH,
@@ -14,16 +9,15 @@ import {
 
 const BACK_PANEL = 0.6;
 
-interface BoardSpec {
+interface PanelSpec {
   key: string;
   size: [number, number, number];
   position: [number, number, number];
-  vertical: boolean;
 }
 
-const createBoardSpecs = (layout: ShelfLayout): BoardSpec[] => {
+const createPanelSpecs = (layout: ShelfLayout): PanelSpec[] => {
   const shelves = range(layout.rows + 1).map(
-    (index): BoardSpec => ({
+    (index): PanelSpec => ({
       key: `shelf-${index}`,
       size: [layout.innerWidth, SHELF_BOARD, SHELF_DEPTH],
       position: [
@@ -33,56 +27,37 @@ const createBoardSpecs = (layout: ShelfLayout): BoardSpec[] => {
           layout.height / 2,
         0,
       ],
-      vertical: false,
     }),
   );
   const sideX = layout.innerWidth / 2 + SHELF_BOARD / 2;
   const sides = [-1, 1].map(
-    (direction): BoardSpec => ({
+    (direction): PanelSpec => ({
       key: `side-${direction}`,
       size: [SHELF_BOARD, layout.height, SHELF_DEPTH],
       position: [direction * sideX, 0, 0],
-      vertical: true,
     }),
   );
-  const back: BoardSpec = {
+  const back: PanelSpec = {
     key: "back",
     size: [layout.innerWidth, layout.height, BACK_PANEL],
     position: [0, 0, -SHELF_DEPTH / 2 + BACK_PANEL / 2],
-    vertical: true,
   };
 
   return [...shelves, ...sides, back];
 };
 
-const createBoardMesh = (spec: BoardSpec) => {
-  const [width, height, depth] = spec.size;
-  const wood = getWoodTexture();
-  const rotation = spec.vertical ? Math.PI / 2 : 0;
-  return {
-    geometry: new RoundedBoxGeometry(width, height, depth, 3, 0.35),
-    material: new MeshStandardMaterial({
-      map: cloneTexture(wood, 1, 1, rotation),
-      bumpMap: cloneTexture(wood, 1, 1, rotation),
-      bumpScale: 0.4,
-      roughness: 0.62,
-      color: spec.key === "back" ? "#d9cbb8" : "#ffffff",
-    }),
-  };
-};
-
-interface ShelfBoardProps {
-  spec: BoardSpec;
+interface ShelfPanelProps {
+  spec: PanelSpec;
+  color: string;
 }
 
-function ShelfBoard({ spec }: ShelfBoardProps) {
-  const { geometry, material } = createBoardMesh(spec);
+function ShelfPanel({ spec, color }: ShelfPanelProps) {
+  const geometry = new BoxGeometry(...spec.size);
+  const material = new MeshStandardMaterial({ color, roughness: 0.9 });
 
   useEffect(
     () => () => {
       geometry.dispose();
-      material.map?.dispose();
-      material.bumpMap?.dispose();
       material.dispose();
     },
     [geometry, material],
@@ -101,16 +76,20 @@ function ShelfBoard({ spec }: ShelfBoardProps) {
 
 interface ShelfProps {
   layout: ShelfLayout;
+  color: string;
 }
 
-/** 레이아웃의 단 수와 폭에 맞춰 조립되는 원목 책장. */
-export function Shelf({ layout }: ShelfProps) {
-  const specs = createBoardSpecs(layout);
+/**
+ * 레이아웃의 단 수와 폭에 맞춰지는 무광 도장 책장.
+ * 각진 판을 같은 재질로 빈틈없이 맞대어 이음매 없는 한 덩어리로 보이게 한다.
+ */
+export function Shelf({ layout, color }: ShelfProps) {
+  const specs = createPanelSpecs(layout);
 
   return (
     <group>
       {specs.map((spec) => (
-        <ShelfBoard key={spec.key} spec={spec} />
+        <ShelfPanel key={spec.key} spec={spec} color={color} />
       ))}
     </group>
   );

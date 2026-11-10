@@ -4,12 +4,13 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const AmbientLightDemo = () => {
+  const [ambientIntensity, setAmbientIntensity] = useState(0.3);
+  const [ambientColor, setAmbientColor] = useState("#ffffff");
+
   const mountRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<OrbitControls>(null);
   const ambientLightRef = useRef<AmbientLight>(null);
   const animFrameRef = useRef<number>(0);
-  const [ambientIntensity, setAmbientIntensity] = useState(0.3);
-  const [ambientColor, setAmbientColor] = useState("#ffffff");
 
   const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAmbientIntensity(parseFloat(e.target.value));
@@ -25,34 +26,28 @@ export const AmbientLightDemo = () => {
     if (mountRef.current.children.length > 0) {
       mountRef.current.children.item(0)?.remove();
     }
-    // Scene setup
     const width = mountRef.current.clientWidth;
     const height = mountRef.current.clientHeight;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#111827");
 
-    // Camera setup
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     camera.position.set(0, 2, 5);
 
-    // Renderer setup
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(width, height);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
     mountRef.current.appendChild(renderer.domElement);
 
-    // Controls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controlsRef.current = controls;
 
-    // Create a grid helper
     const gridHelper = new THREE.GridHelper(10, 10);
     scene.add(gridHelper);
 
-    // Add objects to scene
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32);
     const torusGeometry = new THREE.TorusGeometry(0.4, 0.2, 16, 32);
@@ -90,7 +85,6 @@ export const AmbientLightDemo = () => {
     torus.castShadow = true;
     scene.add(torus);
 
-    // Floor
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(10, 10),
       new THREE.MeshStandardMaterial({
@@ -116,7 +110,6 @@ export const AmbientLightDemo = () => {
 
     ambientLightRef.current = ambientLight;
 
-    // Handle window resize
     const handleResize = () => {
       if (!mountRef.current || !renderer) return;
       const width = mountRef.current.clientWidth;
@@ -129,7 +122,6 @@ export const AmbientLightDemo = () => {
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(animFrameRef.current);
       window.removeEventListener("resize", handleResize);

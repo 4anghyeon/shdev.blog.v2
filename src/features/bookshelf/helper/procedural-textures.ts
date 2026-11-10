@@ -1,4 +1,4 @@
-import { clamp, once } from "es-toolkit";
+import { once } from "es-toolkit";
 import {
   CanvasTexture,
   MathUtils,
@@ -7,7 +7,6 @@ import {
   SRGBColorSpace,
   type Texture,
 } from "three";
-import { ImprovedNoise } from "three/addons/math/ImprovedNoise.js";
 
 const createCanvas = (width: number, height: number) => {
   const canvas = document.createElement("canvas");
@@ -16,22 +15,6 @@ const createCanvas = (width: number, height: number) => {
   const context = canvas.getContext("2d");
   if (!context) throw new Error("2D canvas context is not available");
   return { canvas, context };
-};
-
-const perlin = new ImprovedNoise();
-
-/** 0~1 범위의 Perlin 노이즈를 여러 옥타브 합친다. seed는 3D 노이즈의 z 단면으로 쓴다. */
-const fbm = (x: number, y: number, seed: number, octaves = 4) => {
-  let value = 0;
-  let amplitude = 0.5;
-  let frequency = 1;
-  for (let i = 0; i < octaves; i++) {
-    const noise = perlin.noise(x * frequency, y * frequency, seed + i * 1.618);
-    value += (noise * 0.5 + 0.5) * amplitude;
-    amplitude *= 0.5;
-    frequency *= 2;
-  }
-  return value;
 };
 
 const toTexture = (canvas: HTMLCanvasElement, isColor: boolean) => {
@@ -108,35 +91,6 @@ export const getPaperEdgeTexture = once(() => {
     context.fillRect(x, 0, 1, canvas.height);
   }
 
-  return toTexture(canvas, true);
-});
-
-/** 오크 계열의 나뭇결 텍스처. */
-export const getWoodTexture = once(() => {
-  const width = 1024;
-  const height = 256;
-  const { canvas, context } = createCanvas(width, height);
-  const image = context.createImageData(width, height);
-  const light = [196, 154, 108];
-  const dark = [138, 95, 58];
-
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const warp = fbm(x / 220, y / 60, 11) * 7;
-      const ring = Math.sin((y / height) * 26 * Math.PI + warp * Math.PI);
-      const grain = Math.abs(ring) ** 0.35;
-      const pores = fbm(x / 3, y / 40, 23, 2) * 0.35;
-      const t = clamp(grain * 0.75 + pores, 0, 1);
-      const offset = (y * width + x) * 4;
-      for (let channel = 0; channel < 3; channel++) {
-        image.data[offset + channel] =
-          dark[channel] + (light[channel] - dark[channel]) * t;
-      }
-      image.data[offset + 3] = 255;
-    }
-  }
-
-  context.putImageData(image, 0, 0);
   return toTexture(canvas, true);
 });
 
