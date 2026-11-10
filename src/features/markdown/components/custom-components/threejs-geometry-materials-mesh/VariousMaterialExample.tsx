@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-// Material을 생성하는 함수들
 const createMaterials = (color: number) => ({
   Basic: new THREE.MeshBasicMaterial({
     color: color,
@@ -22,7 +21,6 @@ const createMaterials = (color: number) => ({
   }),
 });
 
-// 개별 도형을 위한 컴포넌트
 const Shape3D = ({
   materialType,
   color,
@@ -39,7 +37,6 @@ const Shape3D = ({
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // 이전 렌더러 정리
     if (containerRef.current) {
       const oldCanvas = containerRef.current.querySelector("canvas");
       if (oldCanvas) {
@@ -54,7 +51,6 @@ const Shape3D = ({
     const camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
     camera.position.z = 5;
 
-    // 새 렌더러 생성
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: "high-performance",
@@ -66,7 +62,6 @@ const Shape3D = ({
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 조명 설정
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -74,12 +69,10 @@ const Shape3D = ({
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
-    // Controls 설정
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controlsRef.current = controls;
 
-    // 도형과 재질 생성
     const geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
     const materials = createMaterials(color);
     const material = materials[materialType as keyof typeof materials];
@@ -88,7 +81,6 @@ const Shape3D = ({
 
     let isDisposed = false;
 
-    // Animation loop
     const animate = () => {
       if (isDisposed) return;
 
@@ -111,7 +103,6 @@ const Shape3D = ({
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       isDisposed = true;
 
@@ -124,7 +115,6 @@ const Shape3D = ({
         controlsRef.current = null;
       }
 
-      // 모든 메시와 재질 정리
       scene.traverse((object) => {
         if (object instanceof THREE.Mesh) {
           if (object.geometry) {
@@ -139,14 +129,12 @@ const Shape3D = ({
         }
       });
 
-      // 렌더러 정리
       if (rendererRef.current) {
         rendererRef.current.dispose();
         rendererRef.current.forceContextLoss();
         rendererRef.current = null;
       }
 
-      // Scene 정리
       if (sceneRef.current) {
         sceneRef.current = null;
       }
@@ -163,7 +151,6 @@ const Shape3D = ({
   );
 };
 
-// 메인 컴포넌트
 export const VariousMaterialExample = () => {
   const materials = [
     {

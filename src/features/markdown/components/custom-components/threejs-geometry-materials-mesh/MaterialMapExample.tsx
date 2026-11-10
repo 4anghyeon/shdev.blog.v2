@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
-// 텍스처 로딩 함수는 동일
 const loadTextures = (path: string) => {
   const loader = new THREE.TextureLoader();
   return {
@@ -14,7 +13,6 @@ const loadTextures = (path: string) => {
   };
 };
 
-// Material 생성 함수는 동일
 const createMaterial = (textures: any, type: string) => {
   switch (type) {
     case "map":
@@ -37,7 +35,6 @@ const createMaterial = (textures: any, type: string) => {
   }
 };
 
-// 개별 도형을 위한 컴포넌트
 const Shape3D = ({ materialType }: { materialType: string }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -49,7 +46,6 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // 이전 렌더러 정리
     if (rendererRef.current) {
       rendererRef.current.dispose();
       rendererRef.current.forceContextLoss();
@@ -81,7 +77,6 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // 조명 설정
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
@@ -89,17 +84,14 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
 
-    // Controls 설정
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controlsRef.current = controls;
 
-    // 텍스처 로드 및 Material 생성
     const textures = loadTextures("/images/example");
     texturesRef.current = textures;
     const material = createMaterial(textures, materialType);
 
-    // 지오메트리 생성
     const geometry = new THREE.SphereGeometry(1, 64, 64);
     geometry.setAttribute(
       "uv2",
@@ -111,7 +103,6 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
 
     let isDisposed = false;
 
-    // Animation loop
     const animate = () => {
       if (isDisposed) return;
 
@@ -133,7 +124,6 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       isDisposed = true;
 
@@ -146,7 +136,6 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
         controlsRef.current = null;
       }
 
-      // 텍스처 정리
       if (texturesRef.current) {
         Object.values(texturesRef.current).forEach((texture: any) => {
           if (texture?.dispose) {
@@ -156,11 +145,9 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
         texturesRef.current = null;
       }
 
-      // 지오메트리와 재질 정리
       if (geometry) geometry.dispose();
       if (material) material.dispose();
 
-      // Scene의 모든 객체 정리
       if (sceneRef.current) {
         sceneRef.current.traverse((object) => {
           if (object instanceof THREE.Mesh) {
@@ -176,7 +163,6 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
         sceneRef.current = null;
       }
 
-      // 렌더러 정리
       if (rendererRef.current) {
         rendererRef.current.dispose();
         rendererRef.current.forceContextLoss();
@@ -195,7 +181,6 @@ const Shape3D = ({ materialType }: { materialType: string }) => {
   );
 };
 
-// 메인 컴포넌트는 동일
 export const MaterialMapExample = () => {
   const materials = ["map", "normalMap", "roughnessMap"];
 

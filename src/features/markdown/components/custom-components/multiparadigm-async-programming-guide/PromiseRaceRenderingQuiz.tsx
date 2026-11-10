@@ -11,7 +11,6 @@ function delay<T>(time: number, value: T): Promise<T> {
   return new Promise((resolve) => setTimeout(resolve, time, value));
 }
 
-// 친구 목록 API 시뮬레이션
 function mockFriendsAPI(responseTime: number): Promise<Friend[]> {
   return delay(responseTime, [
     { id: 1, name: "철수", avatar: "👨" },

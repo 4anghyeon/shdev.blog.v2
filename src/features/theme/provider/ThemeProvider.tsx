@@ -20,7 +20,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const THEME_COOKIE_KEY = "theme";
 const THEME_COOKIE_OPTIONS = {
-  expires: 365, // 1년
+  expires: 365,
   sameSite: "lax" as const,
   secure: process.env.NODE_ENV === "production",
 };
@@ -46,7 +46,7 @@ const THEME_SCRIPT = `
 
 export function ThemeProvider({ children }: PropsWithChildren) {
   const [theme, setTheme] = useState<Theme>("system");
-  const [isDark, setIsDark] = useState(false); // 별도 state로 관리
+  const [isDark, setIsDark] = useState(false);
 
   const calcIsDark = (t: Theme) => {
     if (t === "dark") return true;
@@ -80,7 +80,7 @@ export function ThemeProvider({ children }: PropsWithChildren) {
       applyTheme(storedTheme);
     } else {
       setTheme("system");
-      applyTheme("system"); // 여기서 실제 시스템 값으로 isDark 세팅됨
+      applyTheme("system");
     }
   }, []);
 

@@ -22,7 +22,6 @@ export const BufferGeometryExample = () => {
     new OrbitControls(camera, renderer.domElement);
 
     const geometry = new THREE.BufferGeometry();
-    // 삼각형의 꼭지점 좌표
     const vertices = new Float32Array([
       -1.0,
       -1.0,

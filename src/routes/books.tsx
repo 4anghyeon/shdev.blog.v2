@@ -53,7 +53,7 @@ function RouteComponent() {
       className="flex min-h-[calc(100svh-4rem)] flex-col lg:min-h-[calc(100svh-7.5rem)]"
     >
       <BrushBorder side="bottom" className="mb-10 flex flex-col gap-y-4 pb-5">
-        <h1 className="font-bold text-4xl text-ink-strong">읽은 책</h1>
+        <h1 className="font-bold text-4xl text-ink-strong">책장</h1>
         <p className="text-ink">
           읽은 책들을 한 권씩 꽂아 둔 책장입니다. 눌러서 꺼내 볼 수 있어요.
         </p>

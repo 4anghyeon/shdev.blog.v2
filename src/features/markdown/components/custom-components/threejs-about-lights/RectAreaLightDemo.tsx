@@ -15,13 +15,11 @@ export const RectAreaLightDemo = () => {
     helper: RectAreaLightHelper;
   } | null>(null);
 
-  // 기본 설정
   const [intensity, setIntensity] = useState(5.0);
   const [color, setColor] = useState("#ffffff");
   const [width, setWidth] = useState(3);
   const [height, setHeight] = useState(2);
 
-  // 초기 장면 설정
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
     if (!mountRef.current) return;
@@ -29,13 +27,11 @@ export const RectAreaLightDemo = () => {
       mountRef.current.children.item(0)?.remove();
     }
 
-    // 기본 설정
     const containerWidth = mountRef.current.clientWidth;
     const containerHeight = mountRef.current.clientHeight;
     const scene = new THREE.Scene();
     scene.background = new THREE.Color("#111827");
 
-    // 카메라
     const camera = new THREE.PerspectiveCamera(
       75,
       containerWidth / containerHeight,
@@ -44,12 +40,10 @@ export const RectAreaLightDemo = () => {
     );
     camera.position.set(0, 1, 5);
 
-    // 렌더러
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(containerWidth, containerHeight);
     mountRef.current.appendChild(renderer.domElement);
 
-    // 컨트롤
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -64,19 +58,16 @@ export const RectAreaLightDemo = () => {
       metalness: 0.1,
     });
 
-    // 바닥
     const floor = new THREE.Mesh(floorGeometry, material);
     floor.rotation.x = -Math.PI / 2;
     floor.position.y = -1;
     scene.add(floor);
 
-    // 벽
     const wall = new THREE.Mesh(wallGeometry, material);
     wall.position.z = -3;
     wall.position.y = 1.5;
     scene.add(wall);
 
-    // 몇 개의 물체
     const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
     const sphereGeometry = new THREE.SphereGeometry(0.7, 32, 32);
 
@@ -92,12 +83,10 @@ export const RectAreaLightDemo = () => {
       metalness: 0.4,
     });
 
-    // 박스
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
     box.position.set(-1.5, 0, 0);
     scene.add(box);
 
-    // 구체
     const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     sphere.position.set(1.5, 0, 0);
     scene.add(sphere);
@@ -106,17 +95,14 @@ export const RectAreaLightDemo = () => {
     const ambientLight = new THREE.AmbientLight(0x404040, 0.2);
     scene.add(ambientLight);
 
-    // RectAreaLight
     const rectLight = new THREE.RectAreaLight(color, intensity, width, height);
     rectLight.position.set(0, 1, 2);
     rectLight.lookAt(0, 0, 0);
     scene.add(rectLight);
 
-    // RectAreaLight 헬퍼
     const helper = new RectAreaLightHelper(rectLight);
     scene.add(helper);
 
-    // 참조 저장
     sceneRef.current = {
       scene,
       camera,
@@ -126,7 +112,6 @@ export const RectAreaLightDemo = () => {
       helper,
     };
 
-    // 애니메이션 루프
     const animate = () => {
       if (!sceneRef.current) return;
 
@@ -139,7 +124,6 @@ export const RectAreaLightDemo = () => {
     };
     animate();
 
-    // 윈도우 크기 변경 처리
     const handleResize = () => {
       if (!mountRef.current || !sceneRef.current) return;
 
@@ -152,7 +136,6 @@ export const RectAreaLightDemo = () => {
     };
     window.addEventListener("resize", handleResize);
 
-    // 정리
     return () => {
       cancelAnimationFrame(animFrameRef.current);
       window.removeEventListener("resize", handleResize);
@@ -162,12 +145,10 @@ export const RectAreaLightDemo = () => {
       sceneRef.current?.scene.clear();
       sceneRef.current?.renderer.dispose();
 
-      // 참조 초기화
       sceneRef.current = null;
     };
-  }, []); // 마운트 시 한 번만 실행
+  }, []);
 
-  // 빛 속성 업데이트
   useEffect(() => {
     if (sceneRef.current && sceneRef.current.rectLight) {
       sceneRef.current.rectLight.intensity = intensity;
@@ -192,7 +173,6 @@ export const RectAreaLightDemo = () => {
     }
   }, [height]);
 
-  // 컨트롤 핸들러
   const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
     setIntensity(parseFloat(e.target.value));
   };

@@ -31,6 +31,7 @@ import {
   SHELF_DEPTH,
   type ShelfLayout,
 } from "#/features/bookshelf/helper/shelf-layout";
+import { useTheme } from "#/features/theme/provider/ThemeProvider";
 import type { BookItem } from "#/shared/constant/book-items";
 
 const CAMERA_FOV = 32;
@@ -38,6 +39,38 @@ const CAMERA_TILT = 1.5;
 const SCROLL_DAMPING = 0.15;
 
 const lookTarget = new Vector3();
+
+/** 테마에 따라 바뀌는 책장의 빛과 색. 낮에는 창으로 드는 햇빛, 밤에는 푸른 어둠 속 스탠드 불빛이다. */
+interface LightMood {
+  ambientColor: string;
+  ambientIntensity: number;
+  keyColor: string;
+  keyIntensity: number;
+  keyPosition: [number, number, number];
+  environmentIntensity: number;
+  shelfColor: string;
+}
+
+const DAY_MOOD: LightMood = {
+  ambientColor: "#ffffff",
+  ambientIntensity: 0.35,
+  keyColor: "#ffffff",
+  keyIntensity: 2.4,
+  keyPosition: [35, 60, 90],
+  environmentIntensity: 1,
+  shelfColor: "#ebe5da",
+};
+
+const NIGHT_MOOD: LightMood = {
+  ambientColor: "#a3b1dc",
+  ambientIntensity: 0.3,
+  keyColor: "#ffe2c4",
+  keyIntensity: 2,
+  // 꺼낸 책의 표지는 오른쪽을 향해 돌아가 있어서, 왼쪽에서 비추면 빛이 비스듬히 닿아 표지에 줄무늬 그림자가 생긴다
+  keyPosition: [60, 18, 85],
+  environmentIntensity: 0.2,
+  shelfColor: "#9a9ca6",
+};
 
 interface ViewportSize {
   width: number;
@@ -125,16 +158,24 @@ interface QualityProps {
   quality: QualitySettings;
 }
 
-function StudioLights({ quality }: QualityProps) {
+interface MoodProps {
+  mood: LightMood;
+}
+
+function StudioLights({ quality, mood }: QualityProps & MoodProps) {
   return (
     <>
-      <ambientLight intensity={0.35} />
+      <ambientLight
+        color={mood.ambientColor}
+        intensity={mood.ambientIntensity}
+      />
       {/* 그림자 맵은 크기가 바뀌어도 다시 만들어지지 않아서 key로 조명을 새로 만든다 */}
       <directionalLight
         key={quality.shadowMapSize}
         castShadow
-        position={[35, 60, 90]}
-        intensity={2.4}
+        color={mood.keyColor}
+        position={mood.keyPosition}
+        intensity={mood.keyIntensity}
         shadow-mapSize={[quality.shadowMapSize, quality.shadowMapSize]}
         shadow-bias={-0.0002}
         shadow-normalBias={0.05}
@@ -148,6 +189,7 @@ function StudioLights({ quality }: QualityProps) {
         key={quality.environmentResolution}
         resolution={quality.environmentResolution}
         frames={1}
+        environmentIntensity={mood.environmentIntensity}
       >
         <Lightformer
           form="rect"
@@ -181,13 +223,18 @@ interface BookshelfProps {
   onSelect: (id: string) => void;
 }
 
-interface ShelfContentsProps extends BookshelfProps, QualityProps, ScrollRefs {}
+interface ShelfContentsProps
+  extends BookshelfProps,
+    QualityProps,
+    MoodProps,
+    ScrollRefs {}
 
 function ShelfContents({
   books,
   selectedId,
   onSelect,
   quality,
+  mood,
   scrollRef,
   spacerRef,
 }: ShelfContentsProps) {
@@ -206,7 +253,7 @@ function ShelfContents({
   return (
     <>
       <CameraRig pose={pose} scrollRef={scrollRef} />
-      <Shelf layout={layout} />
+      <Shelf layout={layout} color={mood.shelfColor} />
       {layout.placements.map((placement) => (
         <Book
           key={placement.book.id}
@@ -254,6 +301,7 @@ interface BookshelfSceneProps extends BookshelfProps, SceneReadySignalProps {
 /**
  * 읽은 책을 꽂아 둔 3D 책장 캔버스.
  * 책장이 화면보다 길면 캔버스를 고정한 채 바깥 영역을 스크롤해서 카메라를 내린다.
+ * 빛은 테마를 따라 낮과 밤의 분위기로 바뀐다.
  * 저사양 기기로 보이거나 실제 프레임레이트가 떨어지면 낮은 품질 단계로 내려간다.
  */
 export function BookshelfScene({
@@ -265,6 +313,8 @@ export function BookshelfScene({
 }: BookshelfSceneProps) {
   const [qualityTier, setQualityTier] = useState(detectInitialQualityTier);
   const quality = QUALITY_SETTINGS[qualityTier];
+  const { isDark } = useTheme();
+  const mood = isDark ? NIGHT_MOOD : DAY_MOOD;
   const scrollRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
 
@@ -286,13 +336,14 @@ export function BookshelfScene({
           gl={{ antialias: true, toneMapping: NeutralToneMapping }}
           onPointerMissed={onDeselect}
         >
-          <StudioLights quality={quality} />
+          <StudioLights quality={quality} mood={mood} />
           <Suspense fallback={null}>
             <ShelfContents
               books={books}
               selectedId={selectedId}
               onSelect={onSelect}
               quality={quality}
+              mood={mood}
               scrollRef={scrollRef}
               spacerRef={spacerRef}
             />

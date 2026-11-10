@@ -5,7 +5,7 @@ import {
 } from "#/features/bookshelf/helper/book-dimensions";
 import type { BookItem } from "#/shared/constant/book-items";
 
-export const SHELF_BOARD = 2;
+export const SHELF_BOARD = 1.2;
 export const SHELF_DEPTH = 26;
 const BOOK_GAP = 0.12;
 const SIDE_PADDING = 1.2;

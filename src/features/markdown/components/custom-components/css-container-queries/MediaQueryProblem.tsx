@@ -15,7 +15,6 @@ export function MediaQueryProblem() {
         <div className="flex-2 space-y-4">
           <div className="flex items-center justify-between px-1">
             <div className="h-2 w-20 rounded-full bg-gray-100" />
-            {/* lg 이상일 때만 나타나는 상태 표시 */}
             <div className="hidden rounded bg-green-100 px-2 py-0.5 font-bold text-[10px] text-green-600 uppercase lg:block">
               Main: OK
             </div>
@@ -53,7 +52,6 @@ export function MediaQueryProblem() {
         <div className="flex-1 space-y-4">
           <div className="flex items-center justify-between px-1">
             <div className="h-2 w-12 rounded-full bg-gray-100" />
-            {/* lg 이상일 때만 나타나는 경고 표시 */}
             <div className="hidden animate-pulse rounded bg-red-100 px-2 py-0.5 font-bold text-[10px] text-red-600 uppercase lg:block">
               Sidebar: Broken
             </div>

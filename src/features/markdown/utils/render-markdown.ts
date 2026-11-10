@@ -39,15 +39,15 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
   const references: Array<MarkdownReference> = [];
 
   const result = await unified()
-    .use(remarkParse) // Parse markdown
-    .use(remarkGfm) // Support GitHub Flavored Markdown
-    .use(remarkMath) // Parse $inline$ and $$block$$ math
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkMath)
     .use(remarkRehype, {
       allowDangerousHtml: true,
-    }) // Convert to HTML AST
+    })
     // Shiki가 수식 노드(code.language-math)를 코드 블록으로 하이라이팅하지 않도록 먼저 렌더링한다
     .use(rehypeKatex)
-    .use(rehypeSlug) // Add IDs to headings
+    .use(rehypeSlug)
     .use(rehypeGithubAlerts, {})
     .use(rehypeShiki, {
       themes: {
@@ -81,9 +81,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
         const text = hastToString(lastChild).trim();
         if (!text.startsWith("--")) return;
 
-        // cite 추출
         node.properties["data-cite"] = text.slice(2).trim();
-        // 마지막 <p> 제거
         node.children = node.children.filter((n) => n !== lastChild);
       });
     })
@@ -103,7 +101,7 @@ export async function renderMarkdown(content: string): Promise<MarkdownResult> {
       behavior: "wrap",
       properties: { className: ["anchor"] },
     })
-    .use(rehypeStringify, { allowDangerousHtml: true }) // Serialize to HTML string
+    .use(rehypeStringify, { allowDangerousHtml: true })
     .process(content);
 
   return {

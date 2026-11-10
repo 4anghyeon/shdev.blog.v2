@@ -20,7 +20,6 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    // 초기 active 설정
     // 현재 화면에 보이는 첫 번째 헤딩 찾기
     for (const { id } of headings) {
       const el = document.getElementById(id);
