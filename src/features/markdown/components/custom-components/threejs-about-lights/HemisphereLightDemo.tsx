@@ -4,20 +4,41 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const HemisphereLightDemo = () => {
+  const [intensity, setIntensity] = useState(1.0);
+  const [skyColor, setSkyColor] = useState("#87CEEB"); // 밝은 하늘색
+  const [groundColor, setGroundColor] = useState("#8B4513"); // 갈색 (땅색)
+  const [showHelper, setShowHelper] = useState(true);
+  const [environment, setEnvironment] = useState<
+    "sunny" | "cloudy" | "sunset" | "night"
+  >("sunny");
+
   const mountRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<OrbitControls>(null);
   const lightRef = useRef<HemisphereLight>(null);
   const helperRef = useRef<HemisphereLightHelper>(null);
   const animFrameRef = useRef<number>(0);
 
-  const [intensity, setIntensity] = useState(1.0);
-  const [skyColor, setSkyColor] = useState("#87CEEB"); // 밝은 하늘색
-  const [groundColor, setGroundColor] = useState("#8B4513"); // 갈색 (땅색)
-  const [showHelper, setShowHelper] = useState(true);
+  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIntensity(parseFloat(e.target.value));
+  };
 
-  const [environment, setEnvironment] = useState<
-    "sunny" | "cloudy" | "sunset" | "night"
-  >("sunny");
+  const handleSkyColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSkyColor(e.target.value);
+  };
+
+  const handleGroundColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setGroundColor(e.target.value);
+  };
+
+  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
+    setShowHelper(e.target.checked);
+  };
+
+  const handleEnvironmentChange = (
+    env: "sunny" | "cloudy" | "sunset" | "night",
+  ) => {
+    setEnvironment(env);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
@@ -306,28 +327,6 @@ export const HemisphereLightDemo = () => {
         break;
     }
   }, [environment]);
-
-  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntensity(parseFloat(e.target.value));
-  };
-
-  const handleSkyColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSkyColor(e.target.value);
-  };
-
-  const handleGroundColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setGroundColor(e.target.value);
-  };
-
-  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    setShowHelper(e.target.checked);
-  };
-
-  const handleEnvironmentChange = (
-    env: "sunny" | "cloudy" | "sunset" | "night",
-  ) => {
-    setEnvironment(env);
-  };
 
   return (
     <div className="mt-4 flex w-full flex-col">

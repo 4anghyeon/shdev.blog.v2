@@ -4,12 +4,13 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const AmbientLightDemo = () => {
+  const [ambientIntensity, setAmbientIntensity] = useState(0.3);
+  const [ambientColor, setAmbientColor] = useState("#ffffff");
+
   const mountRef = useRef<HTMLDivElement>(null);
   const controlsRef = useRef<OrbitControls>(null);
   const ambientLightRef = useRef<AmbientLight>(null);
   const animFrameRef = useRef<number>(0);
-  const [ambientIntensity, setAmbientIntensity] = useState(0.3);
-  const [ambientColor, setAmbientColor] = useState("#ffffff");
 
   const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
     setAmbientIntensity(parseFloat(e.target.value));

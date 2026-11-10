@@ -312,11 +312,13 @@ export function BookshelfScene({
   onReady,
 }: BookshelfSceneProps) {
   const [qualityTier, setQualityTier] = useState(detectInitialQualityTier);
-  const quality = QUALITY_SETTINGS[qualityTier];
   const { isDark } = useTheme();
-  const mood = isDark ? NIGHT_MOOD : DAY_MOOD;
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
+
+  const quality = QUALITY_SETTINGS[qualityTier];
+  const mood = isDark ? NIGHT_MOOD : DAY_MOOD;
 
   return (
     <div

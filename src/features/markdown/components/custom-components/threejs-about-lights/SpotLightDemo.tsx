@@ -4,13 +4,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const SpotLightDemo = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<OrbitControls>(null);
-  const lightRef = useRef<SpotLight>(null);
-  const helperRef = useRef<SpotLightHelper>(null);
-  const targetRef = useRef<THREE.Object3D>(null);
-  const animFrameRef = useRef<number>(0);
-
   const [intensity, setIntensity] = useState(1.0);
   const [color, setColor] = useState("#ffffff");
   const [positionX, setPositionX] = useState(0);
@@ -24,6 +17,59 @@ export const SpotLightDemo = () => {
   const [decay, setDecay] = useState(0.1);
   const [castShadow, setCastShadow] = useState(true);
   const [showHelper, setShowHelper] = useState(true);
+
+  const mountRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<OrbitControls>(null);
+  const lightRef = useRef<SpotLight>(null);
+  const helperRef = useRef<SpotLightHelper>(null);
+  const targetRef = useRef<THREE.Object3D>(null);
+  const animFrameRef = useRef<number>(0);
+
+  // Convert angle from radians to degrees for display
+  const angleDegrees = ((angle * 180) / Math.PI).toFixed(1);
+
+  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIntensity(parseFloat(e.target.value));
+  };
+
+  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+  };
+
+  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
+    if (axis === "x") setPositionX(value);
+    if (axis === "y") setPositionY(value);
+    if (axis === "z") setPositionZ(value);
+  };
+
+  const handleTargetChange = (axis: "x" | "z", value: number) => {
+    if (axis === "x") setTargetX(value);
+    if (axis === "z") setTargetZ(value);
+  };
+
+  const handleAngleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setAngle(parseFloat(e.target.value));
+  };
+
+  const handlePenumbraChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPenumbra(parseFloat(e.target.value));
+  };
+
+  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDistance(parseFloat(e.target.value));
+  };
+
+  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDecay(parseFloat(e.target.value));
+  };
+
+  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCastShadow(e.target.checked);
+  };
+
+  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
+    setShowHelper(e.target.checked);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
@@ -362,52 +408,6 @@ export const SpotLightDemo = () => {
       helperRef.current.visible = showHelper;
     }
   }, [showHelper]);
-
-  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntensity(parseFloat(e.target.value));
-  };
-
-  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setColor(e.target.value);
-  };
-
-  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
-    if (axis === "x") setPositionX(value);
-    if (axis === "y") setPositionY(value);
-    if (axis === "z") setPositionZ(value);
-  };
-
-  const handleTargetChange = (axis: "x" | "z", value: number) => {
-    if (axis === "x") setTargetX(value);
-    if (axis === "z") setTargetZ(value);
-  };
-
-  const handleAngleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAngle(parseFloat(e.target.value));
-  };
-
-  const handlePenumbraChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPenumbra(parseFloat(e.target.value));
-  };
-
-  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDistance(parseFloat(e.target.value));
-  };
-
-  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDecay(parseFloat(e.target.value));
-  };
-
-  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCastShadow(e.target.checked);
-  };
-
-  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    setShowHelper(e.target.checked);
-  };
-
-  // Convert angle from radians to degrees for display
-  const angleDegrees = ((angle * 180) / Math.PI).toFixed(1);
 
   return (
     <div className="mt-4 flex w-full flex-col">

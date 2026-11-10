@@ -4,12 +4,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const DirectionalLightDemo = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<OrbitControls>(null);
-  const lightRef = useRef<DirectionalLight>(null);
-  const helperRef = useRef<DirectionalLightHelper>(null);
-  const animFrameRef = useRef<number>(0);
-
   const [intensity, setIntensity] = useState(0.5);
   const [color, setColor] = useState("#ffffff");
   const [positionX, setPositionX] = useState(5);
@@ -17,6 +11,34 @@ export const DirectionalLightDemo = () => {
   const [positionZ, setPositionZ] = useState(5);
   const [castShadow, setCastShadow] = useState(true);
   const [showHelper, setShowHelper] = useState(true);
+
+  const mountRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<OrbitControls>(null);
+  const lightRef = useRef<DirectionalLight>(null);
+  const helperRef = useRef<DirectionalLightHelper>(null);
+  const animFrameRef = useRef<number>(0);
+
+  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIntensity(parseFloat(e.target.value));
+  };
+
+  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+  };
+
+  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
+    if (axis === "x") setPositionX(value);
+    if (axis === "y") setPositionY(value);
+    if (axis === "z") setPositionZ(value);
+  };
+
+  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCastShadow(e.target.checked);
+  };
+
+  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
+    setShowHelper(e.target.checked);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
@@ -211,28 +233,6 @@ export const DirectionalLightDemo = () => {
       helperRef.current.visible = showHelper;
     }
   }, [showHelper]);
-
-  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntensity(parseFloat(e.target.value));
-  };
-
-  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setColor(e.target.value);
-  };
-
-  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
-    if (axis === "x") setPositionX(value);
-    if (axis === "y") setPositionY(value);
-    if (axis === "z") setPositionZ(value);
-  };
-
-  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCastShadow(e.target.checked);
-  };
-
-  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    setShowHelper(e.target.checked);
-  };
 
   return (
     <div className="mt-4 flex w-full flex-col">

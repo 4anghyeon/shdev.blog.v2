@@ -28,10 +28,11 @@ export const Route = createFileRoute("/books")({
 });
 
 function RouteComponent() {
+  const [isSceneReady, setIsSceneReady] = useState(false);
   const { book: selectedId } = Route.useSearch();
   const navigate = Route.useNavigate();
+
   const selectedBook = BOOK_ITEMS.find((book) => book.id === selectedId);
-  const [isSceneReady, setIsSceneReady] = useState(false);
 
   const selectBook = (id: string) => navigate({ search: { book: id } });
   const closeBook = () => {

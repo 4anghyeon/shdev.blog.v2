@@ -63,14 +63,25 @@ export function Book({
   isSelected,
   onSelect,
 }: BookProps) {
-  const ref = useRef<Group>(null);
-  const phase = useRef<BookPhase>("shelved");
-  const focusTime = useRef(0);
   const [isHovered, setIsHovered] = useState(false);
   const size = useThree((state) => state.size);
 
+  const ref = useRef<Group>(null);
+  const phase = useRef<BookPhase>("shelved");
+  const focusTime = useRef(0);
+
   const { homePosition, pulledPosition, restQuaternion, pullDepth } =
     createSlotPositions(home, dimensions, tilt);
+
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation();
+    if (!isSelected) onSelect(book.id);
+  };
+
+  const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
+    event.stopPropagation();
+    setIsHovered(true);
+  };
 
   useCursor(isHovered && !isSelected);
 
@@ -133,16 +144,6 @@ export function Book({
     easing.damp3(group.position, targetPosition, smoothTime, delta);
     easing.dampQ(group.quaternion, targetQuaternion, smoothTime, delta);
   });
-
-  const handleClick = (event: ThreeEvent<MouseEvent>) => {
-    event.stopPropagation();
-    if (!isSelected) onSelect(book.id);
-  };
-
-  const handlePointerOver = (event: ThreeEvent<PointerEvent>) => {
-    event.stopPropagation();
-    setIsHovered(true);
-  };
 
   return (
     // biome-ignore lint/a11y/noStaticElementInteractions: three.js 오브젝트라 DOM 접근성 규칙이 적용되지 않는다

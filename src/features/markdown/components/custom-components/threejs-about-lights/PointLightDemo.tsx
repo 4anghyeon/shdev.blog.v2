@@ -4,12 +4,6 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 export const PointLightDemo = () => {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<OrbitControls>(null);
-  const lightRef = useRef<PointLight>(null);
-  const helperRef = useRef<PointLightHelper>(null);
-  const animFrameRef = useRef<number>(0);
-
   const [intensity, setIntensity] = useState(1.0);
   const [color, setColor] = useState("#ff9900");
   const [positionX, setPositionX] = useState(0);
@@ -19,6 +13,42 @@ export const PointLightDemo = () => {
   const [decay, setDecay] = useState(2);
   const [castShadow, setCastShadow] = useState(true);
   const [showHelper, setShowHelper] = useState(true);
+
+  const mountRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<OrbitControls>(null);
+  const lightRef = useRef<PointLight>(null);
+  const helperRef = useRef<PointLightHelper>(null);
+  const animFrameRef = useRef<number>(0);
+
+  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIntensity(parseFloat(e.target.value));
+  };
+
+  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+  };
+
+  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
+    if (axis === "x") setPositionX(value);
+    if (axis === "y") setPositionY(value);
+    if (axis === "z") setPositionZ(value);
+  };
+
+  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDistance(parseFloat(e.target.value));
+  };
+
+  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDecay(parseFloat(e.target.value));
+  };
+
+  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCastShadow(e.target.checked);
+  };
+
+  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
+    setShowHelper(e.target.checked);
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
@@ -348,36 +378,6 @@ export const PointLightDemo = () => {
       helperRef.current.visible = showHelper;
     }
   }, [showHelper]);
-
-  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntensity(parseFloat(e.target.value));
-  };
-
-  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setColor(e.target.value);
-  };
-
-  const handlePositionChange = (axis: "x" | "y" | "z", value: number) => {
-    if (axis === "x") setPositionX(value);
-    if (axis === "y") setPositionY(value);
-    if (axis === "z") setPositionZ(value);
-  };
-
-  const handleDistanceChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDistance(parseFloat(e.target.value));
-  };
-
-  const handleDecayChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDecay(parseFloat(e.target.value));
-  };
-
-  const handleCastShadowChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setCastShadow(e.target.checked);
-  };
-
-  const handleHelperToggle = (e: ChangeEvent<HTMLInputElement>) => {
-    setShowHelper(e.target.checked);
-  };
 
   return (
     <div className="mt-4 flex w-full flex-col">

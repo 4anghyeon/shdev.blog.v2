@@ -33,15 +33,12 @@ const BUBBLE_SQUISH_OPTIONS: AnimationOptions = {
 
 /** 활성 메뉴를 따라가는 버블(head)과 늦게 따라오는 꼬리(tail)의 motion value를 관리한다. */
 export const useMenuBubble = () => {
-  const { activeIndex } = useActiveNavigation();
-  const title = usePostStore((state) => state.title);
-  const titleRef = useRef(title);
-  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const [isReady, setIsReady] = useState(false);
   const [isBubbleMoving, setIsBubbleMoving] = useState(false);
-  const [bubbleRef, animateBubble] = useAnimate<HTMLDivElement>();
-  const isPlacedRef = useRef(false);
+  const { activeIndex } = useActiveNavigation();
+  const title = usePostStore((state) => state.title);
   const shouldReduceMotion = useReducedMotion();
+  const [bubbleRef, animateBubble] = useAnimate<HTMLDivElement>();
 
   const headX = useMotionValue(0);
   const headY = useMotionValue(0);
@@ -49,6 +46,10 @@ export const useMenuBubble = () => {
   const headHeight = useMotionValue(0);
   const springTailX = useSpring(headX, bubbleTailSpring);
   const springTailWidth = useSpring(headWidth, bubbleTailSpring);
+
+  const titleRef = useRef(title);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const isPlacedRef = useRef(false);
 
   const squish = () => {
     if (!bubbleRef.current) return;

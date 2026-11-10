@@ -4,6 +4,11 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RectAreaLightHelper } from "three/addons/helpers/RectAreaLightHelper.js";
 
 export const RectAreaLightDemo = () => {
+  const [intensity, setIntensity] = useState(5.0);
+  const [color, setColor] = useState("#ffffff");
+  const [width, setWidth] = useState(3);
+  const [height, setHeight] = useState(2);
+
   const mountRef = useRef<HTMLDivElement>(null);
   const animFrameRef = useRef<number>(0);
   const sceneRef = useRef<{
@@ -15,10 +20,21 @@ export const RectAreaLightDemo = () => {
     helper: RectAreaLightHelper;
   } | null>(null);
 
-  const [intensity, setIntensity] = useState(5.0);
-  const [color, setColor] = useState("#ffffff");
-  const [width, setWidth] = useState(3);
-  const [height, setHeight] = useState(2);
+  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setIntensity(parseFloat(e.target.value));
+  };
+
+  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setColor(e.target.value);
+  };
+
+  const handleWidthChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setWidth(parseFloat(e.target.value));
+  };
+
+  const handleHeightChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setHeight(parseFloat(e.target.value));
+  };
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <>
   useEffect(() => {
@@ -150,44 +166,28 @@ export const RectAreaLightDemo = () => {
   }, []);
 
   useEffect(() => {
-    if (sceneRef.current && sceneRef.current.rectLight) {
+    if (sceneRef.current?.rectLight) {
       sceneRef.current.rectLight.intensity = intensity;
     }
   }, [intensity]);
 
   useEffect(() => {
-    if (sceneRef.current && sceneRef.current.rectLight) {
+    if (sceneRef.current?.rectLight) {
       sceneRef.current.rectLight.color.set(color);
     }
   }, [color]);
 
   useEffect(() => {
-    if (sceneRef.current && sceneRef.current.rectLight) {
+    if (sceneRef.current?.rectLight) {
       sceneRef.current.rectLight.width = width;
     }
   }, [width]);
 
   useEffect(() => {
-    if (sceneRef.current && sceneRef.current.rectLight) {
+    if (sceneRef.current?.rectLight) {
       sceneRef.current.rectLight.height = height;
     }
   }, [height]);
-
-  const handleIntensityChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIntensity(parseFloat(e.target.value));
-  };
-
-  const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setColor(e.target.value);
-  };
-
-  const handleWidthChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setWidth(parseFloat(e.target.value));
-  };
-
-  const handleHeightChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setHeight(parseFloat(e.target.value));
-  };
 
   return (
     <div className="mt-4 flex w-full flex-col">

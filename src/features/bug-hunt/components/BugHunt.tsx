@@ -26,9 +26,9 @@ interface Catch {
 
 /** 사이트를 둘러보는 동안 가끔 나타나는 날벌레를 잡는 이스터에그. 루트 레이아웃에 한 번만 둔다. */
 export function BugHunt() {
-  const { isBugVisible, dismissBug } = useBugSpawn();
   const [catches, setCatches] = useState<Catch[]>([]);
   const [isHelpHidden, setIsHelpHidden] = useState(false);
+  const { isBugVisible, dismissBug } = useBugSpawn();
 
   const handleCatch = (point: Point) => {
     setIsHelpHidden(true);

@@ -9,10 +9,18 @@ import {
 import { cn } from "#/shared/lib/tailwind";
 
 export function TitleTicker({ title }: { title: string }) {
-  const xValue = useMotionValue(0);
-  const innerRef = useRef<HTMLDivElement>(null);
   const [isScrolling, setIsScrolling] = useState(false);
+  const xValue = useMotionValue(0);
+
+  const innerRef = useRef<HTMLDivElement>(null);
   const hasEnteredRef = useRef(false);
+
+  const handleAnimationComplete = () => {
+    if (!hasEnteredRef.current) {
+      hasEnteredRef.current = true;
+      setIsScrolling(true);
+    }
+  };
 
   useAnimationFrame((_, delta) => {
     if (!innerRef.current || !isScrolling) return;
@@ -21,13 +29,6 @@ export function TitleTicker({ title }: { title: string }) {
     const next = xValue.get() - (delta / 1000) * TICKER_SPEED_PX_PER_S;
     xValue.set(next % -halfWidth);
   });
-
-  const handleAnimationComplete = () => {
-    if (!hasEnteredRef.current) {
-      hasEnteredRef.current = true;
-      setIsScrolling(true);
-    }
-  };
 
   return (
     <motion.li
