@@ -213,6 +213,7 @@ function ShelfContents({
           book={placement.book}
           dimensions={placement.dimensions}
           home={placement.position}
+          tilt={placement.tilt}
           isSelected={placement.book.id === selectedId}
           onSelect={onSelect}
         />

@@ -19,7 +19,7 @@ const ALIGN_DISTANCE = 0.6;
 const ALIGN_ANGLE = 0.02;
 const ALIGN_SCALE = 0.02;
 
-const RESTING = new Quaternion();
+const TILT_AXIS = new Vector3(0, 0, 1);
 
 type BookPhase = "shelved" | "pulling" | "focused";
 
@@ -30,12 +30,16 @@ const targetQuaternion = new Quaternion();
 const createSlotPositions = (
   home: [number, number, number],
   dimensions: BookDimensions,
+  tilt: number,
 ) => {
   // 책 전체가 선반 앞으로 빠져나온 뒤에 돌아야 회전하면서 옆판을 뚫지 않는다
   const depth = dimensions.depth + PULL_CLEARANCE;
+  // 눕혀 쌓은 책은 들어 올리면 위에 놓인 책을 뚫어서, 누운 만큼 덜 든다
+  const lift = PULL_LIFT * Math.cos(tilt);
   return {
     homePosition: new Vector3(...home),
-    pulledPosition: new Vector3(home[0], home[1] + PULL_LIFT, home[2] + depth),
+    pulledPosition: new Vector3(home[0], home[1] + lift, home[2] + depth),
+    restQuaternion: new Quaternion().setFromAxisAngle(TILT_AXIS, tilt),
     pullDepth: depth,
   };
 };
@@ -44,6 +48,8 @@ interface BookProps {
   book: BookItem;
   dimensions: BookDimensions;
   home: [number, number, number];
+  /** 제자리에서 기울어진 각도(rad) */
+  tilt: number;
   isSelected: boolean;
   onSelect: (id: string) => void;
 }
@@ -53,6 +59,7 @@ export function Book({
   book,
   dimensions,
   home,
+  tilt,
   isSelected,
   onSelect,
 }: BookProps) {
@@ -62,10 +69,8 @@ export function Book({
   const [isHovered, setIsHovered] = useState(false);
   const size = useThree((state) => state.size);
 
-  const { homePosition, pulledPosition, pullDepth } = createSlotPositions(
-    home,
-    dimensions,
-  );
+  const { homePosition, pulledPosition, restQuaternion, pullDepth } =
+    createSlotPositions(home, dimensions, tilt);
 
   useCursor(isHovered && !isSelected);
 
@@ -101,7 +106,7 @@ export function Book({
     } else if (phase.current === "pulling") {
       targetScale.setScalar(1);
       targetPosition.copy(pulledPosition);
-      targetQuaternion.copy(RESTING);
+      targetQuaternion.copy(restQuaternion);
     } else {
       const isOutOfSlot =
         group.position.z - homePosition.z > HOVER_OFFSET + 0.2;
@@ -110,7 +115,7 @@ export function Book({
           group.position.x - pulledPosition.x,
           group.position.y - pulledPosition.y,
         ) < ALIGN_DISTANCE &&
-        group.quaternion.angleTo(RESTING) < ALIGN_ANGLE &&
+        group.quaternion.angleTo(restQuaternion) < ALIGN_ANGLE &&
         Math.abs(group.scale.x - 1) < ALIGN_SCALE;
       // 칸 앞에서 위치와 자세를 모두 바로잡은 뒤에 밀어 넣어야 옆 책이나 선반을 뚫지 않는다
       if (isOutOfSlot) smoothTime = RETURN_SMOOTH_TIME;
@@ -120,7 +125,7 @@ export function Book({
         targetPosition.copy(homePosition);
         if (isHovered) targetPosition.z += HOVER_OFFSET;
       }
-      targetQuaternion.copy(RESTING);
+      targetQuaternion.copy(restQuaternion);
       targetScale.setScalar(1);
     }
 
@@ -144,6 +149,7 @@ export function Book({
     <group
       ref={ref}
       position={home}
+      rotation-z={tilt}
       onClick={handleClick}
       onPointerOver={handlePointerOver}
       onPointerOut={() => setIsHovered(false)}
