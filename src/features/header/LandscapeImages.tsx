@@ -1,16 +1,24 @@
+import type { ReactNode } from "react";
 import { LandscapeBirds } from "#/features/header/LandscapeBirds";
+import { LandscapeStars } from "#/features/header/LandscapeStars";
 import { cn } from "#/shared/lib/tailwind";
 
 interface LandscapeSceneProps {
   background: string;
   tree: string;
   className: string;
+  children?: ReactNode;
 }
 
 /**
- * 한 테마의 풍경. 소나무를 지운 배경, 새, 흔들리는 소나무 레이어를 차례로 겹친다.
+ * 한 테마의 풍경. 소나무를 지운 배경, 하늘 요소(children), 새, 흔들리는 소나무 레이어를 차례로 겹친다.
  */
-function LandscapeScene({ background, tree, className }: LandscapeSceneProps) {
+function LandscapeScene({
+  background,
+  tree,
+  className,
+  children,
+}: LandscapeSceneProps) {
   return (
     <div
       className={cn(
@@ -25,6 +33,7 @@ function LandscapeScene({ background, tree, className }: LandscapeSceneProps) {
         height={336}
         className="absolute inset-0 size-full"
       />
+      {children}
       <LandscapeBirds />
       {/* 소나무 레이어(708x240)는 배경(1500x336)의 왼쪽 위 696x228 영역에 위·왼쪽으로 12px씩 덧댄 것이라 그만큼 밖으로 빼서 놓는다.
           회전축은 줄기가 화면 왼쪽으로 빠져나가는 지점(배경 기준 0, 185)이다. */}
@@ -53,7 +62,9 @@ export function LandscapeImages() {
         background="/images/about-landscape-hero-dark.webp"
         tree="/images/about-landscape-tree-dark.webp"
         className="text-[#162448] opacity-0 dark:opacity-100"
-      />
+      >
+        <LandscapeStars />
+      </LandscapeScene>
     </>
   );
 }

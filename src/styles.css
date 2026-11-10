@@ -64,6 +64,7 @@
   --animate-bird-cross: bird-cross 70s linear infinite;
   --animate-bird-bob: bird-bob 5s ease-in-out infinite alternate;
   --animate-bird-flap: bird-flap 1.8s ease-in-out infinite;
+  --animate-star-twinkle: star-twinkle 3s ease-in-out infinite alternate;
 
   /* Shadows */
   --shadow-page:
@@ -152,6 +153,13 @@
     }
     30% {
       transform: rotate(-24deg);
+    }
+  }
+
+  @keyframes star-twinkle {
+    to {
+      opacity: 0.08;
+      scale: 0.5;
     }
   }
 
