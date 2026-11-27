@@ -1,4 +1,4 @@
-import { once } from "es-toolkit";
+import { once, range } from "es-toolkit";
 import {
   CanvasTexture,
   MathUtils,
@@ -91,6 +91,46 @@ export const getPaperEdgeTexture = once(() => {
     context.fillRect(x, 0, 1, canvas.height);
   }
 
+  return toTexture(canvas, true);
+});
+
+/** 나뭇결 텍스처 한 장이 덮는 실제 크기(cm) */
+export const WOOD_TILE_SIZE = 60;
+
+/** 가로로 결이 흐르는 밝은 오크 무늬. 상하좌우가 이어지게 그려서 반복해 붙여도 이음매가 보이지 않는다. */
+export const getWoodTexture = once(() => {
+  const size = 512;
+  const rings = 26;
+  const { canvas, context } = createCanvas(size, size);
+  const image = context.createImageData(size, size);
+  MathUtils.seededRandom(11);
+  const rowShade = range(size).map(() => MathUtils.seededRandom() * 0.035);
+  const phases = range(4).map(() => MathUtils.seededRandom() * Math.PI * 2);
+
+  for (let y = 0; y < size; y++) {
+    const v = (y / size) * Math.PI * 2;
+    // 나이테 간격이 고르면 줄무늬처럼 보여서 세로 위치에 따라 촘촘함을 바꾼다
+    const spacing = Math.sin(v * 2 + phases[3]) * 6;
+    for (let x = 0; x < size; x++) {
+      const u = (x / size) * Math.PI * 2;
+      // 정수 주기의 사인만 더해야 가로로 반복해도 결이 끊기지 않는다
+      const wobble =
+        Math.sin(u + phases[0]) * 3.5 +
+        Math.sin(u * 3 + phases[1]) * 1.2 +
+        Math.sin(u * 7 + phases[2]) * 0.5;
+      const ring = (((((y + wobble + spacing) / size) * rings) % 1) + 1) % 1;
+      const late = Math.max(0, 1 - Math.abs(ring - 0.5) * 5) * 0.09;
+      const fiber = MathUtils.seededRandom() * 0.035;
+      const shade = 1 - late - rowShade[y] - fiber;
+      const offset = (y * size + x) * 4;
+      image.data[offset] = 210 * shade;
+      image.data[offset + 1] = 184 * shade;
+      image.data[offset + 2] = 150 * shade;
+      image.data[offset + 3] = 255;
+    }
+  }
+
+  context.putImageData(image, 0, 0);
   return toTexture(canvas, true);
 });
 

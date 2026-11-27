@@ -5,8 +5,14 @@ import {
 } from "#/features/bookshelf/helper/book-dimensions";
 import type { BookItem } from "#/shared/constant/book-items";
 
-export const SHELF_BOARD = 1.2;
+export const SHELF_BOARD = 1.8;
 export const SHELF_DEPTH = 26;
+/** 책장을 감싸는 도장 틀의 측판, 머리판, 걸레받이 두께 */
+export const FRAME_SIDE = 2.6;
+export const FRAME_TOP = 4;
+export const FRAME_BASE = 5;
+/** 도장 틀이 원목 선반보다 앞으로 튀어나온 거리. 선반이 틀 안쪽으로 들어가 보이게 한다 */
+export const FACE_LIP = 1.4;
 const BOOK_GAP = 0.12;
 const SIDE_PADDING = 1.2;
 const TOP_CLEARANCE = 5;
@@ -113,9 +119,23 @@ const measureShelf = (
   innerWidth: number,
   compartmentHeight: number,
 ) => ({
-  width: innerWidth + SHELF_BOARD * 2,
-  height: rows.length * (compartmentHeight + SHELF_BOARD) + SHELF_BOARD,
+  width: innerWidth + FRAME_SIDE * 2,
+  height:
+    FRAME_BASE + rows.length * (compartmentHeight + SHELF_BOARD) + FRAME_TOP,
 });
+
+/** 아래에서 boardIndex번째 선반판의 윗면 높이. 그 칸에 꽂힌 책이 딛는 바닥이다. */
+export const getShelfFloorY = (
+  {
+    height,
+    compartmentHeight,
+  }: Pick<ShelfLayout, "height" | "compartmentHeight">,
+  boardIndex: number,
+) =>
+  -height / 2 +
+  FRAME_BASE +
+  boardIndex * (compartmentHeight + SHELF_BOARD) +
+  SHELF_BOARD;
 
 const getSlotZ = (d: BookDimensions) => SHELF_DEPTH / 2 - 1.2 - d.depth / 2;
 
@@ -258,7 +278,7 @@ export const computeShelfLayout = (
 
   const isScrollable = best === undefined;
   const scrollWidth = clamp(
-    area.width / (MIN_PIXELS_PER_CM * FIT_MARGIN) - SHELF_BOARD * 2,
+    area.width / (MIN_PIXELS_PER_CM * FIT_MARGIN) - FRAME_SIDE * 2,
     minWidth,
     maxWidth,
   );
@@ -275,9 +295,10 @@ export const computeShelfLayout = (
   );
 
   const placements = chosen.rows.flatMap((row, rowIndex) => {
-    const boardIndex = rowCount - 1 - rowIndex;
-    const floorY =
-      boardIndex * (compartmentHeight + SHELF_BOARD) + SHELF_BOARD - height / 2;
+    const floorY = getShelfFloorY(
+      { height, compartmentHeight },
+      rowCount - 1 - rowIndex,
+    );
 
     return placeRow(row, rowIndex, floorY, {
       books,
