@@ -17,6 +17,7 @@ import {
 import { MathUtils, NeutralToneMapping, Vector3 } from "three";
 import { Book } from "#/features/bookshelf/components/Book";
 import { Shelf } from "#/features/bookshelf/components/Shelf";
+import { Vines } from "#/features/bookshelf/components/Vines";
 import { loadBookFonts } from "#/features/bookshelf/helper/book-artwork";
 import {
   detectInitialQualityTier,
@@ -261,6 +262,7 @@ function ShelfContents({
         paintColor={mood.paintColor}
         woodColor={mood.woodColor}
       />
+      <Vines layout={layout} />
       {layout.placements.map((placement) => (
         <Book
           key={placement.book.id}

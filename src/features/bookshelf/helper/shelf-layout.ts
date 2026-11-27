@@ -11,6 +11,8 @@ export const SHELF_DEPTH = 26;
 export const FRAME_SIDE = 2.6;
 export const FRAME_TOP = 4;
 export const FRAME_BASE = 5;
+/** 도장 틀이 원목 선반보다 앞으로 튀어나온 거리. 선반이 틀 안쪽으로 들어가 보이게 한다 */
+export const FACE_LIP = 1.4;
 const BOOK_GAP = 0.12;
 const SIDE_PADDING = 1.2;
 const TOP_CLEARANCE = 5;

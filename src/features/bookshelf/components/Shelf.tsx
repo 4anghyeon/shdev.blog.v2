@@ -7,6 +7,7 @@ import {
   WOOD_TILE_SIZE,
 } from "#/features/bookshelf/helper/procedural-textures";
 import {
+  FACE_LIP,
   FRAME_BASE,
   FRAME_SIDE,
   FRAME_TOP,
@@ -17,8 +18,6 @@ import {
 } from "#/features/bookshelf/helper/shelf-layout";
 
 const BACK_PANEL = 0.6;
-/** 도장 틀이 원목 선반보다 앞으로 튀어나온 거리. 선반이 틀 안쪽으로 들어가 보이게 한다 */
-const FACE_LIP = 1.4;
 const GRAIN_VERTICAL = Math.PI / 2;
 
 type PanelFinish = { kind: "paint" } | { kind: "wood"; grainRotation: number };
