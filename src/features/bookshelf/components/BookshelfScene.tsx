@@ -48,7 +48,8 @@ interface LightMood {
   keyIntensity: number;
   keyPosition: [number, number, number];
   environmentIntensity: number;
-  shelfColor: string;
+  paintColor: string;
+  woodColor: string;
 }
 
 const DAY_MOOD: LightMood = {
@@ -58,7 +59,8 @@ const DAY_MOOD: LightMood = {
   keyIntensity: 2.4,
   keyPosition: [35, 60, 90],
   environmentIntensity: 1,
-  shelfColor: "#ebe5da",
+  paintColor: "#f3f1ec",
+  woodColor: "#ffffff",
 };
 
 const NIGHT_MOOD: LightMood = {
@@ -69,7 +71,8 @@ const NIGHT_MOOD: LightMood = {
   // 꺼낸 책의 표지는 오른쪽을 향해 돌아가 있어서, 왼쪽에서 비추면 빛이 비스듬히 닿아 표지에 줄무늬 그림자가 생긴다
   keyPosition: [60, 18, 85],
   environmentIntensity: 0.2,
-  shelfColor: "#9a9ca6",
+  paintColor: "#a2a4ad",
+  woodColor: "#9e98a0",
 };
 
 interface ViewportSize {
@@ -253,7 +256,11 @@ function ShelfContents({
   return (
     <>
       <CameraRig pose={pose} scrollRef={scrollRef} />
-      <Shelf layout={layout} color={mood.shelfColor} />
+      <Shelf
+        layout={layout}
+        paintColor={mood.paintColor}
+        woodColor={mood.woodColor}
+      />
       {layout.placements.map((placement) => (
         <Book
           key={placement.book.id}
