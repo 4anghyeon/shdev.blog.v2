@@ -197,6 +197,20 @@ export const BOOK_ITEMS: readonly BookItem[] = [
     spine: "/images/books/mencius/spine.webp",
   },
   {
+    id: "laws-of-ux",
+    title: "UX/UI의 10가지 심리학 법칙",
+    author: "존 야블론스키",
+    binding: "paperback",
+    color: "#ffffff",
+    ink: "#1a1a1a",
+    size: { height: 21.1, width: 14.9, thickness: 1.8 },
+    pages: 204,
+    summary:
+      "제이콥의 법칙, 피츠의 법칙, 힉의 법칙 등 사용자 경험에 영향을 주는 심리학 원리를 실제 제품 디자인 사례와 함께 풀어낸 책.",
+    cover: "/images/books/laws-of-ux/cover.webp",
+    spine: "/images/books/laws-of-ux/spine.webp",
+  },
+  {
     id: "dark-psychology",
     title: "다크 심리학 : 심리 조종의 기술",
     author: "다크 인사이트",
